@@ -187,3 +187,562 @@ footer.ct-footer h4,
 .woocommerce-breadcrumb a:hover {
     color: var(--stew-primary, #C8A951);
 }
+
+/* ==========================================================================
+   9. HOMEPAGE SECTIONS — Swiss-Minimal Layout & Design
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   9.1 Container
+   -------------------------------------------------------------------------- */
+.stew-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   9.2 Section spacing
+   -------------------------------------------------------------------------- */
+.stew-section {
+    padding: 5rem 0;
+}
+
+@media (max-width: 767px) {
+    .stew-section {
+        padding: 3rem 0;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   9.3 Section labels & titles
+   -------------------------------------------------------------------------- */
+.stew-section-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.stew-section-label__line {
+    display: block;
+    flex-grow: 1;
+    max-width: 3rem;
+    height: 1px;
+    background: hsl(38, 80%, 50%);
+}
+
+.stew-section-label__text {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: hsl(38, 80%, 50%);
+    white-space: nowrap;
+}
+
+/* Left-aligned variant (used in About section) */
+.stew-section-label--left {
+    justify-content: flex-start;
+}
+
+.stew-section-label--left .stew-section-label__line {
+    max-width: 2rem;
+}
+
+.stew-section-title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-top: 0.75rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+/* Left-aligned title for sections with --left labels */
+.stew-section-label--left ~ .stew-section-title {
+    text-align: left;
+}
+
+/* --------------------------------------------------------------------------
+   9.4 Categories grid
+   -------------------------------------------------------------------------- */
+.stew-categories {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .stew-categories {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .stew-categories {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.stew-category-card {
+    display: block;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    color: #1A1A1A;
+}
+
+.stew-category-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.stew-category-card__image {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #F0F0F0;
+    position: relative;
+}
+
+.stew-category-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.stew-category-card:hover .stew-category-card__image img {
+    transform: scale(1.05);
+}
+
+.stew-category-card__info {
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stew-category-card__name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #1A1A1A;
+}
+
+.stew-category-card__arrow {
+    width: 20px;
+    height: 20px;
+    color: hsl(38, 80%, 50%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+}
+
+.stew-category-card:hover .stew-category-card__arrow {
+    transform: translateX(3px);
+}
+
+/* Categories heading wrapper */
+.stew-homepage-categories__heading {
+    margin-bottom: 2.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   9.5 Featured products
+   -------------------------------------------------------------------------- */
+.stew-homepage-featured__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.stew-homepage-featured__heading {
+    flex: 1;
+    min-width: 0;
+}
+
+.stew-homepage-featured__heading .stew-section-title {
+    text-align: left;
+    margin-bottom: 0;
+}
+
+/* Desktop CTA next to header */
+.stew-homepage-featured__cta-desktop {
+    flex-shrink: 0;
+}
+
+/* Mobile CTA below products */
+.stew-homepage-featured__cta-mobile {
+    display: none;
+    text-align: center;
+    margin-top: 2rem;
+}
+
+@media (max-width: 767px) {
+    .stew-homepage-featured__cta-desktop {
+        display: none;
+    }
+
+    .stew-homepage-featured__cta-mobile {
+        display: block;
+    }
+
+    .stew-homepage-featured__heading .stew-section-title {
+        text-align: center;
+    }
+}
+
+/* WooCommerce product grid inside featured section */
+.stew-homepage-featured__products .woocommerce ul.products,
+.stew-homepage-featured__products ul.products {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+@media (min-width: 768px) {
+    .stew-homepage-featured__products .woocommerce ul.products,
+    .stew-homepage-featured__products ul.products {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.stew-homepage-featured__products ul.products li.product {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    float: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   9.6 About teaser
+   -------------------------------------------------------------------------- */
+.stew-homepage-about__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .stew-homepage-about__grid {
+        grid-template-columns: 55% 45%;
+    }
+}
+
+.stew-homepage-about__text .stew-section-title {
+    text-align: left;
+}
+
+.stew-homepage-about__body {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #4A4A4A;
+    margin-bottom: 1.5rem;
+}
+
+.stew-homepage-about__body p {
+    margin-bottom: 1rem;
+}
+
+.stew-homepage-about__body p:last-child {
+    margin-bottom: 0;
+}
+
+.stew-homepage-about__image {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.stew-homepage-about__image img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* --------------------------------------------------------------------------
+   9.7 Newsletter section
+   -------------------------------------------------------------------------- */
+.stew-homepage-newsletter {
+    background: #F8F7F5;
+}
+
+.stew-homepage-newsletter__inner {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.stew-homepage-newsletter__title {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 0.75rem;
+}
+
+.stew-homepage-newsletter__text {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #4A4A4A;
+    margin-bottom: 1.5rem;
+}
+
+/* Newsletter form — CF7 inside */
+.stew-homepage-newsletter__form {
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.stew-homepage-newsletter__form .wpcf7-form {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.stew-homepage-newsletter__form input[type="email"],
+.stew-homepage-newsletter__form input[type="text"] {
+    flex: 1;
+    min-width: 200px;
+    height: 3rem;
+    padding: 0 1rem;
+    border: 1px solid #E8E5E0;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    background: #FFFFFF;
+    transition: border-color 0.2s ease;
+}
+
+.stew-homepage-newsletter__form input[type="email"]:focus,
+.stew-homepage-newsletter__form input[type="text"]:focus {
+    outline: none;
+    border-color: hsl(38, 80%, 50%);
+    box-shadow: 0 0 0 3px hsla(38, 80%, 50%, 0.1);
+}
+
+.stew-homepage-newsletter__form input[type="submit"] {
+    height: 3rem;
+    padding: 0 1.75rem;
+    background: hsl(38, 80%, 50%);
+    color: #1A1A1A;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.stew-homepage-newsletter__form input[type="submit"]:hover {
+    background: hsl(38, 80%, 42%);
+}
+
+/* Divider */
+.stew-divider {
+    width: 60px;
+    height: 2px;
+    background: hsl(38, 80%, 50%);
+    margin: 0 auto 2rem;
+    border: none;
+}
+
+/* --------------------------------------------------------------------------
+   9.8 CTA section
+   -------------------------------------------------------------------------- */
+.stew-homepage-cta__inner {
+    text-align: center;
+    padding: 3rem 0;
+    border-top: 1px solid #E8E5E0;
+}
+
+.stew-homepage-cta__title {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 600;
+    color: #1A1A1A;
+    margin-bottom: 0.75rem;
+}
+
+.stew-homepage-cta__text {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #4A4A4A;
+    margin-bottom: 2rem;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --------------------------------------------------------------------------
+   9.9 Buttons — Homepage variants
+   -------------------------------------------------------------------------- */
+.stew-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    line-height: 1.4;
+    border: none;
+}
+
+.stew-btn--gold {
+    background: hsl(38, 80%, 50%);
+    color: #1A1A1A;
+}
+
+.stew-btn--gold:hover {
+    background: hsl(38, 80%, 42%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px hsla(38, 80%, 50%, 0.3);
+}
+
+.stew-btn--ghost {
+    background: transparent;
+    border: 2px solid #FFFFFF;
+    color: #FFFFFF;
+}
+
+.stew-btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.stew-btn--outline {
+    background: transparent;
+    border: 2px solid hsl(38, 80%, 50%);
+    color: hsl(38, 80%, 50%);
+}
+
+.stew-btn--outline:hover {
+    background: hsl(38, 80%, 50%);
+    color: #1A1A1A;
+    transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   9.10 Hero section — see stew-custom.css for main hero styles
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   9.11 Animations
+   -------------------------------------------------------------------------- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stew-animate-fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.6s ease forwards;
+}
+
+/* Staggered children (used on .stew-stagger) */
+.stew-stagger > * {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.stew-stagger > *:nth-child(1) { animation-delay: 0s; }
+.stew-stagger > *:nth-child(2) { animation-delay: 0.08s; }
+.stew-stagger > *:nth-child(3) { animation-delay: 0.16s; }
+.stew-stagger > *:nth-child(4) { animation-delay: 0.24s; }
+.stew-stagger > *:nth-child(5) { animation-delay: 0.32s; }
+.stew-stagger > *:nth-child(6) { animation-delay: 0.4s; }
+
+/* --------------------------------------------------------------------------
+   9.12 Mobile responsive — global homepage adjustments
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+    /* Stack grids to single column */
+    .stew-categories {
+        grid-template-columns: 1fr;
+    }
+
+    .stew-homepage-about__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stew-homepage-featured__products .woocommerce ul.products,
+    .stew-homepage-featured__products ul.products {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    /* Reduce hero height on mobile */
+    .stew-hero {
+        min-height: 60vh;
+    }
+
+    .stew-hero__content {
+        padding: 1.5rem;
+    }
+
+    /* Reduce section label gap */
+    .stew-section-label {
+        gap: 0.5rem;
+    }
+
+    /* Stack newsletter form */
+    .stew-homepage-newsletter__form .wpcf7-form {
+        flex-direction: column;
+    }
+
+    .stew-homepage-newsletter__form input[type="email"],
+    .stew-homepage-newsletter__form input[type="text"] {
+        min-width: 100%;
+    }
+
+    /* CTA inner padding */
+    .stew-homepage-cta__inner {
+        padding: 2rem 0;
+    }
+
+    /* Buttons: full-width on small screens */
+    .stew-hero__buttons {
+        flex-direction: column;
+    }
+
+    .stew-hero__buttons .stew-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Small mobile — extra adjustments */
+@media (max-width: 479px) {
+    .stew-homepage-featured__products .woocommerce ul.products,
+    .stew-homepage-featured__products ul.products {
+        grid-template-columns: 1fr;
+    }
+
+    .stew-category-card__info {
+        padding: 0.75rem 1rem;
+    }
+}
