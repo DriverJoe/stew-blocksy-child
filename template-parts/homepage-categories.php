@@ -4,10 +4,15 @@
  *
  * Grid of category/collection cards with images and links.
  *
- * ACF Fields:
+ * ACF Fields (Free ACF — no repeater):
  * - collections_section_label
  * - collections_section_title
- * - collections_cards (repeater: card_title, card_image, card_link)
+ * - card_1_title, card_1_image (array), card_1_link
+ * - card_2_title, card_2_image (array), card_2_link
+ * - card_3_title, card_3_image (array), card_3_link
+ * - card_4_title, card_4_image (array), card_4_link
+ * - card_5_title, card_5_image (array), card_5_link
+ * - card_6_title, card_6_image (array), card_6_link
  *
  * @package STEW_Blocksy_Child
  */
@@ -16,9 +21,21 @@ defined( 'ABSPATH' ) || exit;
 
 $label = get_field( 'collections_section_label' );
 $title = get_field( 'collections_section_title' );
-$cards = get_field( 'collections_cards' );
 
-if ( ! $cards ) {
+// Build cards array from individual fields (Free ACF — no repeater).
+$cards = array();
+for ( $i = 1; $i <= 6; $i++ ) {
+	$card_title = get_field( 'card_' . $i . '_title' );
+	if ( ! empty( $card_title ) ) {
+		$cards[] = array(
+			'title' => $card_title,
+			'image' => get_field( 'card_' . $i . '_image' ),
+			'link'  => get_field( 'card_' . $i . '_link' ),
+		);
+	}
+}
+
+if ( empty( $cards ) ) {
 	return;
 }
 ?>
@@ -43,13 +60,9 @@ if ( ! $cards ) {
 
 		<div class="stew-categories stew-stagger">
 			<?php foreach ( $cards as $card ) :
-				$card_title = ! empty( $card['card_title'] ) ? $card['card_title'] : '';
-				$card_image = ! empty( $card['card_image'] ) ? $card['card_image'] : null;
-				$card_link  = ! empty( $card['card_link'] ) ? $card['card_link'] : '';
-
-				if ( ! $card_title ) {
-					continue;
-				}
+				$card_title = $card['title'];
+				$card_image = ! empty( $card['image'] ) ? $card['image'] : null;
+				$card_link  = ! empty( $card['link'] ) ? $card['link'] : '';
 			?>
 				<a href="<?php echo esc_url( $card_link ); ?>" class="stew-category-card">
 					<?php if ( $card_image ) : ?>
