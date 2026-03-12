@@ -289,87 +289,84 @@ body.stew-theme .woocommerce input.button.alt:hover {
     box-shadow: 0 4px 16px rgba(201, 169, 110, 0.3);
 }
 
-/* Ghost button for hero on dark backgrounds */
+/* Ghost button — styled for light backgrounds */
 .stew-btn--ghost {
     background-color: transparent;
-    color: #FFFFFF !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    color: #1A1A1A !important;
+    border: 1px solid rgba(26, 26, 26, 0.3) !important;
 }
 
 .stew-btn--ghost:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5) !important;
+    background: rgba(26, 26, 26, 0.05);
+    border-color: rgba(26, 26, 26, 0.5) !important;
 }
 
 /* ============================================
-   Hero Section — Premium
+   Hero Section — Light, Clean, Minimalist
+   Inspired by Erco, Flos, Artemide
    ============================================ */
 .stew-hero {
     position: relative;
-    min-height: 80vh;
+    min-height: 85vh;
     display: flex;
     align-items: center;
-    background-color: #1A1A1A;
+    background-color: #F8F7F5;
     background-size: cover;
     background-position: center;
     overflow: hidden;
 }
 
-/* Fallback gradient when no background image is set */
+/* Subtle warm gradient when no background image is set */
 .stew-hero--no-image {
-    background: linear-gradient(135deg, #1A1A1A 0%, #2D2D2D 50%, #1A1A1A 100%);
+    background: linear-gradient(135deg, #F8F7F5 0%, #FFFFFF 50%, #F5F3EF 100%);
 }
 
+/* White overlay — text side opaque, image bleeds through on right */
 .stew-hero__overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
         to right,
-        rgba(0, 0, 0, 0.75),
-        rgba(0, 0, 0, 0.45),
-        rgba(0, 0, 0, 0.1)
+        rgba(255, 255, 255, 0.92),
+        rgba(255, 255, 255, 0.7),
+        rgba(255, 255, 255, 0.3)
     );
     z-index: 1;
 }
 
-/* Lighter overlay when there's no image (gradient bg is already dark) */
+/* No overlay needed on the gradient fallback */
 .stew-hero--no-image .stew-hero__overlay {
-    background: linear-gradient(
-        135deg,
-        rgba(0, 0, 0, 0.15) 0%,
-        rgba(0, 0, 0, 0.05) 50%,
-        rgba(0, 0, 0, 0.1) 100%
-    );
+    display: none;
 }
 
 .stew-hero__content {
     position: relative;
     z-index: 2;
-    max-width: 600px;
-    padding: clamp(3rem, 8vw, 6rem) clamp(1rem, 4vw, 2rem);
+    max-width: 650px;
+    padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 4vw, 2rem);
 }
 
-/* Hero badge pill */
+/* Hero badge pill — adapted for light background */
 .stew-hero__badge {
     display: inline-block;
     padding: 0.375rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(26, 26, 26, 0.05);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(26, 26, 26, 0.1);
     border-radius: 999px;
     font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: #737373;
     margin-bottom: 1.5rem;
 }
 
 .stew-hero__title {
     font-size: 2.5rem;
     font-weight: 600;
-    letter-spacing: var(--stew-letter-spacing-tight);
+    letter-spacing: -0.02em;
     margin-bottom: 1.5rem;
-    color: var(--stew-white);
-    line-height: 1.1;
+    color: #1A1A1A;
+    line-height: 1.08;
 }
 
 @media (min-width: 768px) {
@@ -387,16 +384,26 @@ body.stew-theme .woocommerce input.button.alt:hover {
 .stew-hero__subtitle {
     font-size: 1.125rem;
     font-weight: 300;
-    opacity: 0.85;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     line-height: 1.6;
-    color: var(--stew-white);
+    color: #737373;
 }
 
 .stew-hero__buttons {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
+}
+
+/* Ghost button within hero — dark text/border on light hero */
+.stew-hero .stew-btn--ghost {
+    color: #1A1A1A !important;
+    border: 1px solid rgba(26, 26, 26, 0.3) !important;
+}
+
+.stew-hero .stew-btn--ghost:hover {
+    background: rgba(26, 26, 26, 0.05);
+    border-color: rgba(26, 26, 26, 0.5) !important;
 }
 
 /* ============================================
