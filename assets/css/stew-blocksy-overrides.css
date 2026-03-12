@@ -9,6 +9,50 @@
  */
 
 /* ==========================================================================
+   0. BLOCKSY COLOR PALETTE OVERRIDES — Force light theme
+   ========================================================================== */
+
+:root {
+    /* Override Blocksy's dark palette with STEW light colors */
+    --theme-palette-color-1: hsl(38, 80%, 50%) !important;   /* Primary — gold */
+    --theme-palette-color-2: hsl(38, 80%, 40%) !important;   /* Primary hover — dark gold */
+    --theme-palette-color-3: #1A1A1A !important;              /* Headings — near black */
+    --theme-palette-color-4: #737373 !important;              /* Body text — muted gray */
+    --theme-palette-color-5: #E8E5E0 !important;              /* Borders — warm taupe */
+    --theme-palette-color-6: #F8F7F5 !important;              /* Light bg — warm off-white */
+    --theme-palette-color-7: #FFFFFF !important;              /* Site bg — pure white */
+    --theme-palette-color-8: #1A1A1A !important;              /* Footer bg — dark */
+}
+
+/* Force white site background */
+body,
+body.stew-theme {
+    background-color: #FFFFFF !important;
+    color: #1A1A1A !important;
+}
+
+/* Blocksy content area — force white */
+.ct-container,
+.site-main,
+main,
+.content-area,
+[data-page] {
+    background-color: transparent !important;
+}
+
+/* Force dark text on headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #1A1A1A !important;
+}
+
+/* Hero section headings are white (overridden in hero-specific rules) */
+.stew-hero h1,
+.stew-hero h2,
+.stew-hero p {
+    color: inherit;
+}
+
+/* ==========================================================================
    1. HEADER — Clean White / Frosted Glass (Erco / Flos inspired)
    ========================================================================== */
 
