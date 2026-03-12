@@ -508,3 +508,31 @@ function stew_register_shop_filter_sidebar() {
     ) );
 }
 add_action( 'widgets_init', 'stew_register_shop_filter_sidebar' );
+
+/* =====================================================================
+   20. DISABLE BLOCK EDITOR FOR ACF TEMPLATE PAGES
+   ===================================================================== */
+
+/**
+ * Use classic editor on pages with STEW custom templates so ACF fields
+ * are visible below the content editor.
+ */
+function stew_disable_gutenberg_for_templates( $use_block_editor, $post ) {
+    if ( empty( $post->ID ) ) {
+        return $use_block_editor;
+    }
+
+    $template = get_page_template_slug( $post->ID );
+    $stew_templates = array(
+        'page-templates/template-homepage.php',
+        'page-templates/template-about.php',
+        'page-templates/template-contact.php',
+    );
+
+    if ( in_array( $template, $stew_templates, true ) ) {
+        return false;
+    }
+
+    return $use_block_editor;
+}
+add_filter( 'use_block_editor_for_post', 'stew_disable_gutenberg_for_templates', 10, 2 );
