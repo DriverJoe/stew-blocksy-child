@@ -34,12 +34,17 @@ if ( ! $title ) {
 $bg_url = '';
 if ( is_array( $bg_image ) && ! empty( $bg_image['url'] ) ) {
 	$bg_url = $bg_image['url'];
-} elseif ( is_string( $bg_image ) ) {
+} elseif ( is_string( $bg_image ) && $bg_image ) {
 	$bg_url = $bg_image;
+}
+
+$hero_classes = 'stew-hero';
+if ( ! $bg_url ) {
+	$hero_classes .= ' stew-hero--no-image';
 }
 ?>
 
-<section class="stew-hero" <?php echo $bg_url ? 'style="background-image: url(' . esc_url( $bg_url ) . ');"' : ''; ?>>
+<section class="<?php echo esc_attr( $hero_classes ); ?>" <?php echo $bg_url ? 'style="background-image: url(' . esc_url( $bg_url ) . ');"' : ''; ?>>
 	<div class="stew-hero__overlay" aria-hidden="true"></div>
 
 	<div class="stew-hero__content stew-container">
