@@ -255,25 +255,8 @@ add_filter( 'acf/settings/load_json', 'stew_acf_json_load_point' );
    10. ACF OPTIONS PAGE — "STEW Einstellungen"
    ===================================================================== */
 
-/**
- * Register an ACF options page for global theme settings.
- */
-function stew_register_acf_options_page() {
-    if ( ! function_exists( 'acf_add_options_page' ) ) {
-        return;
-    }
-
-    acf_add_options_page( array(
-        'page_title' => __( 'STEW Einstellungen', 'stew-blocksy-child' ),
-        'menu_title' => __( 'STEW Einstellungen', 'stew-blocksy-child' ),
-        'menu_slug'  => 'stew-settings',
-        'capability' => 'manage_options',
-        'redirect'   => false,
-        'icon_url'   => 'dashicons-admin-generic',
-        'position'   => 59,
-    ) );
-}
-add_action( 'acf/init', 'stew_register_acf_options_page' );
+// Note: Global site settings (footer, contact, social) are stored as ACF fields
+// on the Homepage to avoid requiring ACF Pro's options page feature.
 
 /* =====================================================================
    11. INCLUDE ROLE-BASED PRICING MODULE
@@ -282,6 +265,12 @@ add_action( 'acf/init', 'stew_register_acf_options_page' );
 $role_pricing_file = STEW_CHILD_DIR . '/import/role-based-pricing.php';
 if ( file_exists( $role_pricing_file ) ) {
     require_once $role_pricing_file;
+}
+
+// ACF field groups (registered via PHP for compatibility with ACF Free)
+$acf_fields_file = STEW_CHILD_DIR . '/import/acf-fields.php';
+if ( file_exists( $acf_fields_file ) ) {
+    require_once $acf_fields_file;
 }
 
 /* =====================================================================

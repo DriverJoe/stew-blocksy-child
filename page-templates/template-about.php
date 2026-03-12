@@ -5,6 +5,12 @@
  * About page template for the STEW LED Lighting webshop.
  * Uses ACF fields for all editable content sections.
  *
+ * ACF Fields (Free ACF — no repeater):
+ * - value_1_title, value_1_description
+ * - value_2_title, value_2_description
+ * - value_3_title, value_3_description
+ * - value_4_title, value_4_description
+ *
  * @package STEW_Blocksy_Child
  */
 
@@ -24,7 +30,18 @@ $story_image   = get_field( 'story_image' );
 
 $values_label  = get_field( 'values_section_label' );
 $values_title  = get_field( 'values_section_title' );
-$values_items  = get_field( 'values_items' );
+
+// Build values array from individual fields (Free ACF — no repeater).
+$values_items = array();
+for ( $i = 1; $i <= 4; $i++ ) {
+	$value_title = get_field( 'value_' . $i . '_title' );
+	if ( ! empty( $value_title ) ) {
+		$values_items[] = array(
+			'value_title'       => $value_title,
+			'value_description' => get_field( 'value_' . $i . '_description' ),
+		);
+	}
+}
 
 $cta_title       = get_field( 'about_cta_title' );
 $cta_text        = get_field( 'about_cta_text' );
