@@ -1,0 +1,189 @@
+/**
+ * Blocksy-Specific Overrides — STEW Swiss-Minimal Aesthetic
+ *
+ * Keeps Blocksy's clean defaults while layering the STEW design language.
+ * Uses STEW CSS custom properties defined in stew-main.css.
+ *
+ * @package STEW_Blocksy_Child
+ * @version 1.0.0
+ */
+
+/* ==========================================================================
+   1. HEADER — Frosted Glass
+   ========================================================================== */
+
+.ct-header {
+    background: rgba(255, 255, 255, 0.85) !important;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--stew-border, rgba(0, 0, 0, 0.06));
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ct-header[data-sticky="yes"] {
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* ==========================================================================
+   2. NAVIGATION
+   ========================================================================== */
+
+.ct-header nav a,
+.ct-header .ct-menu > li > a {
+    font-family: var(--stew-font, 'Inter', sans-serif);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--stew-text, #1A1A1A);
+    text-transform: none;
+    letter-spacing: 0;
+    transition: color 0.2s ease;
+}
+
+.ct-header nav a:hover,
+.ct-header nav a:focus,
+.ct-header .ct-menu > li > a:hover {
+    color: var(--stew-primary, #C8A951);
+}
+
+/* Active state */
+.ct-header .ct-menu > .current-menu-item > a,
+.ct-header .ct-menu > .current-menu-ancestor > a {
+    color: var(--stew-primary, #C8A951);
+}
+
+/* Sub-menu */
+.ct-header .sub-menu {
+    border-radius: var(--stew-radius, 6px);
+    border: 1px solid var(--stew-border, rgba(0, 0, 0, 0.06));
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================================================
+   3. LOGO
+   ========================================================================== */
+
+.ct-header .site-logo-container img {
+    max-height: 40px;
+    width: auto;
+}
+
+/* ==========================================================================
+   4. FOOTER
+   ========================================================================== */
+
+footer.ct-footer,
+[data-footer] {
+    background: var(--stew-dark, #1A1A1A) !important;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: var(--stew-font, 'Inter', sans-serif);
+}
+
+footer.ct-footer a,
+[data-footer] a {
+    color: rgba(255, 255, 255, 0.85);
+    transition: color 0.2s ease;
+}
+
+footer.ct-footer a:hover,
+[data-footer] a:hover {
+    color: var(--stew-primary, #C8A951);
+}
+
+footer.ct-footer h2,
+footer.ct-footer h3,
+footer.ct-footer h4,
+[data-footer] h2,
+[data-footer] h3,
+[data-footer] h4 {
+    color: #fff;
+    font-family: var(--stew-font, 'Inter', sans-serif);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   5. MOBILE MENU / OFFCANVAS
+   ========================================================================== */
+
+#offcanvas,
+.ct-offcanvas {
+    font-family: var(--stew-font, 'Inter', sans-serif);
+}
+
+#offcanvas a,
+.ct-offcanvas a {
+    font-weight: 500;
+    color: var(--stew-text, #1A1A1A);
+}
+
+#offcanvas a:hover,
+.ct-offcanvas a:hover {
+    color: var(--stew-primary, #C8A951);
+}
+
+/* ==========================================================================
+   6. WOOCOMMERCE INSIDE BLOCKSY
+   ========================================================================== */
+
+.ct-container .products .product,
+.ct-container ul.products li.product {
+    font-family: var(--stew-font, 'Inter', sans-serif);
+}
+
+.ct-container .products .product .woocommerce-loop-product__title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--stew-text, #1A1A1A);
+}
+
+.ct-container .products .product .price {
+    color: var(--stew-text, #1A1A1A);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   7. FORM INPUTS IN BLOCKSY CONTEXT
+   ========================================================================== */
+
+.ct-container input[type="text"],
+.ct-container input[type="email"],
+.ct-container input[type="password"],
+.ct-container input[type="search"],
+.ct-container input[type="number"],
+.ct-container input[type="tel"],
+.ct-container textarea,
+.ct-container select {
+    font-family: var(--stew-font, 'Inter', sans-serif);
+    border: 1px solid var(--stew-border, rgba(0, 0, 0, 0.08));
+    border-radius: var(--stew-radius, 6px);
+    transition: border-color 0.2s ease;
+}
+
+.ct-container input:focus,
+.ct-container textarea:focus,
+.ct-container select:focus {
+    border-color: var(--stew-primary, #C8A951);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(200, 169, 81, 0.15);
+}
+
+/* ==========================================================================
+   8. BREADCRUMBS
+   ========================================================================== */
+
+.ct-breadcrumbs,
+.woocommerce-breadcrumb {
+    font-family: var(--stew-font, 'Inter', sans-serif);
+    font-size: 0.8125rem;
+    color: rgba(26, 26, 26, 0.5);
+}
+
+.ct-breadcrumbs a,
+.woocommerce-breadcrumb a {
+    color: var(--stew-text, #1A1A1A);
+    text-decoration: none;
+}
+
+.ct-breadcrumbs a:hover,
+.woocommerce-breadcrumb a:hover {
+    color: var(--stew-primary, #C8A951);
+}
