@@ -3,7 +3,7 @@
  * Template Part: Homepage Featured Products
  *
  * Displays featured WooCommerce products using the [products] shortcode.
- * Section includes label, title, product grid, and CTA button.
+ * Falls back to recent products if none are marked as featured.
  *
  * ACF Fields:
  * - featured_section_label
@@ -24,7 +24,7 @@ $cta_text      = get_field( 'featured_cta_text' );
 $cta_url       = get_field( 'featured_cta_url' );
 
 if ( ! $title ) {
-	return;
+	$title = 'Produkte';
 }
 
 $product_count = $product_count ? absint( $product_count ) : 4;
@@ -56,8 +56,11 @@ $product_count = $product_count ? absint( $product_count ) : 4;
 			<div class="stew-homepage-featured__products">
 				<?php
 				if ( shortcode_exists( 'products' ) ) {
+					// Show featured products if any exist, otherwise show recent
+					$featured = wc_get_products( array( 'featured' => true, 'limit' => 1 ) );
+					$visibility = ! empty( $featured ) ? ' visibility="featured"' : '';
 					echo do_shortcode(
-						'[products limit="' . esc_attr( $product_count ) . '" columns="4" visibility="featured" orderby="date"]'
+						'[products limit="' . esc_attr( $product_count ) . '" columns="4"' . $visibility . ' orderby="date"]'
 					);
 				}
 				?>
