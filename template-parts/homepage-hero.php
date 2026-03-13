@@ -38,6 +38,11 @@ if ( is_array( $bg_image ) && ! empty( $bg_image['url'] ) ) {
 	$bg_url = $bg_image;
 }
 
+// Fallback to bundled hero image when no ACF image is set
+if ( ! $bg_url ) {
+	$bg_url = get_stylesheet_directory_uri() . '/assets/images/hero-lighting.jpg';
+}
+
 $hero_classes = 'stew-hero';
 if ( ! $bg_url ) {
 	$hero_classes .= ' stew-hero--no-image';

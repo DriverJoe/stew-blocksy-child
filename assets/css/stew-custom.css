@@ -302,39 +302,40 @@ body.stew-theme .woocommerce input.button.alt:hover {
 }
 
 /* ============================================
-   Hero Section — Light, Clean, Minimalist
-   Inspired by Erco, Flos, Artemide
+   Hero Section — Dark Overlay with White Text
+   Matches Lovable demo design (foreground = #0F0F0F)
    ============================================ */
 .stew-hero {
     position: relative;
-    min-height: 85vh;
+    min-height: 80vh;
+    max-height: 800px;
     display: flex;
     align-items: center;
-    background-color: #F8F7F5;
+    background-color: #0F0F0F;
     background-size: cover;
     background-position: center;
     overflow: hidden;
 }
 
-/* Subtle warm gradient when no background image is set */
+/* Dark gradient fallback when no background image is set */
 .stew-hero--no-image {
-    background: linear-gradient(135deg, #F8F7F5 0%, #FFFFFF 50%, #F5F3EF 100%);
+    background: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 50%, #0F0F0F 100%);
 }
 
-/* White overlay — text side opaque, image bleeds through on right */
+/* Dark overlay — left side dark for text, right side transparent for image */
 .stew-hero__overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
         to right,
-        rgba(255, 255, 255, 0.92),
-        rgba(255, 255, 255, 0.7),
-        rgba(255, 255, 255, 0.3)
+        rgba(15, 15, 15, 0.80),
+        rgba(15, 15, 15, 0.50),
+        rgba(15, 15, 15, 0.10)
     );
     z-index: 1;
 }
 
-/* No overlay needed on the gradient fallback */
+/* Solid dark background when no image */
 .stew-hero--no-image .stew-hero__overlay {
     display: none;
 }
@@ -346,17 +347,17 @@ body.stew-theme .woocommerce input.button.alt:hover {
     padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 4vw, 2rem);
 }
 
-/* Hero badge pill — adapted for light background */
+/* Hero badge pill — glassmorphism on dark background */
 .stew-hero__badge {
     display: inline-block;
     padding: 0.375rem 1rem;
-    background: rgba(26, 26, 26, 0.05);
+    background: rgba(255, 255, 255, 0.10);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(26, 26, 26, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.20);
     border-radius: 999px;
     font-size: 0.8125rem;
-    color: #737373;
+    color: rgba(255, 255, 255, 0.90);
     margin-bottom: 1.5rem;
 }
 
@@ -364,9 +365,9 @@ body.stew-theme .woocommerce input.button.alt:hover {
     font-size: 2.5rem;
     font-weight: 600;
     letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-    color: #1A1A1A;
-    line-height: 1.08;
+    margin-bottom: 1rem;
+    color: #FFFFFF;
+    line-height: 1.1;
 }
 
 @media (min-width: 768px) {
@@ -384,9 +385,9 @@ body.stew-theme .woocommerce input.button.alt:hover {
 .stew-hero__subtitle {
     font-size: 1.125rem;
     font-weight: 300;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
     line-height: 1.6;
-    color: #737373;
+    color: rgba(255, 255, 255, 0.80);
 }
 
 .stew-hero__buttons {
@@ -395,15 +396,16 @@ body.stew-theme .woocommerce input.button.alt:hover {
     flex-wrap: wrap;
 }
 
-/* Ghost button within hero — dark text/border on light hero */
+/* Ghost button within hero — white text/border on dark hero */
 .stew-hero .stew-btn--ghost {
-    color: #1A1A1A !important;
-    border: 1px solid rgba(26, 26, 26, 0.3) !important;
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 255, 255, 0.30) !important;
 }
 
 .stew-hero .stew-btn--ghost:hover {
-    background: rgba(26, 26, 26, 0.05);
-    border-color: rgba(26, 26, 26, 0.5) !important;
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.50) !important;
+    color: #FFFFFF !important;
 }
 
 /* ============================================

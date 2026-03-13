@@ -31,11 +31,31 @@ function stew_enqueue_assets() {
 
     // --- Styles ---
 
-    // Child theme style.css (depends on Blocksy main styles)
+    // Detect Blocksy's main stylesheet handle (varies by version)
+    $parent_handle = 'blocksy-styles';
+    if ( ! wp_style_is( $parent_handle, 'registered' ) ) {
+        // Fallback handles Blocksy may use
+        foreach ( array( 'ct-main-styles', 'blocksy-styles-css' ) as $handle ) {
+            if ( wp_style_is( $handle, 'registered' ) ) {
+                $parent_handle = $handle;
+                break;
+            }
+        }
+    }
+
+    // Parent theme stylesheet (ensure Blocksy CSS is loaded first)
+    wp_enqueue_style(
+        'stew-parent-style',
+        get_template_directory_uri() . '/style.css',
+        array(),
+        STEW_CHILD_VERSION
+    );
+
+    // Child theme style.css
     wp_enqueue_style(
         'stew-child-style',
         get_stylesheet_uri(),
-        array( 'ct-main-styles' ),
+        array( 'stew-parent-style' ),
         STEW_CHILD_VERSION
     );
 
@@ -47,7 +67,7 @@ function stew_enqueue_assets() {
         STEW_CHILD_VERSION
     );
 
-    // Blocksy-specific overrides
+    // Blocksy-specific overrides (loaded last for highest priority)
     wp_enqueue_style(
         'stew-blocksy-overrides',
         STEW_CHILD_URI . '/assets/css/stew-blocksy-overrides.css',
@@ -62,6 +82,21 @@ function stew_enqueue_assets() {
         array(),
         null // Google Fonts URLs are versioned by query string already
     );
+
+    // Force STEW palette via inline CSS (overrides Blocksy customizer inline styles)
+    $palette_overrides = '
+        :root {
+            --theme-palette-color-1: hsl(38, 80%, 50%) !important;
+            --theme-palette-color-2: hsl(38, 80%, 40%) !important;
+            --theme-palette-color-3: #1A1A1A !important;
+            --theme-palette-color-4: #737373 !important;
+            --theme-palette-color-5: #E8E5E0 !important;
+            --theme-palette-color-6: #F8F7F5 !important;
+            --theme-palette-color-7: #FFFFFF !important;
+            --theme-palette-color-8: #0F0F0F !important;
+        }
+    ';
+    wp_add_inline_style( 'stew-blocksy-overrides', $palette_overrides );
 
     // --- Scripts ---
 
@@ -81,6 +116,24 @@ function stew_enqueue_assets() {
     ) );
 }
 add_action( 'wp_enqueue_scripts', 'stew_enqueue_assets', 20 );
+
+/**
+ * Force STEW color palette into Blocksy's customizer options.
+ * This ensures Blocksy's inline styles use STEW colors instead of defaults.
+ */
+function stew_override_blocksy_palette( $value ) {
+    return array(
+        'color1' => array( 'color' => 'hsl(38, 80%, 50%)' ),  // Gold primary
+        'color2' => array( 'color' => 'hsl(38, 80%, 40%)' ),  // Dark gold
+        'color3' => array( 'color' => '#1A1A1A' ),             // Headings
+        'color4' => array( 'color' => '#737373' ),             // Body text
+        'color5' => array( 'color' => '#E8E5E0' ),             // Borders
+        'color6' => array( 'color' => '#F8F7F5' ),             // Light bg
+        'color7' => array( 'color' => '#FFFFFF' ),             // Site bg
+        'color8' => array( 'color' => '#0F0F0F' ),             // Footer bg
+    );
+}
+add_filter( 'theme_mod_colorPalette', 'stew_override_blocksy_palette' );
 
 /* =====================================================================
    2. WOOCOMMERCE SUPPORT
