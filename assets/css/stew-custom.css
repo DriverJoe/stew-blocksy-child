@@ -366,7 +366,7 @@ body.stew-theme .woocommerce input.button.alt:hover {
     font-weight: 600;
     letter-spacing: -0.02em;
     margin-bottom: 1rem;
-    color: #FFFFFF;
+    color: #FFFFFF !important;
     line-height: 1.1;
 }
 
@@ -387,7 +387,7 @@ body.stew-theme .woocommerce input.button.alt:hover {
     font-weight: 300;
     margin-bottom: 2rem;
     line-height: 1.6;
-    color: rgba(255, 255, 255, 0.80);
+    color: rgba(255, 255, 255, 0.80) !important;
 }
 
 .stew-hero__buttons {
