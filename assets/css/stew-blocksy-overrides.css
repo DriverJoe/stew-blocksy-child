@@ -255,6 +255,173 @@ footer.ct-footer span {
 }
 
 /* ==========================================================================
+   4b. STEW CUSTOM FOOTER
+   ========================================================================== */
+
+/* Hide Blocksy's built-in footer when custom footer is present */
+footer.ct-footer {
+    display: none !important;
+}
+
+/* Custom footer base */
+.stew-footer {
+    background: #0F0F0F;
+    color: rgba(255, 255, 255, 0.6);
+    font-family: var(--stew-font, 'Inter', sans-serif);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    padding: 0;
+}
+
+.stew-footer a {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+.stew-footer a:hover {
+    color: #C9A96E;
+}
+
+/* Container */
+.stew-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* Footer inner (main content area) */
+.stew-footer__inner {
+    padding: 64px 24px 48px;
+}
+
+/* 4-column grid */
+.stew-footer__grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1.2fr 0.8fr;
+    gap: 48px;
+}
+
+/* Brand column */
+.stew-footer__logo {
+    display: inline-block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #FFFFFF !important;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+}
+
+.stew-footer__logo:hover {
+    color: #C9A96E !important;
+}
+
+.stew-footer__desc {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8125rem;
+    line-height: 1.8;
+    margin: 0;
+    max-width: 280px;
+}
+
+/* Column headings */
+.stew-footer__heading {
+    color: #FFFFFF !important;
+    font-family: var(--stew-font, 'Inter', sans-serif);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin: 0 0 20px;
+}
+
+/* Link lists */
+.stew-footer__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.stew-footer__links li {
+    margin-bottom: 10px;
+}
+
+.stew-footer__links a {
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.stew-footer__links a:hover {
+    color: #C9A96E;
+}
+
+/* Contact list (with icons) */
+.stew-footer__contact {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.stew-footer__contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 0.8125rem;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.stew-footer__contact li svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.stew-footer__contact a {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.stew-footer__contact a:hover {
+    color: #C9A96E;
+}
+
+/* Bottom bar */
+.stew-footer__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 20px 0;
+}
+
+.stew-footer__bottom p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    text-align: center;
+}
+
+/* Footer responsive */
+@media (max-width: 991px) {
+    .stew-footer__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px 32px;
+    }
+}
+
+@media (max-width: 575px) {
+    .stew-footer__inner {
+        padding: 48px 20px 36px;
+    }
+
+    .stew-footer__grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .stew-footer__desc {
+        max-width: none;
+    }
+}
+
+/* ==========================================================================
    5. MOBILE MENU / OFFCANVAS
    ========================================================================== */
 

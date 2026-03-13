@@ -135,6 +135,25 @@ function stew_override_blocksy_palette( $value ) {
 }
 add_filter( 'theme_mod_colorPalette', 'stew_override_blocksy_palette' );
 
+/**
+ * Replace Blocksy's default footer with STEW custom footer.
+ */
+function stew_custom_footer() {
+    // Remove Blocksy's footer
+    remove_action( 'blocksy:footer:before', 'blocksy_output_footer_before' );
+
+    get_template_part( 'template-parts/footer-custom' );
+}
+add_action( 'wp_footer', 'stew_custom_footer', 5 );
+
+/**
+ * Hide Blocksy's built-in footer via CSS (belt and suspenders).
+ */
+function stew_hide_blocksy_footer() {
+    echo '<style>footer.ct-footer { display: none !important; }</style>';
+}
+add_action( 'wp_head', 'stew_hide_blocksy_footer' );
+
 /* =====================================================================
    2. WOOCOMMERCE SUPPORT
    ===================================================================== */
