@@ -68,6 +68,40 @@ h1, h2, h3, h4, h5, h6 {
     --theme-link-initial-color: #555;
 }
 
+/* WooCommerce product tabs — force readable text */
+.woocommerce-tabs ul.wc-tabs li a,
+.woocommerce div.product .woocommerce-tabs ul.tabs li a,
+.wc-tabs li a {
+    color: #777 !important;
+}
+
+.woocommerce-tabs ul.wc-tabs li.active a,
+.woocommerce div.product .woocommerce-tabs ul.tabs li.active a,
+.wc-tabs li.active a,
+.woocommerce-tabs ul.wc-tabs li a:hover,
+.woocommerce div.product .woocommerce-tabs ul.tabs li a:hover,
+.wc-tabs li a:hover {
+    color: hsl(38, 80%, 50%) !important;
+}
+
+/* Product page general text */
+.woocommerce div.product,
+.woocommerce div.product p,
+.woocommerce div.product .product_meta,
+.woocommerce div.product .product_meta span,
+.woocommerce div.product .woocommerce-product-details__short-description,
+.woocommerce div.product .price,
+.woocommerce div.product .amount {
+    color: #1A1A1A !important;
+}
+
+/* Product table (additional information) */
+.woocommerce div.product .shop_attributes th,
+.woocommerce div.product .shop_attributes td,
+.woocommerce div.product .shop_attributes td p {
+    color: #1A1A1A !important;
+}
+
 /* Hero section text — white on dark overlay */
 .stew-hero h1,
 .stew-hero h2,
