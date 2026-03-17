@@ -60,12 +60,49 @@ h1, h2, h3, h4, h5, h6 {
     color: #1A1A1A !important;
 }
 
-/* WooCommerce elements — ensure dark text */
+/* WooCommerce elements — ensure dark text (use !important to beat Blocksy inline) */
 .woocommerce .product a,
 .woocommerce .products a,
 .woocommerce-page a,
 .woocommerce .widget a {
-    --theme-link-initial-color: #555;
+    --theme-link-initial-color: #1A1A1A;
+    color: #1A1A1A !important;
+}
+
+.woocommerce .product a:hover,
+.woocommerce .products a:hover,
+.woocommerce-page a:hover {
+    color: hsl(38, 80%, 50%) !important;
+}
+
+/* Product card titles in shop grid */
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.woocommerce ul.products li.product a h2,
+.woocommerce ul.products li.product a .woocommerce-loop-product__title,
+ul.products li.product .woocommerce-loop-product__title,
+.ct-woo-card-actions .woocommerce-loop-product__title,
+[data-products] .woocommerce-loop-product__title {
+    color: #1A1A1A !important;
+}
+
+/* Product card links (title links) */
+.woocommerce ul.products li.product a,
+ul.products li.product a,
+.ct-woo-card-actions a,
+[data-products] li a {
+    color: #1A1A1A !important;
+}
+
+.woocommerce ul.products li.product a:hover,
+ul.products li.product a:hover {
+    color: hsl(38, 80%, 50%) !important;
+}
+
+/* Product card price */
+.woocommerce ul.products li.product .price,
+ul.products li.product .price,
+.woocommerce ul.products li.product .price .amount {
+    color: #1A1A1A !important;
 }
 
 /* WooCommerce product tabs — force readable text */
