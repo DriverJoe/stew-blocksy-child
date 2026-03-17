@@ -582,7 +582,75 @@ function stew_register_shop_filter_sidebar() {
 add_action( 'widgets_init', 'stew_register_shop_filter_sidebar' );
 
 /* =====================================================================
-   20. DISABLE BLOCK EDITOR FOR ACF TEMPLATE PAGES
+   20. ATTRIBUTE FILTER QUERY HANDLING
+   ===================================================================== */
+
+/**
+ * Filter the product query based on attribute filter URL params.
+ * Supports: ?filter_dimmung=dali,casambi&query_type_dimmung=or
+ */
+function stew_filter_products_by_attributes( $query ) {
+    if ( is_admin() || ! $query->is_main_query() ) {
+        return;
+    }
+    if ( ! is_shop() && ! is_product_category() && ! is_product_tag() ) {
+        return;
+    }
+
+    $tax_query = $query->get( 'tax_query' );
+    if ( ! is_array( $tax_query ) ) {
+        $tax_query = array();
+    }
+
+    $filter_attributes = array( 'betriebsart', 'leistung', 'dimmung', 'ausgangsstrom', 'hersteller', 'schutzart', 'bauform' );
+
+    foreach ( $filter_attributes as $slug ) {
+        $param = 'filter_' . $slug;
+        if ( empty( $_GET[ $param ] ) ) {
+            continue;
+        }
+
+        $terms      = array_map( 'sanitize_text_field', explode( ',', wp_unslash( $_GET[ $param ] ) ) );
+        $query_type = isset( $_GET[ 'query_type_' . $slug ] ) ? sanitize_text_field( wp_unslash( $_GET[ 'query_type_' . $slug ] ) ) : 'or';
+
+        $tax_query[] = array(
+            'taxonomy' => 'pa_' . $slug,
+            'field'    => 'slug',
+            'terms'    => $terms,
+            'operator' => 'or' === $query_type ? 'IN' : 'AND',
+        );
+    }
+
+    if ( ! empty( $tax_query ) ) {
+        $query->set( 'tax_query', $tax_query );
+    }
+}
+add_action( 'pre_get_posts', 'stew_filter_products_by_attributes' );
+
+/**
+ * Enqueue mobile filter toggle script.
+ */
+function stew_shop_filter_toggle_script() {
+    if ( ! is_shop() && ! is_product_category() ) {
+        return;
+    }
+    wp_add_inline_script( 'stew-scripts', '
+        document.addEventListener("DOMContentLoaded", function() {
+            var toggle = document.getElementById("filter-toggle");
+            var sidebar = document.getElementById("shop-filters");
+            if (toggle && sidebar) {
+                toggle.addEventListener("click", function() {
+                    sidebar.classList.toggle("stew-shop-sidebar--open");
+                    toggle.classList.toggle("stew-shop-filter-toggle--active");
+                });
+            }
+        });
+    ' );
+}
+add_action( 'wp_enqueue_scripts', 'stew_shop_filter_toggle_script', 30 );
+
+/* =====================================================================
+   21. DISABLE BLOCK EDITOR FOR ACF TEMPLATE PAGES
    ===================================================================== */
 
 /**
