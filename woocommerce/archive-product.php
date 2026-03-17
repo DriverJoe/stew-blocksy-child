@@ -64,6 +64,15 @@ $expanded_by_default = array( 'kategorie', 'betriebsart' );
 			'bauform'       => 'Bauform',
 		);
 
+		// Check if any filters are active (to decide whether to compute filtered counts)
+		$has_active_filters = false;
+		foreach ( array_keys( $filter_attributes ) as $s ) {
+			if ( ! empty( $_GET[ 'filter_' . $s ] ) ) {
+				$has_active_filters = true;
+				break;
+			}
+		}
+
 		foreach ( $filter_attributes as $slug => $label ) :
 			$taxonomy = 'pa_' . $slug;
 			$terms    = get_terms( array(
@@ -72,6 +81,12 @@ $expanded_by_default = array( 'kategorie', 'betriebsart' );
 			) );
 			if ( empty( $terms ) || is_wp_error( $terms ) ) {
 				continue;
+			}
+
+			// Get filtered counts when filters are active
+			$filtered_counts = array();
+			if ( $has_active_filters && function_exists( 'stew_get_filtered_term_counts' ) ) {
+				$filtered_counts = stew_get_filtered_term_counts( $taxonomy, array_keys( $filter_attributes ) );
 			}
 
 			$current_filter = isset( $_GET[ 'filter_' . $slug ] )
@@ -92,9 +107,17 @@ $expanded_by_default = array( 'kategorie', 'betriebsart' );
 				<div class="stew-filter-body"<?php echo ! $is_open ? ' style="display:none"' : ''; ?>>
 					<ul class="stew-filter-list">
 						<?php foreach ( $terms as $term ) :
+							// Use filtered count if available, otherwise global count
+							$display_count = isset( $filtered_counts[ $term->slug ] ) ? $filtered_counts[ $term->slug ] : $term->count;
+
 							$is_active  = in_array( $term->slug, $current_filter, true );
 							$filter_key = 'filter_' . $slug;
 							$query_type = 'query_type_' . $slug;
+
+							// Hide terms with 0 results (unless currently active)
+							if ( $display_count === 0 && ! $is_active && $has_active_filters ) {
+								continue;
+							}
 
 							if ( $is_active ) {
 								$new_filter = array_diff( $current_filter, array( $term->slug ) );
@@ -116,7 +139,7 @@ $expanded_by_default = array( 'kategorie', 'betriebsart' );
 								<a href="<?php echo esc_url( $filter_url ); ?>" class="stew-filter-link">
 									<span class="stew-filter-check"><?php echo $is_active ? '✓' : ''; ?></span>
 									<span class="stew-filter-label"><?php echo esc_html( $term->name ); ?></span>
-									<span class="stew-filter-count">(<?php echo esc_html( $term->count ); ?>)</span>
+									<span class="stew-filter-count">(<?php echo esc_html( $display_count ); ?>)</span>
 								</a>
 							</li>
 						<?php endforeach; ?>
