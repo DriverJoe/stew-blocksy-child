@@ -75,7 +75,9 @@ h1, h2, h3, h4, h5, h6 {
 .stew-shop-sidebar h3,
 .stew-shop-sidebar h4,
 .stew-shop-sidebar .stew-shop-sidebar__title,
-.stew-shop-sidebar .stew-filter-title {
+.stew-shop-sidebar .stew-filter-title,
+.stew-shop-sidebar .stew-filter-toggle__label,
+.stew-shop-sidebar button.stew-filter-toggle {
     color: #1A1A1A !important;
 }
 

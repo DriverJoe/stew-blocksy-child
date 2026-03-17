@@ -628,7 +628,7 @@ function stew_filter_products_by_attributes( $query ) {
 add_action( 'pre_get_posts', 'stew_filter_products_by_attributes' );
 
 /**
- * Enqueue mobile filter toggle script.
+ * Enqueue shop filter scripts (collapsible groups + mobile sidebar toggle).
  */
 function stew_shop_filter_toggle_script() {
     if ( ! is_shop() && ! is_product_category() ) {
@@ -636,6 +636,7 @@ function stew_shop_filter_toggle_script() {
     }
     wp_add_inline_script( 'stew-scripts', '
         document.addEventListener("DOMContentLoaded", function() {
+            /* Mobile sidebar toggle */
             var toggle = document.getElementById("filter-toggle");
             var sidebar = document.getElementById("shop-filters");
             if (toggle && sidebar) {
@@ -644,6 +645,21 @@ function stew_shop_filter_toggle_script() {
                     toggle.classList.toggle("stew-shop-filter-toggle--active");
                 });
             }
+
+            /* Collapsible filter groups */
+            document.querySelectorAll(".stew-filter-toggle").forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    var group = btn.closest(".stew-filter-group");
+                    var body = group.querySelector(".stew-filter-body");
+                    var expanded = btn.getAttribute("aria-expanded") === "true";
+                    btn.setAttribute("aria-expanded", !expanded);
+                    if (expanded) {
+                        body.style.display = "none";
+                    } else {
+                        body.style.display = "";
+                    }
+                });
+            });
         });
     ' );
 }
