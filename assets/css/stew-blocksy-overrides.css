@@ -24,25 +24,48 @@
     --theme-palette-color-8: #0F0F0F !important;              /* Footer bg — foreground dark */
 }
 
-/* Force white site background */
+/* Force white site background + dark text globally */
 body,
 body.stew-theme {
     background-color: #FFFFFF !important;
     color: #1A1A1A !important;
+    --theme-text-color: #1A1A1A !important;
+    --theme-link-initial-color: #555 !important;
+    --theme-link-hover-color: hsl(38, 80%, 50%) !important;
 }
 
-/* Blocksy content area — force white */
+/* Blocksy content area — force white bg + dark text */
 .ct-container,
 .site-main,
 main,
 .content-area,
 [data-page] {
     background-color: transparent !important;
+    color: #1A1A1A !important;
+}
+
+/* Catch-all: prevent white/light text on white bg (except dark sections) */
+.ct-container a,
+.site-main a,
+main a,
+.ct-container p,
+.site-main p,
+.ct-container span,
+.ct-container li {
+    color: inherit;
 }
 
 /* Force dark text on headings */
 h1, h2, h3, h4, h5, h6 {
     color: #1A1A1A !important;
+}
+
+/* WooCommerce elements — ensure dark text */
+.woocommerce .product a,
+.woocommerce .products a,
+.woocommerce-page a,
+.woocommerce .widget a {
+    --theme-link-initial-color: #555;
 }
 
 /* Hero section text — white on dark overlay */
