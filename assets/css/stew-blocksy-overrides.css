@@ -85,9 +85,20 @@ h1, h2, h3, h4, h5, h6 {
 .stew-shop-sidebar .stew-filter-link,
 .stew-shop-sidebar .stew-filter-label,
 .stew-shop-sidebar li,
+.stew-shop-sidebar li a,
 .stew-shop-sidebar p,
-.stew-shop-sidebar span {
+.stew-shop-sidebar span,
+.stew-shop-sidebar .widget_product_categories a,
+.stew-shop-sidebar .widget a,
+.stew-shop-sidebar .product-categories a {
     color: #555 !important;
+    --theme-link-initial-color: #555 !important;
+}
+
+.stew-shop-sidebar a:hover,
+.stew-shop-sidebar .widget_product_categories a:hover,
+.stew-shop-sidebar .widget a:hover {
+    color: #1A1A1A !important;
 }
 
 .stew-shop-sidebar .stew-filter-count {

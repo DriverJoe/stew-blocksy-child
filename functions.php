@@ -628,42 +628,41 @@ function stew_filter_products_by_attributes( $query ) {
 add_action( 'pre_get_posts', 'stew_filter_products_by_attributes' );
 
 /**
- * Enqueue shop filter scripts (collapsible groups + mobile sidebar toggle).
+ * Output shop filter scripts (collapsible groups + mobile sidebar toggle).
  */
-function stew_shop_filter_toggle_script() {
+function stew_shop_filter_scripts() {
     if ( ! is_shop() && ! is_product_category() ) {
         return;
     }
-    wp_add_inline_script( 'stew-scripts', '
-        document.addEventListener("DOMContentLoaded", function() {
-            /* Mobile sidebar toggle */
-            var toggle = document.getElementById("filter-toggle");
-            var sidebar = document.getElementById("shop-filters");
-            if (toggle && sidebar) {
-                toggle.addEventListener("click", function() {
-                    sidebar.classList.toggle("stew-shop-sidebar--open");
-                    toggle.classList.toggle("stew-shop-filter-toggle--active");
-                });
-            }
+    ?>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        /* Mobile sidebar toggle */
+        var toggle = document.getElementById("filter-toggle");
+        var sidebar = document.getElementById("shop-filters");
+        if (toggle && sidebar) {
+            toggle.addEventListener("click", function() {
+                sidebar.classList.toggle("stew-shop-sidebar--open");
+                toggle.classList.toggle("stew-shop-filter-toggle--active");
+            });
+        }
 
-            /* Collapsible filter groups */
-            document.querySelectorAll(".stew-filter-toggle").forEach(function(btn) {
-                btn.addEventListener("click", function() {
-                    var group = btn.closest(".stew-filter-group");
-                    var body = group.querySelector(".stew-filter-body");
-                    var expanded = btn.getAttribute("aria-expanded") === "true";
-                    btn.setAttribute("aria-expanded", !expanded);
-                    if (expanded) {
-                        body.style.display = "none";
-                    } else {
-                        body.style.display = "";
-                    }
-                });
+        /* Collapsible filter groups */
+        document.querySelectorAll(".stew-filter-toggle").forEach(function(btn) {
+            btn.addEventListener("click", function(e) {
+                e.preventDefault();
+                var group = btn.closest(".stew-filter-group");
+                var body = group.querySelector(".stew-filter-body");
+                var expanded = btn.getAttribute("aria-expanded") === "true";
+                btn.setAttribute("aria-expanded", expanded ? "false" : "true");
+                body.style.display = expanded ? "none" : "";
             });
         });
-    ' );
+    });
+    </script>
+    <?php
 }
-add_action( 'wp_enqueue_scripts', 'stew_shop_filter_toggle_script', 30 );
+add_action( 'wp_footer', 'stew_shop_filter_scripts' );
 
 /* =====================================================================
    21. DISABLE BLOCK EDITOR FOR ACF TEMPLATE PAGES
