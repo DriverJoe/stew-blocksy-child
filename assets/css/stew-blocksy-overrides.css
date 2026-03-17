@@ -59,6 +59,64 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ==========================================================================
+   0b. SHOP SIDEBAR — Force dark text on filter elements
+   ========================================================================== */
+
+.stew-shop-sidebar,
+.stew-shop-sidebar * {
+    --theme-text-color: #1A1A1A;
+    --theme-link-initial-color: #555;
+}
+
+.stew-shop-sidebar {
+    color: #1A1A1A !important;
+}
+
+.stew-shop-sidebar h3,
+.stew-shop-sidebar h4,
+.stew-shop-sidebar .stew-shop-sidebar__title,
+.stew-shop-sidebar .stew-filter-title {
+    color: #1A1A1A !important;
+}
+
+.stew-shop-sidebar a,
+.stew-shop-sidebar .stew-filter-link,
+.stew-shop-sidebar .stew-filter-label,
+.stew-shop-sidebar li,
+.stew-shop-sidebar p,
+.stew-shop-sidebar span {
+    color: #555 !important;
+}
+
+.stew-shop-sidebar .stew-filter-count {
+    color: #999 !important;
+}
+
+.stew-shop-sidebar .stew-filter-item--active .stew-filter-link,
+.stew-shop-sidebar .stew-filter-item--active .stew-filter-label {
+    color: hsl(38, 80%, 50%) !important;
+}
+
+.stew-shop-sidebar .stew-shop-sidebar__reset {
+    color: hsl(38, 80%, 50%) !important;
+}
+
+/* Shop main area text */
+.stew-shop-main,
+.stew-shop-main * {
+    --theme-text-color: #1A1A1A;
+}
+
+.stew-shop-topbar__title {
+    color: #1A1A1A !important;
+}
+
+.stew-shop-topbar__meta,
+.stew-shop-topbar__meta .woocommerce-result-count {
+    color: #999 !important;
+}
+
+/* ==========================================================================
    1. HEADER — Clean White / Frosted Glass (Erco / Flos inspired)
    ========================================================================== */
 
