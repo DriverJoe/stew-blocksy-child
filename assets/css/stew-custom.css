@@ -791,6 +791,65 @@ body.stew-theme ul.products li.product .price .woocommerce-Price-amount {
     border-bottom: none;
 }
 
+/* Collapsible filter toggle button */
+.stew-filter-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0;
+    margin: 0 0 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--stew-font, 'Inter', sans-serif);
+}
+
+.stew-filter-toggle__label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--stew-text, #1A1A1A);
+}
+
+.stew-filter-toggle__icon {
+    color: var(--stew-text-muted, #999);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+.stew-filter-toggle[aria-expanded="false"] .stew-filter-toggle__icon {
+    transform: rotate(-90deg);
+}
+
+.stew-filter-toggle[aria-expanded="false"] {
+    margin-bottom: 0;
+}
+
+/* Active filter count badge */
+.stew-filter-toggle__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--stew-primary, hsl(38, 80%, 50%));
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 600;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+/* Filter body (collapsible content) */
+.stew-filter-body {
+    overflow: hidden;
+}
+
+/* Legacy .stew-filter-title fallback */
 .stew-filter-title {
     font-size: 0.6875rem;
     font-weight: 600;
