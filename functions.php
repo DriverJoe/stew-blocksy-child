@@ -586,6 +586,89 @@ add_action( 'widgets_init', 'stew_register_shop_filter_sidebar' );
    ===================================================================== */
 
 /**
+ * Get filtered product counts for a given attribute taxonomy.
+ *
+ * Builds a query from all active filters EXCEPT the one being counted,
+ * then counts how many matching products have each term via a single SQL query.
+ *
+ * @param string $count_taxonomy The taxonomy to count (e.g. 'pa_dimmung').
+ * @param array  $all_attributes List of attribute slugs.
+ * @return array Term slug => count.
+ */
+function stew_get_filtered_term_counts( $count_taxonomy, $all_attributes ) {
+    $tax_query = array( 'relation' => 'AND' );
+    $count_slug = str_replace( 'pa_', '', $count_taxonomy );
+
+    // Build tax_query from all OTHER active filters
+    foreach ( $all_attributes as $slug ) {
+        if ( $slug === $count_slug ) {
+            continue;
+        }
+        $param = 'filter_' . $slug;
+        if ( empty( $_GET[ $param ] ) ) {
+            continue;
+        }
+        $terms = array_map( 'sanitize_text_field', explode( ',', wp_unslash( $_GET[ $param ] ) ) );
+        $tax_query[] = array(
+            'taxonomy' => 'pa_' . $slug,
+            'field'    => 'slug',
+            'terms'    => $terms,
+            'operator' => 'IN',
+        );
+    }
+
+    if ( is_product_category() ) {
+        $cat = get_queried_object();
+        if ( $cat ) {
+            $tax_query[] = array(
+                'taxonomy' => 'product_cat',
+                'field'    => 'term_id',
+                'terms'    => array( $cat->term_id ),
+            );
+        }
+    }
+
+    // Get IDs of products matching all other filters
+    $product_ids = get_posts( array(
+        'post_type'      => 'product',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'tax_query'      => $tax_query,
+    ) );
+
+    if ( empty( $product_ids ) ) {
+        return array();
+    }
+
+    // Single SQL query: count terms for matching products
+    global $wpdb;
+    $id_placeholders = implode( ',', array_fill( 0, count( $product_ids ), '%d' ) );
+
+    // phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+    $results = $wpdb->get_results( $wpdb->prepare(
+        "SELECT t.slug, COUNT(DISTINCT tr.object_id) as cnt
+         FROM {$wpdb->term_relationships} tr
+         INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+         INNER JOIN {$wpdb->terms} t ON tt.term_id = t.term_id
+         WHERE tt.taxonomy = %s
+         AND tr.object_id IN ($id_placeholders)
+         GROUP BY t.slug",
+        array_merge( array( $count_taxonomy ), $product_ids )
+    ) );
+    // phpcs:enable
+
+    $counts = array();
+    if ( $results ) {
+        foreach ( $results as $row ) {
+            $counts[ $row->slug ] = (int) $row->cnt;
+        }
+    }
+
+    return $counts;
+}
+
+/**
  * Filter the product query based on attribute filter URL params.
  * Supports: ?filter_dimmung=dali,casambi&query_type_dimmung=or
  */
