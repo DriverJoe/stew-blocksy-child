@@ -60,18 +60,18 @@ h1, h2, h3, h4, h5, h6 {
     color: #1A1A1A !important;
 }
 
-/* WooCommerce elements — ensure dark text (use !important to beat Blocksy inline) */
-.woocommerce .product a,
-.woocommerce .products a,
-.woocommerce-page a,
+/* WooCommerce elements — ensure dark text (exclude buttons) */
+.woocommerce .product a:not(.button):not(.add_to_cart_button):not(.added_to_cart),
+.woocommerce .products a:not(.button):not(.add_to_cart_button):not(.added_to_cart),
+.woocommerce-page a:not(.button):not(.add_to_cart_button):not(.added_to_cart),
 .woocommerce .widget a {
     --theme-link-initial-color: #1A1A1A;
     color: #1A1A1A !important;
 }
 
-.woocommerce .product a:hover,
-.woocommerce .products a:hover,
-.woocommerce-page a:hover {
+.woocommerce .product a:not(.button):hover,
+.woocommerce .products a:not(.button):hover,
+.woocommerce-page a:not(.button):hover {
     color: hsl(38, 80%, 50%) !important;
 }
 
@@ -85,16 +85,14 @@ ul.products li.product .woocommerce-loop-product__title,
     color: #1A1A1A !important;
 }
 
-/* Product card links (title links) */
-.woocommerce ul.products li.product a,
-ul.products li.product a,
-.ct-woo-card-actions a,
-[data-products] li a {
+/* Product card links — exclude buttons */
+.woocommerce ul.products li.product a:not(.button):not(.add_to_cart_button),
+ul.products li.product a:not(.button):not(.add_to_cart_button) {
     color: #1A1A1A !important;
 }
 
-.woocommerce ul.products li.product a:hover,
-ul.products li.product a:hover {
+.woocommerce ul.products li.product a:not(.button):hover,
+ul.products li.product a:not(.button):hover {
     color: hsl(38, 80%, 50%) !important;
 }
 
@@ -103,6 +101,36 @@ ul.products li.product a:hover {
 ul.products li.product .price,
 .woocommerce ul.products li.product .price .amount {
     color: #1A1A1A !important;
+}
+
+/* Add to cart buttons — white text on dark bg, gold on hover */
+.woocommerce ul.products li.product .button,
+.woocommerce ul.products li.product a.button,
+.woocommerce ul.products li.product a.add_to_cart_button,
+.woocommerce ul.products li.product a.added_to_cart,
+ul.products li.product a.button {
+    color: #FFFFFF !important;
+    background: #1A1A1A !important;
+}
+
+.woocommerce ul.products li.product .button:hover,
+.woocommerce ul.products li.product a.button:hover,
+.woocommerce ul.products li.product a.add_to_cart_button:hover,
+ul.products li.product a.button:hover {
+    background: hsl(38, 80%, 50%) !important;
+    color: #FFFFFF !important;
+}
+
+/* Product card category label */
+.woocommerce ul.products li.product .product-category-label,
+ul.products li.product [data-product-categories],
+.woocommerce ul.products li.product .ct-woo-card-actions [class*="categor"] {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #999 !important;
+    margin-top: 0.25rem;
 }
 
 /* WooCommerce product tabs — force readable text */
