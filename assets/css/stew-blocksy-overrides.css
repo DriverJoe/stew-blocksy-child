@@ -167,17 +167,28 @@ ul.products li.product [data-product-categories],
     color: #1A1A1A !important;
 }
 
-/* Hero section text — white on dark overlay */
+/* Hero section — left-aligned white text on dark overlay */
+.stew-hero,
+.stew-hero__content {
+    text-align: left !important;
+}
+
 .stew-hero h1,
 .stew-hero h2,
 .stew-hero .stew-hero__title {
     color: #FFFFFF !important;
+    text-align: left !important;
 }
 
 .stew-hero p,
 .stew-hero span,
 .stew-hero .stew-hero__subtitle {
     color: rgba(255, 255, 255, 0.80) !important;
+    text-align: left !important;
+}
+
+.stew-hero .stew-hero__buttons {
+    justify-content: flex-start !important;
 }
 
 /* ==========================================================================
