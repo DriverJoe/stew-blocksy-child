@@ -38,7 +38,7 @@
     /* Spacing */
     --stew-section-padding: 80px;
     --stew-section-padding-mobile: 48px;
-    --stew-container-max: 1280px;
+    --stew-container-max: 1200px;
     --stew-radius: 6px;
     --stew-radius-sm: 4px;
 
@@ -215,18 +215,18 @@ body.stew-theme span:not([class*="fa-"]):not([class*="icon-"]):not(.fa):not(.ico
    Layout / Container
    ============================================ */
 .stew-container {
-    max-width: var(--stew-container-max);
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 24px;
 }
 
 .stew-section {
-    padding: var(--stew-section-padding-mobile) 0;
+    padding: var(--stew-section-padding-mobile, 48px) 0;
 }
 
 @media (min-width: 768px) {
     .stew-section {
-        padding: var(--stew-section-padding) 0;
+        padding: var(--stew-section-padding, 80px) 0;
     }
 }
 
@@ -533,6 +533,13 @@ body.stew-theme .woocommerce input.button.alt:hover {
 .stew-category-card:hover .stew-category-card__arrow {
     color: var(--stew-primary);
     transform: translateX(4px);
+}
+
+/* Cards without images — center the info section */
+.stew-category-card:not(:has(.stew-category-card__image)) .stew-category-card__info {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
 }
 
 /* ============================================

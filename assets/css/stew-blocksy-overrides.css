@@ -481,8 +481,8 @@ footer.ct-footer {
     color: #C9A96E;
 }
 
-/* Container */
-.stew-container {
+/* Container (footer-scoped — homepage .stew-container is in stew-custom.css) */
+.stew-footer .stew-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 24px;
@@ -839,26 +839,12 @@ footer.ct-footer {
 }
 
 /* --------------------------------------------------------------------------
-   9.1 Container
+   9.1 Container — defined in stew-custom.css (max-width: 1200px; padding: 0 24px)
    -------------------------------------------------------------------------- */
-.stew-container {
-    max-width: var(--stew-container-max, 1280px);
-    margin: 0 auto;
-    padding: 0 1.5rem;
-}
 
 /* --------------------------------------------------------------------------
-   9.2 Section spacing
+   9.2 Section spacing — defined in stew-custom.css (80px desktop, 48px mobile)
    -------------------------------------------------------------------------- */
-.stew-section {
-    padding: var(--stew-section-padding, 80px) 0;
-}
-
-@media (max-width: 767px) {
-    .stew-section {
-        padding: var(--stew-section-padding-mobile, 48px) 0;
-    }
-}
 
 /* --------------------------------------------------------------------------
    9.3 Section labels & titles
@@ -884,7 +870,7 @@ footer.ct-footer {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: var(--stew-letter-spacing-wide, 0.1em);
-    color: #737373;
+    color: #999 !important;
     white-space: nowrap;
 }
 
@@ -902,6 +888,16 @@ footer.ct-footer {
     text-align: center;
     letter-spacing: -0.02em;
     line-height: 1.2;
+}
+
+/* More specific selectors to beat Blocksy overrides */
+.stew-homepage .stew-section-title,
+.stew-homepage-categories .stew-section-title,
+.stew-homepage-featured .stew-section-title,
+.stew-homepage-about .stew-section-title,
+.stew-section .stew-section-title,
+h2.stew-section-title {
+    color: #1A1A1A !important;
 }
 
 @media (min-width: 768px) {
@@ -932,7 +928,7 @@ footer.ct-footer {
 
 @media (min-width: 1024px) {
     .stew-categories {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
@@ -1037,8 +1033,16 @@ footer.ct-footer {
     transform: translateX(4px);
 }
 
+/* Cards without images — center the info section */
+.stew-category-card:not(:has(.stew-category-card__image)) .stew-category-card__info {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+
 /* Categories heading wrapper */
 .stew-homepage-categories__heading {
+    text-align: center;
     margin-bottom: 2.5rem;
 }
 
