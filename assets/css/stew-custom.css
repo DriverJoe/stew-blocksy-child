@@ -434,7 +434,7 @@ body.stew-theme .woocommerce input.button.alt:hover {
 
 @media (min-width: 1024px) {
     .stew-categories {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 

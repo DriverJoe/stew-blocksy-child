@@ -896,7 +896,7 @@ footer.ct-footer {
 .stew-section-title {
     font-size: 2rem;
     font-weight: 600;
-    color: #1A1A1A;
+    color: #1A1A1A !important;
     margin-top: 0.75rem;
     margin-bottom: 1rem;
     text-align: center;
