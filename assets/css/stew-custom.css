@@ -1818,15 +1818,20 @@ body.stew-theme ul.products li.product .price .woocommerce-Price-amount {
     display: block;
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
-    color: var(--stew-text);
+    color: var(--stew-text-muted) !important;
     text-decoration: none;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.stew-theme .woocommerce-MyAccount-navigation ul li.is-active a,
+.stew-theme .woocommerce-MyAccount-navigation ul li.is-active a {
+    background: var(--stew-off-white);
+    color: var(--stew-text) !important;
+    font-weight: 600;
+}
+
 .stew-theme .woocommerce-MyAccount-navigation ul li a:hover {
     background: var(--stew-off-white);
-    color: var(--stew-primary);
+    color: var(--stew-primary) !important;
 }
 
 /* ============================================
