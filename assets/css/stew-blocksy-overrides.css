@@ -1487,3 +1487,62 @@ h2.stew-section-title {
         padding: 0.75rem 1rem;
     }
 }
+
+/* ==========================================================================
+   MY ACCOUNT — Force light backgrounds on navigation
+   ========================================================================== */
+
+.woocommerce-MyAccount-navigation ul li,
+.woocommerce-MyAccount-navigation ul li a,
+.woocommerce-MyAccount-navigation li,
+.woocommerce-MyAccount-navigation li a,
+.ct-account-page .woocommerce-MyAccount-navigation li,
+.ct-account-page .woocommerce-MyAccount-navigation li a {
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    color: #737373 !important;
+}
+
+.woocommerce-MyAccount-navigation ul li.is-active,
+.woocommerce-MyAccount-navigation ul li.is-active a,
+.woocommerce-MyAccount-navigation li.is-active,
+.woocommerce-MyAccount-navigation li.is-active a {
+    background: #F8F7F5 !important;
+    background-color: #F8F7F5 !important;
+    color: #1A1A1A !important;
+    font-weight: 600;
+}
+
+.woocommerce-MyAccount-navigation ul li a:hover,
+.woocommerce-MyAccount-navigation li a:hover {
+    background: #F8F7F5 !important;
+    background-color: #F8F7F5 !important;
+    color: hsl(38, 80%, 50%) !important;
+}
+
+/* Nav icons — match text color */
+.woocommerce-MyAccount-navigation li svg,
+.woocommerce-MyAccount-navigation li img,
+.woocommerce-MyAccount-navigation li a svg {
+    opacity: 0.5;
+}
+
+.woocommerce-MyAccount-navigation li.is-active svg,
+.woocommerce-MyAccount-navigation li.is-active a svg {
+    opacity: 1;
+}
+
+/* My Account content area */
+.woocommerce-MyAccount-content,
+.ct-account-page .woocommerce-MyAccount-content {
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
+}
+
+.woocommerce-MyAccount-content a {
+    color: hsl(38, 80%, 50%) !important;
+}
+
+.woocommerce-MyAccount-content a:hover {
+    color: hsl(38, 80%, 40%) !important;
+}
