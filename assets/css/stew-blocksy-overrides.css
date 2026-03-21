@@ -1334,14 +1334,19 @@ h2.stew-section-title {
     background: rgba(26, 26, 26, 0.03);
 }
 
-.stew-btn--outline {
-    background: transparent;
-    border: 1px solid #E8E5E0;
-    color: #1A1A1A;
+.stew-btn--outline,
+.stew-btn--outline:link,
+.stew-btn--outline:visited {
+    background: transparent !important;
+    border: 2px solid #1A1A1A !important;
+    color: #1A1A1A !important;
 }
 
-.stew-btn--outline:hover {
-    border-color: #1A1A1A;
+.stew-btn--outline:hover,
+.stew-btn--outline:focus {
+    background: #1A1A1A !important;
+    border-color: #1A1A1A !important;
+    color: #FFFFFF !important;
 }
 
 .stew-btn--primary {
