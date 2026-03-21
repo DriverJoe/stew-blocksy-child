@@ -3,13 +3,14 @@
  * Template Name: Über uns
  *
  * About page template for the STEW LED Lighting webshop.
- * Uses ACF fields for all editable content sections.
+ * Features a hero banner, story section, values grid, and CTA.
  *
  * ACF Fields (Free ACF — no repeater):
- * - value_1_title, value_1_description
- * - value_2_title, value_2_description
- * - value_3_title, value_3_description
- * - value_4_title, value_4_description
+ * - about_hero_image, about_page_title, about_page_subtitle
+ * - story_section_label, story_section_title, story_text, story_image
+ * - values_section_label, values_section_title
+ * - value_1_title, value_1_description ... value_4_title, value_4_description
+ * - about_cta_title, about_cta_text, about_cta_button_text, about_cta_button_url
  *
  * @package STEW_Blocksy_Child
  */
@@ -18,9 +19,10 @@ defined( 'ABSPATH' ) || exit;
 
 $page_title    = get_field( 'about_page_title' );
 $page_subtitle = get_field( 'about_page_subtitle' );
+$hero_image    = get_field( 'about_hero_image' );
 
 if ( ! $page_title ) {
-	return;
+	$page_title = get_the_title();
 }
 
 $story_label   = get_field( 'story_section_label' );
@@ -48,20 +50,34 @@ $cta_text        = get_field( 'about_cta_text' );
 $cta_button_text = get_field( 'about_cta_button_text' );
 $cta_button_url  = get_field( 'about_cta_button_url' );
 
+// Hero image URL
+$hero_url = '';
+if ( is_array( $hero_image ) && ! empty( $hero_image['url'] ) ) {
+	$hero_url = $hero_image['url'];
+} elseif ( is_string( $hero_image ) && $hero_image ) {
+	$hero_url = $hero_image;
+}
+if ( ! $hero_url ) {
+	$hero_url = get_stylesheet_directory_uri() . '/assets/images/hero-lighting.jpg';
+}
+
 get_header();
 ?>
 
 <main id="primary" class="stew-about" role="main">
 
-	<!-- Page Header -->
-	<section class="stew-about__header stew-section">
-		<div class="stew-container">
-			<div class="stew-about__header-inner">
-				<h1 class="stew-about__page-title"><?php echo esc_html( $page_title ); ?></h1>
-				<?php if ( $page_subtitle ) : ?>
-					<p class="stew-about__page-subtitle"><?php echo esc_html( $page_subtitle ); ?></p>
-				<?php endif; ?>
-			</div>
+	<!-- Hero Banner -->
+	<section class="stew-hero stew-hero--about" style="background-image: url(<?php echo esc_url( $hero_url ); ?>);">
+		<div class="stew-hero__overlay" aria-hidden="true"></div>
+		<div class="stew-hero__content stew-container">
+			<h1 class="stew-hero__title stew-animate-fade-in">
+				<?php echo esc_html( $page_title ); ?>
+			</h1>
+			<?php if ( $page_subtitle ) : ?>
+				<p class="stew-hero__subtitle stew-animate-fade-in">
+					<?php echo esc_html( $page_subtitle ); ?>
+				</p>
+			<?php endif; ?>
 		</div>
 	</section>
 
@@ -71,7 +87,7 @@ get_header();
 			<div class="stew-container">
 
 				<?php if ( $story_label || $story_title ) : ?>
-					<div class="stew-about__story-heading">
+					<div class="stew-about__story-heading" style="text-align: center; margin-bottom: 3rem;">
 						<?php if ( $story_label ) : ?>
 							<div class="stew-section-label">
 								<span class="stew-section-label__line"></span>
@@ -85,18 +101,21 @@ get_header();
 					</div>
 				<?php endif; ?>
 
-				<div class="stew-about__story-grid">
+				<div class="stew-about-grid">
 					<div class="stew-about__story-text">
 						<?php echo wp_kses_post( $story_text ); ?>
 					</div>
 					<?php if ( $story_image ) : ?>
+						<?php
+						$img_url = is_array( $story_image ) ? $story_image['url'] : $story_image;
+						$img_alt = is_array( $story_image ) && ! empty( $story_image['alt'] ) ? $story_image['alt'] : 'STEW';
+						?>
 						<div class="stew-about__story-image">
 							<img
-								src="<?php echo esc_url( $story_image['url'] ); ?>"
-								alt="<?php echo esc_attr( $story_image['alt'] ); ?>"
-								width="<?php echo esc_attr( $story_image['width'] ); ?>"
-								height="<?php echo esc_attr( $story_image['height'] ); ?>"
+								src="<?php echo esc_url( $img_url ); ?>"
+								alt="<?php echo esc_attr( $img_alt ); ?>"
 								loading="lazy"
+								style="width: 100%; height: auto; border-radius: 6px;"
 							/>
 						</div>
 					<?php endif; ?>
@@ -108,11 +127,11 @@ get_header();
 
 	<!-- Values Section -->
 	<?php if ( $values_items ) : ?>
-		<section class="stew-about__values stew-section">
+		<section class="stew-about__values stew-section" style="background: var(--stew-off-white, #F8F7F5);">
 			<div class="stew-container">
 
 				<?php if ( $values_label || $values_title ) : ?>
-					<div class="stew-about__values-heading">
+					<div class="stew-about__values-heading" style="text-align: center; margin-bottom: 3rem;">
 						<?php if ( $values_label ) : ?>
 							<div class="stew-section-label">
 								<span class="stew-section-label__line"></span>
@@ -126,14 +145,14 @@ get_header();
 					</div>
 				<?php endif; ?>
 
-				<div class="stew-about__values-grid stew-stagger">
+				<div class="stew-usp-grid">
 					<?php foreach ( $values_items as $value ) : ?>
-						<div class="stew-about__value-card">
+						<div class="stew-usp-card" style="background: #FFFFFF; padding: 2rem; border-radius: 6px;">
 							<?php if ( ! empty( $value['value_title'] ) ) : ?>
-								<h3 class="stew-about__value-title"><?php echo esc_html( $value['value_title'] ); ?></h3>
+								<h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--stew-text, #1A1A1A);"><?php echo esc_html( $value['value_title'] ); ?></h3>
 							<?php endif; ?>
 							<?php if ( ! empty( $value['value_description'] ) ) : ?>
-								<p class="stew-about__value-description"><?php echo esc_html( $value['value_description'] ); ?></p>
+								<p style="font-size: 0.9375rem; line-height: 1.7; color: var(--stew-text-muted, #737373); margin: 0;"><?php echo esc_html( $value['value_description'] ); ?></p>
 							<?php endif; ?>
 						</div>
 					<?php endforeach; ?>
@@ -146,18 +165,16 @@ get_header();
 	<!-- CTA Section -->
 	<?php if ( $cta_title ) : ?>
 		<section class="stew-about__cta stew-section">
-			<div class="stew-container">
-				<div class="stew-about__cta-inner">
-					<h2 class="stew-about__cta-title"><?php echo esc_html( $cta_title ); ?></h2>
-					<?php if ( $cta_text ) : ?>
-						<p class="stew-about__cta-text"><?php echo esc_html( $cta_text ); ?></p>
-					<?php endif; ?>
-					<?php if ( $cta_button_text && $cta_button_url ) : ?>
-						<a href="<?php echo esc_url( $cta_button_url ); ?>" class="stew-btn stew-btn--gold">
-							<?php echo esc_html( $cta_button_text ); ?>
-						</a>
-					<?php endif; ?>
-				</div>
+			<div class="stew-container" style="text-align: center; max-width: 700px;">
+				<h2 style="font-size: 2rem; font-weight: 600; margin-bottom: 1rem; color: var(--stew-text, #1A1A1A);"><?php echo esc_html( $cta_title ); ?></h2>
+				<?php if ( $cta_text ) : ?>
+					<p style="font-size: 1.0625rem; line-height: 1.7; color: var(--stew-text-muted, #737373); margin-bottom: 2rem;"><?php echo esc_html( $cta_text ); ?></p>
+				<?php endif; ?>
+				<?php if ( $cta_button_text && $cta_button_url ) : ?>
+					<a href="<?php echo esc_url( $cta_button_url ); ?>" class="stew-btn stew-btn--gold">
+						<?php echo esc_html( $cta_button_text ); ?>
+					</a>
+				<?php endif; ?>
 			</div>
 		</section>
 	<?php endif; ?>
