@@ -339,21 +339,10 @@ function stew_enable_registration() {
 add_action( 'after_setup_theme', 'stew_enable_registration' );
 
 /**
- * All new registrations start as 'pending_customer' until an admin approves them.
- * Wholesale applicants are handled separately in role-based-pricing.php
- * (they get 'pending_wholesale'). This covers normal private customers too.
+ * Private customers get 'customer' role immediately (can shop right away).
+ * Wholesale applicants are handled in role-based-pricing.php
+ * (they get 'pending_wholesale' and must be approved by admin).
  */
-function stew_set_default_pending_role( $default_role ) {
-    return 'pending_customer';
-}
-add_filter( 'woocommerce_new_customer_data', function( $data ) {
-    // Wholesale registrations are handled by role-based-pricing.php
-    $account_type = isset( $_POST['stew_account_type'] ) ? sanitize_text_field( wp_unslash( $_POST['stew_account_type'] ) ) : 'private';
-    if ( 'wholesale' !== $account_type ) {
-        $data['role'] = 'pending_customer';
-    }
-    return $data;
-} );
 
 /**
  * Register the pending_customer role.
@@ -399,7 +388,7 @@ function stew_restrict_pending_customers() {
 add_action( 'template_redirect', 'stew_restrict_pending_customers' );
 
 /**
- * Show a notice on My Account for pending customers.
+ * Show a notice on My Account for pending wholesale users.
  */
 function stew_pending_customer_notice() {
     if ( ! is_user_logged_in() ) {
@@ -407,12 +396,6 @@ function stew_pending_customer_notice() {
     }
 
     $user = wp_get_current_user();
-    if ( in_array( 'pending_customer', (array) $user->roles, true ) ) {
-        wc_print_notice(
-            __( 'Ihr Konto wird derzeit geprüft. Sie erhalten eine E-Mail, sobald Ihr Konto freigeschaltet wurde.', 'stew-blocksy-child' ),
-            'notice'
-        );
-    }
     if ( in_array( 'pending_wholesale', (array) $user->roles, true ) ) {
         wc_print_notice(
             __( 'Ihr Händlerantrag wird geprüft. Sie erhalten eine E-Mail, sobald Ihr Konto freigeschaltet wurde.', 'stew-blocksy-child' ),
@@ -423,7 +406,7 @@ function stew_pending_customer_notice() {
 add_action( 'woocommerce_account_content', 'stew_pending_customer_notice', 5 );
 
 /**
- * Notify admin when a new private customer registers.
+ * Notify admin when a new customer registers (informational only).
  */
 function stew_notify_admin_new_customer( $customer_id ) {
     $account_type = get_user_meta( $customer_id, 'stew_account_type', true );
@@ -434,19 +417,16 @@ function stew_notify_admin_new_customer( $customer_id ) {
 
     $user        = get_userdata( $customer_id );
     $admin_email = get_option( 'stew_admin_notify_email', get_option( 'admin_email' ) );
-    $approve_url = admin_url( 'admin.php?page=stew-role-pricing' );
 
-    $subject = sprintf( __( '[STEW] Neuer Kundenantrag: %s', 'stew-blocksy-child' ), $user->display_name );
+    $subject = sprintf( __( '[STEW] Neuer Kunde registriert: %s', 'stew-blocksy-child' ), $user->display_name );
     $message = sprintf(
-        "Neuer Kundenantrag eingegangen:\n\n" .
+        "Neuer Kunde hat sich registriert:\n\n" .
         "Name: %s\n" .
         "E-Mail: %s\n" .
-        "Registriert: %s\n\n" .
-        "Konto prüfen und freigeben:\n%s",
+        "Registriert: %s\n",
         $user->display_name,
         $user->user_email,
-        wp_date( 'd.m.Y H:i', strtotime( $user->user_registered ) ),
-        $approve_url
+        wp_date( 'd.m.Y H:i', strtotime( $user->user_registered ) )
     );
 
     wp_mail( $admin_email, $subject, $message );
