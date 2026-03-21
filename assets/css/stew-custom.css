@@ -352,7 +352,7 @@ body.stew-theme .woocommerce input.button.alt:hover {
 .stew-hero__content {
     position: relative;
     z-index: 2;
-    max-width: 650px;
+    max-width: 900px;
     padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 4vw, 2rem);
 }
 
@@ -388,6 +388,7 @@ body.stew-theme .woocommerce input.button.alt:hover {
 @media (min-width: 1024px) {
     .stew-hero__title {
         font-size: 4rem;
+        white-space: nowrap;
     }
 }
 
@@ -396,6 +397,7 @@ body.stew-theme .woocommerce input.button.alt:hover {
     font-weight: 300;
     margin-bottom: 2rem;
     line-height: 1.6;
+    max-width: 750px;
     color: rgba(255, 255, 255, 0.80) !important;
 }
 
