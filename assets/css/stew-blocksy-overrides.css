@@ -1195,14 +1195,14 @@ h2.stew-section-title {
 .stew-homepage-newsletter__title {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #1A1A1A;
+    color: #1A1A1A !important;
     margin-bottom: 0.75rem;
 }
 
 .stew-homepage-newsletter__text {
     font-size: 0.9375rem;
     line-height: 1.7;
-    color: #737373;
+    color: #1A1A1A !important;
     margin-bottom: 1.5rem;
 }
 
