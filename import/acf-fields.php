@@ -754,6 +754,15 @@ function stew_register_acf_field_groups() {
                 'name'  => 'about_page_subtitle',
                 'type'  => 'textarea',
             ),
+            array(
+                'key'           => 'field_about_hero_image',
+                'label'         => 'Hero-Bannerbild',
+                'name'          => 'about_hero_image',
+                'type'          => 'image',
+                'return_format' => 'array',
+                'preview_size'  => 'medium',
+                'instructions'  => 'Hintergrundbild fuer den Hero-Banner. Empfohlene Groesse: 1920x800px.',
+            ),
 
             // -----------------------------------------------------------------
             // Tab: Geschichte
