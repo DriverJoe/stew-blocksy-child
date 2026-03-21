@@ -45,12 +45,6 @@ $product_count = $product_count ? absint( $product_count ) : 4;
 					<?php endif; ?>
 					<h2 class="stew-section-title"><?php echo esc_html( $title ); ?></h2>
 				</div>
-
-				<?php if ( $cta_text && $cta_url ) : ?>
-					<a href="<?php echo esc_url( $cta_url ); ?>" class="stew-homepage-featured__cta-desktop stew-btn stew-btn--outline">
-						<?php echo esc_html( $cta_text ); ?>
-					</a>
-				<?php endif; ?>
 			</div>
 
 			<div class="stew-homepage-featured__products">
@@ -67,7 +61,7 @@ $product_count = $product_count ? absint( $product_count ) : 4;
 			</div>
 
 			<?php if ( $cta_text && $cta_url ) : ?>
-				<div class="stew-homepage-featured__cta-mobile">
+				<div style="text-align: center; margin-top: 2.5rem;">
 					<a href="<?php echo esc_url( $cta_url ); ?>" class="stew-btn stew-btn--outline">
 						<?php echo esc_html( $cta_text ); ?>
 					</a>
