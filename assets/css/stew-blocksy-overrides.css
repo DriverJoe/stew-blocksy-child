@@ -1192,18 +1192,37 @@ h2.stew-section-title {
     margin: 0 auto;
 }
 
-.stew-homepage-newsletter__title {
+.stew-homepage-newsletter .stew-homepage-newsletter__title,
+.stew-homepage-newsletter h2,
+.stew-homepage-newsletter h2.stew-homepage-newsletter__title,
+section.stew-homepage-newsletter h2 {
     font-size: 1.75rem;
     font-weight: 700;
     color: #1A1A1A !important;
+    --theme-heading-color: #1A1A1A !important;
+    --theme-palette-color-3: #1A1A1A !important;
     margin-bottom: 0.75rem;
 }
 
-.stew-homepage-newsletter__text {
+.stew-homepage-newsletter .stew-homepage-newsletter__text,
+.stew-homepage-newsletter p,
+section.stew-homepage-newsletter p {
     font-size: 0.9375rem;
     line-height: 1.7;
     color: #1A1A1A !important;
+    --theme-text-color: #1A1A1A !important;
     margin-bottom: 1.5rem;
+}
+
+.stew-homepage-newsletter,
+.stew-homepage-newsletter * {
+    --theme-text-color: #1A1A1A;
+    --theme-heading-color: #1A1A1A;
+    --theme-link-initial-color: #1A1A1A;
+}
+
+.stew-homepage-newsletter .stew-divider {
+    border-color: #C9A96E !important;
 }
 
 /* Newsletter form — CF7 inside */
