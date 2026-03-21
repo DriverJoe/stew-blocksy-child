@@ -228,6 +228,10 @@ function stew_render_pricing_settings_page() {
         </form>
 
         <hr />
+        <h2><?php echo esc_html__( 'Ausstehende Kundenantraege', 'stew' ); ?></h2>
+        <?php stew_render_pending_customers_table(); ?>
+
+        <hr />
         <h2><?php echo esc_html__( 'Ausstehende Haendler-Antraege', 'stew' ); ?></h2>
         <?php stew_render_pending_wholesale_table(); ?>
     </div>
@@ -294,6 +298,141 @@ function stew_render_pending_wholesale_table() {
     <?php
 }
 
+
+/**
+ * Tabelle der ausstehenden Kundenantraege (Privatkunden) rendern.
+ */
+function stew_render_pending_customers_table() {
+    $pending_users = get_users( array(
+        'role'    => 'pending_customer',
+        'orderby' => 'registered',
+        'order'   => 'DESC',
+    ) );
+
+    if ( empty( $pending_users ) ) {
+        echo '<p>' . esc_html__( 'Keine ausstehenden Kundenantraege.', 'stew' ) . '</p>';
+        return;
+    }
+    ?>
+    <table class="wp-list-table widefat fixed striped">
+        <thead>
+            <tr>
+                <th><?php echo esc_html__( 'Name', 'stew' ); ?></th>
+                <th><?php echo esc_html__( 'E-Mail', 'stew' ); ?></th>
+                <th><?php echo esc_html__( 'Registriert am', 'stew' ); ?></th>
+                <th><?php echo esc_html__( 'Aktionen', 'stew' ); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ( $pending_users as $user ) : ?>
+                <tr>
+                    <td><?php echo esc_html( $user->display_name ); ?></td>
+                    <td><?php echo esc_html( $user->user_email ); ?></td>
+                    <td><?php echo esc_html( wp_date( 'd.m.Y H:i', strtotime( $user->user_registered ) ) ); ?></td>
+                    <td>
+                        <?php
+                        $approve_url = wp_nonce_url(
+                            admin_url( 'admin-post.php?action=stew_approve_customer&user_id=' . $user->ID ),
+                            'stew_approve_customer_' . $user->ID,
+                            'stew_nonce'
+                        );
+                        $reject_url = wp_nonce_url(
+                            admin_url( 'admin-post.php?action=stew_reject_customer&user_id=' . $user->ID ),
+                            'stew_reject_customer_' . $user->ID,
+                            'stew_nonce'
+                        );
+                        ?>
+                        <a href="<?php echo esc_url( $approve_url ); ?>" class="button button-primary button-small">
+                            <?php echo esc_html__( 'Freigeben', 'stew' ); ?>
+                        </a>
+                        <a href="<?php echo esc_url( $reject_url ); ?>" class="button button-small"
+                           onclick="return confirm('<?php echo esc_js( __( 'Antrag wirklich ablehnen?', 'stew' ) ); ?>');">
+                            <?php echo esc_html__( 'Ablehnen', 'stew' ); ?>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php
+}
+
+/**
+ * Kundenantrag freigeben.
+ */
+function stew_handle_approve_customer() {
+    $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
+
+    if ( ! $user_id || ! current_user_can( 'manage_woocommerce' ) ) {
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew' ) );
+    }
+
+    if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_approve_customer_' . $user_id ) ) {
+        wp_die( esc_html__( 'Sicherheitspruefung fehlgeschlagen.', 'stew' ) );
+    }
+
+    $user = get_userdata( $user_id );
+    if ( ! $user ) {
+        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew' ) );
+    }
+
+    $user->set_role( 'customer' );
+    update_user_meta( $user_id, 'stew_customer_approved', current_time( 'mysql' ) );
+    update_user_meta( $user_id, 'stew_customer_approved_by', get_current_user_id() );
+
+    $subject = __( 'Ihr Konto wurde freigeschaltet — STEW', 'stew' );
+    $message = sprintf(
+        "Guten Tag %s,\n\n" .
+        "Ihr Konto bei STEW wurde freigeschaltet. Sie koennen ab sofort einkaufen.\n\n" .
+        "Loggen Sie sich hier ein:\n%s\n\n" .
+        "Freundliche Gruesse\nIhr STEW Team",
+        $user->display_name,
+        wp_login_url( wc_get_page_permalink( 'shop' ) )
+    );
+    wp_mail( $user->user_email, $subject, $message );
+
+    wp_safe_redirect( admin_url( 'admin.php?page=stew-role-pricing&customer_approved=1' ) );
+    exit;
+}
+add_action( 'admin_post_stew_approve_customer', 'stew_handle_approve_customer' );
+
+/**
+ * Kundenantrag ablehnen (Konto loeschen).
+ */
+function stew_handle_reject_customer() {
+    $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
+
+    if ( ! $user_id || ! current_user_can( 'manage_woocommerce' ) ) {
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew' ) );
+    }
+
+    if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_reject_customer_' . $user_id ) ) {
+        wp_die( esc_html__( 'Sicherheitspruefung fehlgeschlagen.', 'stew' ) );
+    }
+
+    $user = get_userdata( $user_id );
+    if ( ! $user ) {
+        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew' ) );
+    }
+
+    $subject = __( 'Ihr Kontoantrag bei STEW', 'stew' );
+    $message = sprintf(
+        "Guten Tag %s,\n\n" .
+        "Leider konnten wir Ihren Kontoantrag nicht freigeben. " .
+        "Bitte kontaktieren Sie uns fuer weitere Informationen:\n" .
+        "info@stew.ch\n\n" .
+        "Freundliche Gruesse\nIhr STEW Team",
+        $user->display_name
+    );
+    wp_mail( $user->user_email, $subject, $message );
+
+    require_once ABSPATH . 'wp-admin/includes/user.php';
+    wp_delete_user( $user_id );
+
+    wp_safe_redirect( admin_url( 'admin.php?page=stew-role-pricing&customer_rejected=1' ) );
+    exit;
+}
+add_action( 'admin_post_stew_reject_customer', 'stew_handle_reject_customer' );
 
 /**
  * ============================================================================
@@ -411,6 +550,18 @@ function stew_admin_notices_wholesale() {
     if ( isset( $_GET['rejected'] ) && '1' === $_GET['rejected'] ) {
         echo '<div class="notice notice-warning is-dismissible"><p>';
         echo esc_html__( 'Haendlerantrag wurde abgelehnt.', 'stew' );
+        echo '</p></div>';
+    }
+
+    if ( isset( $_GET['customer_approved'] ) && '1' === $_GET['customer_approved'] ) {
+        echo '<div class="notice notice-success is-dismissible"><p>';
+        echo esc_html__( 'Kundenkonto wurde erfolgreich freigeschaltet.', 'stew' );
+        echo '</p></div>';
+    }
+
+    if ( isset( $_GET['customer_rejected'] ) && '1' === $_GET['customer_rejected'] ) {
+        echo '<div class="notice notice-warning is-dismissible"><p>';
+        echo esc_html__( 'Kundenantrag wurde abgelehnt.', 'stew' );
         echo '</p></div>';
     }
 }
@@ -885,7 +1036,7 @@ add_filter( 'manage_users_sortable_columns', 'stew_sortable_user_columns' );
 function stew_add_dashboard_widget() {
     wp_add_dashboard_widget(
         'stew_pending_wholesale',
-        __( 'Ausstehende Haendler-Antraege', 'stew' ),
+        __( 'Ausstehende Kontenantraege', 'stew' ),
         'stew_render_dashboard_widget'
     );
 }
@@ -895,37 +1046,61 @@ add_action( 'wp_dashboard_setup', 'stew_add_dashboard_widget' );
  * Dashboard-Widget-Inhalt rendern.
  */
 function stew_render_dashboard_widget() {
-    $pending_users = get_users( array(
+    $pending_wholesale = get_users( array(
         'role'       => 'pending_wholesale',
         'number'     => 10,
         'orderby'    => 'registered',
         'order'      => 'DESC',
     ) );
 
-    $count = count( get_users( array( 'role' => 'pending_wholesale', 'fields' => 'ID' ) ) );
+    $pending_customers = get_users( array(
+        'role'       => 'pending_customer',
+        'number'     => 10,
+        'orderby'    => 'registered',
+        'order'      => 'DESC',
+    ) );
 
-    if ( empty( $pending_users ) ) {
+    $count_wholesale = count( get_users( array( 'role' => 'pending_wholesale', 'fields' => 'ID' ) ) );
+    $count_customers = count( get_users( array( 'role' => 'pending_customer', 'fields' => 'ID' ) ) );
+    $total = $count_wholesale + $count_customers;
+
+    if ( 0 === $total ) {
         echo '<p>' . esc_html__( 'Keine ausstehenden Antraege.', 'stew' ) . '</p>';
         return;
     }
 
     printf(
         '<p><strong>%s</strong></p>',
-        /* translators: %d: number of pending applications */
-        sprintf( esc_html__( '%d Antrag/Antraege ausstehend', 'stew' ), $count )
+        sprintf( esc_html__( '%d Antrag/Antraege ausstehend', 'stew' ), $total )
     );
 
-    echo '<ul>';
-    foreach ( $pending_users as $user ) {
-        $company = get_user_meta( $user->ID, 'billing_company', true );
-        printf(
-            '<li><strong>%s</strong> (%s) — %s</li>',
-            esc_html( $user->display_name ),
-            esc_html( $user->user_email ),
-            $company ? esc_html( $company ) : esc_html__( 'Keine Firma', 'stew' )
-        );
+    if ( ! empty( $pending_customers ) ) {
+        echo '<h4>' . esc_html__( 'Kunden', 'stew' ) . '</h4>';
+        echo '<ul>';
+        foreach ( $pending_customers as $user ) {
+            printf(
+                '<li><strong>%s</strong> (%s)</li>',
+                esc_html( $user->display_name ),
+                esc_html( $user->user_email )
+            );
+        }
+        echo '</ul>';
     }
-    echo '</ul>';
+
+    if ( ! empty( $pending_wholesale ) ) {
+        echo '<h4>' . esc_html__( 'Haendler', 'stew' ) . '</h4>';
+        echo '<ul>';
+        foreach ( $pending_wholesale as $user ) {
+            $company = get_user_meta( $user->ID, 'billing_company', true );
+            printf(
+                '<li><strong>%s</strong> (%s) — %s</li>',
+                esc_html( $user->display_name ),
+                esc_html( $user->user_email ),
+                $company ? esc_html( $company ) : esc_html__( 'Keine Firma', 'stew' )
+            );
+        }
+        echo '</ul>';
+    }
 
     printf(
         '<p><a href="%s" class="button">%s</a></p>',

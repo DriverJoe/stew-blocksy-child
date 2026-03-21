@@ -324,8 +324,134 @@ function stew_acf_json_load_point( $paths ) {
 add_filter( 'acf/settings/load_json', 'stew_acf_json_load_point' );
 
 /* =====================================================================
-   10. ACF OPTIONS PAGE — "STEW Einstellungen"
+   10. ENABLE WOOCOMMERCE REGISTRATION & MANUAL APPROVAL
    ===================================================================== */
+
+/**
+ * Force-enable WooCommerce customer registration on My Account page.
+ * Also enables username/password generation so the form stays simple.
+ */
+function stew_enable_registration() {
+    update_option( 'woocommerce_enable_myaccount_registration', 'yes' );
+    update_option( 'woocommerce_registration_generate_username', 'yes' );
+    update_option( 'woocommerce_registration_generate_password', 'no' );
+}
+add_action( 'after_setup_theme', 'stew_enable_registration' );
+
+/**
+ * All new registrations start as 'pending_customer' until an admin approves them.
+ * Wholesale applicants are handled separately in role-based-pricing.php
+ * (they get 'pending_wholesale'). This covers normal private customers too.
+ */
+function stew_set_default_pending_role( $default_role ) {
+    return 'pending_customer';
+}
+add_filter( 'woocommerce_new_customer_data', function( $data ) {
+    // Wholesale registrations are handled by role-based-pricing.php
+    $account_type = isset( $_POST['stew_account_type'] ) ? sanitize_text_field( wp_unslash( $_POST['stew_account_type'] ) ) : 'private';
+    if ( 'wholesale' !== $account_type ) {
+        $data['role'] = 'pending_customer';
+    }
+    return $data;
+} );
+
+/**
+ * Register the pending_customer role.
+ */
+function stew_register_pending_customer_role() {
+    add_role( 'pending_customer', __( 'Kunde (ausstehend)', 'stew-blocksy-child' ), array(
+        'read' => true,
+    ) );
+}
+add_action( 'after_setup_theme', 'stew_register_pending_customer_role' );
+
+/**
+ * Remove pending_customer role on theme switch.
+ */
+add_action( 'switch_theme', function() {
+    remove_role( 'pending_customer' );
+} );
+
+/**
+ * Block pending customers from accessing shop functionality.
+ * They can log in but cannot purchase until approved.
+ */
+function stew_restrict_pending_customers() {
+    if ( ! is_user_logged_in() ) {
+        return;
+    }
+
+    $user = wp_get_current_user();
+    if ( ! in_array( 'pending_customer', (array) $user->roles, true ) ) {
+        return;
+    }
+
+    // Block checkout for pending customers
+    if ( is_checkout() && ! is_wc_endpoint_url( 'order-received' ) ) {
+        wc_add_notice(
+            __( 'Ihr Konto wird derzeit geprüft. Sie erhalten eine E-Mail, sobald Ihr Konto freigeschaltet wurde.', 'stew-blocksy-child' ),
+            'notice'
+        );
+        wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) );
+        exit;
+    }
+}
+add_action( 'template_redirect', 'stew_restrict_pending_customers' );
+
+/**
+ * Show a notice on My Account for pending customers.
+ */
+function stew_pending_customer_notice() {
+    if ( ! is_user_logged_in() ) {
+        return;
+    }
+
+    $user = wp_get_current_user();
+    if ( in_array( 'pending_customer', (array) $user->roles, true ) ) {
+        wc_print_notice(
+            __( 'Ihr Konto wird derzeit geprüft. Sie erhalten eine E-Mail, sobald Ihr Konto freigeschaltet wurde.', 'stew-blocksy-child' ),
+            'notice'
+        );
+    }
+    if ( in_array( 'pending_wholesale', (array) $user->roles, true ) ) {
+        wc_print_notice(
+            __( 'Ihr Händlerantrag wird geprüft. Sie erhalten eine E-Mail, sobald Ihr Konto freigeschaltet wurde.', 'stew-blocksy-child' ),
+            'notice'
+        );
+    }
+}
+add_action( 'woocommerce_account_content', 'stew_pending_customer_notice', 5 );
+
+/**
+ * Notify admin when a new private customer registers.
+ */
+function stew_notify_admin_new_customer( $customer_id ) {
+    $account_type = get_user_meta( $customer_id, 'stew_account_type', true );
+    // Wholesale notifications are handled in role-based-pricing.php
+    if ( 'wholesale' === $account_type ) {
+        return;
+    }
+
+    $user        = get_userdata( $customer_id );
+    $admin_email = get_option( 'stew_admin_notify_email', get_option( 'admin_email' ) );
+    $approve_url = admin_url( 'admin.php?page=stew-role-pricing' );
+
+    $subject = sprintf( __( '[STEW] Neuer Kundenantrag: %s', 'stew-blocksy-child' ), $user->display_name );
+    $message = sprintf(
+        "Neuer Kundenantrag eingegangen:\n\n" .
+        "Name: %s\n" .
+        "E-Mail: %s\n" .
+        "Registriert: %s\n\n" .
+        "Konto prüfen und freigeben:\n%s",
+        $user->display_name,
+        $user->user_email,
+        wp_date( 'd.m.Y H:i', strtotime( $user->user_registered ) ),
+        $approve_url
+    );
+
+    wp_mail( $admin_email, $subject, $message );
+}
+add_action( 'woocommerce_created_customer', 'stew_notify_admin_new_customer', 20 );
 
 // Note: Global site settings (footer, contact, social) are stored as ACF fields
 // on the Homepage to avoid requiring ACF Pro's options page feature.
