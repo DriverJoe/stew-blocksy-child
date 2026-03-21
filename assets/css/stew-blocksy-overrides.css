@@ -1583,3 +1583,158 @@ section.stew-homepage-newsletter p {
 .woocommerce-MyAccount-content a:hover {
     color: hsl(38, 80%, 40%) !important;
 }
+
+/* ==========================================================================
+   CONTACT PAGE
+   ========================================================================== */
+
+.stew-contact {
+    --theme-text-color: #1A1A1A;
+    --theme-heading-color: #1A1A1A;
+}
+
+.stew-contact__header {
+    text-align: center;
+    padding: 4rem 0 2rem;
+}
+
+.stew-contact__page-title {
+    font-size: 2.5rem !important;
+    font-weight: 600;
+    color: #1A1A1A !important;
+    margin-bottom: 0.75rem;
+}
+
+.stew-contact__page-subtitle {
+    font-size: 1.0625rem;
+    color: #737373 !important;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+}
+
+.stew-contact__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+}
+
+@media (min-width: 768px) {
+    .stew-contact__grid {
+        grid-template-columns: 1.2fr 0.8fr;
+    }
+}
+
+.stew-contact__form-title {
+    font-size: 1.5rem !important;
+    font-weight: 600;
+    color: #1A1A1A !important;
+    margin-bottom: 1.5rem;
+}
+
+/* CF7 form styling */
+.stew-contact__form-wrap label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1A1A1A !important;
+    margin-bottom: 0.25rem;
+}
+
+.stew-contact__form-wrap input[type="text"],
+.stew-contact__form-wrap input[type="email"],
+.stew-contact__form-wrap input[type="tel"],
+.stew-contact__form-wrap select,
+.stew-contact__form-wrap textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #E8E5E0;
+    border-radius: 6px;
+    font-size: 0.9375rem;
+    color: #1A1A1A;
+    background: #FFFFFF;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.stew-contact__form-wrap input:focus,
+.stew-contact__form-wrap select:focus,
+.stew-contact__form-wrap textarea:focus {
+    border-color: hsl(38, 80%, 50%);
+    outline: none;
+}
+
+.stew-contact__form-wrap textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.stew-contact__form-wrap input[type="submit"] {
+    background: #1A1A1A !important;
+    color: #FFFFFF !important;
+    border: none;
+    padding: 0.875rem 2rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.stew-contact__form-wrap input[type="submit"]:hover {
+    background: hsl(38, 80%, 50%) !important;
+}
+
+/* Contact details card */
+.stew-contact__details-card {
+    background: #F8F7F5;
+    padding: 2rem;
+    border-radius: 6px;
+}
+
+.stew-contact__detail-group {
+    margin-bottom: 1.5rem;
+}
+
+.stew-contact__detail-group:last-child {
+    margin-bottom: 0;
+}
+
+.stew-contact__detail-label {
+    font-size: 0.75rem !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #999 !important;
+    margin-bottom: 0.5rem;
+}
+
+.stew-contact__address {
+    font-style: normal;
+    line-height: 1.7;
+    color: #1A1A1A !important;
+}
+
+.stew-contact__address span {
+    display: block;
+}
+
+.stew-contact__company-name {
+    font-weight: 600;
+}
+
+.stew-contact__link {
+    color: #1A1A1A !important;
+    text-decoration: none;
+    font-size: 0.9375rem;
+}
+
+.stew-contact__link:hover {
+    color: hsl(38, 80%, 50%) !important;
+}
+
+.stew-contact__hours {
+    color: #1A1A1A !important;
+    font-size: 0.9375rem;
+    margin: 0;
+}
