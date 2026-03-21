@@ -275,12 +275,14 @@ body.stew-theme .woocommerce input.button.alt:hover {
 
 .stew-btn--outline {
     background-color: transparent;
-    color: var(--stew-text);
-    border: 1px solid var(--stew-border);
+    color: #1A1A1A !important;
+    border: 1px solid #1A1A1A;
 }
 
 .stew-btn--outline:hover {
-    border-color: var(--stew-text);
+    background-color: #1A1A1A;
+    color: #FFFFFF !important;
+    border-color: #1A1A1A;
     transform: translateY(-1px);
 }
 
