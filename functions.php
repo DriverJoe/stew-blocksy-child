@@ -535,6 +535,9 @@ function stew_product_highlights() {
     if ( $voltage ) $items[] = $voltage;
     if ( $sku )     $items[] = 'Art.-Nr.: ' . $sku;
 
+    $part_nr = get_post_meta( $pid, 'manufacturer_part_number', true );
+    if ( $part_nr ) $items[] = 'Herst.-Art.-Nr.: ' . $part_nr;
+
     if ( empty( $items ) ) return;
 
     echo '<div class="stew-product-highlights">';
@@ -597,9 +600,11 @@ function stew_product_specs_tab( $tabs ) {
     $pid   = $product->get_id();
     $power = get_post_meta( $pid, 'power_watts', true );
     $ip    = get_post_meta( $pid, 'ip_protection', true );
+    $part  = get_post_meta( $pid, 'manufacturer_part_number', true );
+    $brand = get_post_meta( $pid, 'manufacturer_brand', true );
 
     // Only add tab if product has specs
-    if ( $power || $ip ) {
+    if ( $power || $ip || $part || $brand ) {
         $tabs['stew_specs'] = array(
             'title'    => __( 'Technische Daten', 'stew-blocksy-child' ),
             'priority' => 15,
