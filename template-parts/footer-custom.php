@@ -29,12 +29,13 @@ $current_year = date( 'Y' );
             <div class="stew-footer__col">
                 <h4 class="stew-footer__heading">Navigation</h4>
                 <ul class="stew-footer__links">
-                    <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Startseite</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Shop</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/product-category/einbauleuchten/' ) ); ?>">Einbauleuchten</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/product-category/aufbauleuchten/' ) ); ?>">Aufbauleuchten</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/product-category/dekorative-leuchten/' ) ); ?>">Dekorative Leuchten</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/product-category/led-treiber/' ) ); ?>">LED Treiber</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/product-category/led-leuchten/' ) ); ?>">LED Leuchten</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/product-category/led-module/' ) ); ?>">LED Module</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/product-category/steuerungssysteme/' ) ); ?>">Steuerungssysteme</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/ueber-uns/' ) ); ?>">&Uuml;ber uns</a></li>
+                    <li><a href="<?php echo esc_url( home_url( '/kontakt/' ) ); ?>">Kontakt</a></li>
                 </ul>
             </div>
 
