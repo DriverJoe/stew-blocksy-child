@@ -485,24 +485,29 @@ footer.ct-footer {
     display: none !important;
 }
 
-/* Custom footer base */
-.stew-footer {
-    background: #0F0F0F;
-    color: rgba(255, 255, 255, 0.6);
-    font-family: var(--stew-font, 'Inter', sans-serif);
-    font-size: 0.875rem;
-    line-height: 1.7;
-    padding: 0;
+/* Custom footer base — !important needed to override Blocksy theme vars */
+.stew-footer,
+footer#stew-footer {
+    background: #0F0F0F !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    font-family: var(--stew-font, 'Inter', sans-serif) !important;
+    font-size: 0.875rem !important;
+    line-height: 1.7 !important;
+    padding: 0 !important;
 }
 
-.stew-footer a {
-    color: rgba(255, 255, 255, 0.6);
-    text-decoration: none;
-    transition: color 0.25s ease;
+.stew-footer a,
+footer#stew-footer a,
+.stew-footer a:visited,
+footer#stew-footer a:visited {
+    color: rgba(255, 255, 255, 0.6) !important;
+    text-decoration: none !important;
+    transition: color 0.25s ease !important;
 }
 
-.stew-footer a:hover {
-    color: #C9A96E;
+.stew-footer a:hover,
+footer#stew-footer a:hover {
+    color: #C9A96E !important;
 }
 
 /* Container (footer-scoped — homepage .stew-container is in stew-custom.css) */
@@ -538,10 +543,11 @@ footer.ct-footer {
     color: #C9A96E !important;
 }
 
-.stew-footer__desc {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 0.8125rem;
-    line-height: 1.8;
+.stew-footer__desc,
+footer#stew-footer .stew-footer__desc {
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 0.8125rem !important;
+    line-height: 1.8 !important;
     margin: 0;
     max-width: 280px;
 }
@@ -568,13 +574,16 @@ footer.ct-footer {
     margin-bottom: 10px;
 }
 
-.stew-footer__links a {
-    font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.55);
+.stew-footer__links a,
+footer#stew-footer .stew-footer__links a,
+.stew-footer__links a:visited {
+    font-size: 0.8125rem !important;
+    color: rgba(255, 255, 255, 0.55) !important;
 }
 
-.stew-footer__links a:hover {
-    color: #C9A96E;
+.stew-footer__links a:hover,
+footer#stew-footer .stew-footer__links a:hover {
+    color: #C9A96E !important;
 }
 
 /* Contact list (with icons) */
@@ -584,27 +593,37 @@ footer.ct-footer {
     padding: 0;
 }
 
-.stew-footer__contact li {
+.stew-footer__contact li,
+footer#stew-footer .stew-footer__contact li {
     display: flex;
     align-items: flex-start;
     gap: 10px;
     margin-bottom: 14px;
-    font-size: 0.8125rem;
-    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.8125rem !important;
+    color: rgba(255, 255, 255, 0.55) !important;
 }
 
-.stew-footer__contact li svg {
+.stew-footer__contact li svg,
+footer#stew-footer .stew-footer__contact li svg {
     flex-shrink: 0;
     margin-top: 3px;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.4) !important;
 }
 
-.stew-footer__contact a {
-    color: rgba(255, 255, 255, 0.55);
+.stew-footer__contact a,
+footer#stew-footer .stew-footer__contact a,
+.stew-footer__contact a:visited {
+    color: rgba(255, 255, 255, 0.55) !important;
 }
 
-.stew-footer__contact a:hover {
-    color: #C9A96E;
+.stew-footer__contact a:hover,
+footer#stew-footer .stew-footer__contact a:hover {
+    color: #C9A96E !important;
+}
+
+.stew-footer__contact span,
+footer#stew-footer .stew-footer__contact span {
+    color: rgba(255, 255, 255, 0.55) !important;
 }
 
 /* Bottom bar */
@@ -613,10 +632,11 @@ footer.ct-footer {
     padding: 20px 0;
 }
 
-.stew-footer__bottom p {
+.stew-footer__bottom p,
+footer#stew-footer .stew-footer__bottom p {
     margin: 0;
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.75rem !important;
+    color: rgba(255, 255, 255, 0.35) !important;
     text-align: center;
 }
 
