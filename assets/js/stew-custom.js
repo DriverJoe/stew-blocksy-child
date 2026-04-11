@@ -12,8 +12,10 @@
      * Smooth scroll for anchor links
      */
     function initSmoothScroll() {
-        $('a[href^="#"]').on('click', function (e) {
-            var target = $(this.getAttribute('href'));
+        $('a[href^="#"]').not('.wc-tabs a, .woocommerce-tabs a').on('click', function (e) {
+            var hash = this.getAttribute('href');
+            if (!hash || hash === '#') return;
+            var target = $(hash);
             if (target.length) {
                 e.preventDefault();
                 $('html, body').animate({
