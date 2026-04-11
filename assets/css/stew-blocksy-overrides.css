@@ -900,6 +900,25 @@ footer#stew-footer .stew-footer__bottom p {
     box-shadow: 0 0 0 3px hsla(38, 80%, 50%, 0.1);
 }
 
+/* Fix select dropdown height — prevent text cutoff */
+.ct-container select,
+.woocommerce-form-register select,
+.woocommerce form select {
+    padding: 10px 14px !important;
+    height: auto !important;
+    min-height: 48px !important;
+    line-height: 1.4 !important;
+    font-size: 1rem !important;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23737373' d='M6 8L1 3h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 12px !important;
+    padding-right: 36px !important;
+}
+
 /* ==========================================================================
    8. BREADCRUMBS
    ========================================================================== */
