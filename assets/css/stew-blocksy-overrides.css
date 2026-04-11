@@ -668,20 +668,46 @@ footer#stew-footer .stew-footer__bottom p {
    ========================================================================== */
 
 #offcanvas,
-.ct-offcanvas {
-    font-family: var(--stew-font, 'Inter', sans-serif);
+.ct-offcanvas,
+.ct-panel {
+    font-family: var(--stew-font, 'Inter', sans-serif) !important;
+    --theme-text-color: #FFFFFF !important;
+    --theme-link-initial-color: #FFFFFF !important;
+    --theme-link-hover-color: #C9A96E !important;
+    --theme-heading-color: #FFFFFF !important;
+    color: #FFFFFF !important;
 }
 
 #offcanvas a,
-.ct-offcanvas a {
-    font-weight: 500;
-    color: #1A1A1A;
-    transition: color 0.25s ease;
+.ct-offcanvas a,
+.ct-panel a,
+.ct-panel .ct-menu-link,
+#offcanvas .ct-menu-link,
+.ct-offcanvas .ct-menu-link {
+    font-weight: 500 !important;
+    color: #FFFFFF !important;
+    transition: color 0.25s ease !important;
 }
 
 #offcanvas a:hover,
-.ct-offcanvas a:hover {
-    color: hsl(38, 80%, 50%);
+.ct-offcanvas a:hover,
+.ct-panel a:hover,
+.ct-panel .ct-menu-link:hover {
+    color: #C9A96E !important;
+}
+
+/* Mobile menu item text and icons */
+.ct-panel .ct-toggle-close,
+.ct-panel .ct-toggle-close svg,
+#offcanvas .ct-toggle-close {
+    color: #FFFFFF !important;
+}
+
+.ct-panel span,
+.ct-panel li,
+#offcanvas span,
+#offcanvas li {
+    color: #FFFFFF !important;
 }
 
 /* ==========================================================================
