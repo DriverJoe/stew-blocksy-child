@@ -638,7 +638,8 @@ function stew_filter_product_price( $price, $product ) {
     return stew_calculate_discounted_price( floatval( $price ) );
 }
 add_filter( 'woocommerce_product_get_price', 'stew_filter_product_price', 99, 2 );
-add_filter( 'woocommerce_product_get_regular_price', 'stew_filter_product_price', 99, 2 );
+// Note: regular_price is NOT filtered — keeps the original so WooCommerce
+// shows strikethrough (regular) and discounted (active) price.
 
 /**
  * Variationspreise filtern.
@@ -665,7 +666,7 @@ function stew_filter_variation_price( $price, $variation, $product ) {
     return stew_calculate_discounted_price( floatval( $price ) );
 }
 add_filter( 'woocommerce_product_variation_get_price', 'stew_filter_variation_price', 99, 3 );
-add_filter( 'woocommerce_product_variation_get_regular_price', 'stew_filter_variation_price', 99, 3 );
+// Note: variation regular_price is NOT filtered — same strikethrough logic.
 
 /**
  * Variationspreis-Hash anpassen fuer korrektes Caching.
