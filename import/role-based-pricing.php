@@ -718,6 +718,39 @@ function stew_display_discount_badge() {
 add_action( 'woocommerce_single_product_summary', 'stew_display_discount_badge', 11 );
 
 /**
+ * Preis-HTML anpassen: Originalpreis durchgestrichen + rabattierter Preis.
+ */
+function stew_custom_price_html( $price_html, $product ) {
+    if ( is_admin() && ! wp_doing_ajax() ) {
+        return $price_html;
+    }
+
+    $discount = stew_get_role_discount();
+    if ( $discount <= 0 ) {
+        return $price_html;
+    }
+
+    if ( $product->is_on_sale() ) {
+        return $price_html;
+    }
+
+    // Get the raw regular price (unfiltered)
+    $regular_price = $product->get_regular_price();
+    if ( ! $regular_price || floatval( $regular_price ) <= 0 ) {
+        return $price_html;
+    }
+
+    $discounted_price = stew_calculate_discounted_price( floatval( $regular_price ) );
+
+    if ( floatval( $regular_price ) === $discounted_price ) {
+        return $price_html;
+    }
+
+    return '<del>' . wc_price( $regular_price ) . '</del> <ins>' . wc_price( $discounted_price ) . '</ins>';
+}
+add_filter( 'woocommerce_get_price_html', 'stew_custom_price_html', 100, 2 );
+
+/**
  * Warenkorb-Preis mit Rabatt anpassen (fuer korrekte Berechnung).
  *
  * @param WC_Cart $cart Der Warenkorb.
