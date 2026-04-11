@@ -710,6 +710,29 @@ footer#stew-footer .stew-footer__bottom p {
     color: #FFFFFF !important;
 }
 
+/* Mobile submenu dropdown — force dark bg to match panel */
+.ct-panel .sub-menu,
+.ct-panel ul.sub-menu,
+#offcanvas .sub-menu,
+#offcanvas ul.sub-menu,
+.ct-offcanvas .sub-menu {
+    background: #1A1A1A !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.ct-panel .sub-menu a,
+.ct-panel .sub-menu .ct-menu-link,
+#offcanvas .sub-menu a,
+#offcanvas .sub-menu .ct-menu-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.ct-panel .sub-menu a:hover,
+#offcanvas .sub-menu a:hover {
+    color: #C9A96E !important;
+}
+
 /* ==========================================================================
    6. WOOCOMMERCE INSIDE BLOCKSY
    ========================================================================== */
