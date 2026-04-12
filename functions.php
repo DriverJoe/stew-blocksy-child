@@ -210,10 +210,10 @@ function stew_cart_toast_scripts() {
         display: none !important;
     }
 
-    /* Header cart icon */
+    /* Header cart icon — inline with nav */
     .stew-header-cart {
         position: fixed;
-        top: 18px;
+        top: 0;
         right: 24px;
         z-index: 9999;
         display: flex;
@@ -222,6 +222,7 @@ function stew_cart_toast_scripts() {
         color: #1A1A1A;
         text-decoration: none;
         transition: color 0.25s ease;
+        height: var(--header-height, 70px);
     }
     .stew-header-cart:hover {
         color: #C9A96E;
