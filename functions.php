@@ -155,6 +155,166 @@ function stew_hide_blocksy_footer() {
 add_action( 'wp_head', 'stew_hide_blocksy_footer' );
 
 /* =====================================================================
+   1b. HEADER CART ICON WITH COUNT BADGE
+   ===================================================================== */
+
+/**
+ * Add a cart icon with item count to the header.
+ */
+function stew_header_cart_icon() {
+    if ( ! function_exists( 'WC' ) ) {
+        return;
+    }
+    $count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+    ?>
+    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="stew-header-cart" title="<?php esc_attr_e( 'Warenkorb', 'stew-blocksy-child' ); ?>">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        </svg>
+        <span class="stew-header-cart__count" <?php echo $count === 0 ? 'style="display:none;"' : ''; ?>><?php echo esc_html( $count ); ?></span>
+    </a>
+    <?php
+}
+add_action( 'blocksy:header:after', 'stew_header_cart_icon' );
+// Fallback if Blocksy hook doesn't fire
+add_action( 'wp_body_open', function() {
+    // We'll position it with CSS fixed in the header area
+});
+
+/**
+ * Update cart count via AJAX fragments.
+ */
+function stew_cart_count_fragment( $fragments ) {
+    $count = WC()->cart->get_cart_contents_count();
+    $fragments['.stew-header-cart__count'] = '<span class="stew-header-cart__count" ' . ( $count === 0 ? 'style="display:none;"' : '' ) . '>' . esc_html( $count ) . '</span>';
+    return $fragments;
+}
+add_filter( 'woocommerce_add_to_cart_fragments', 'stew_cart_count_fragment' );
+
+/* =====================================================================
+   1c. ADD-TO-CART TOAST NOTIFICATION
+   ===================================================================== */
+
+/**
+ * Hide the "View cart" link on product cards and show a toast instead.
+ */
+function stew_cart_toast_scripts() {
+    if ( ! function_exists( 'WC' ) ) {
+        return;
+    }
+    ?>
+    <style>
+    /* Hide "View basket" link on product cards */
+    .woocommerce ul.products li.product a.added_to_cart {
+        display: none !important;
+    }
+
+    /* Header cart icon */
+    .stew-header-cart {
+        position: fixed;
+        top: 18px;
+        right: 24px;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: #1A1A1A;
+        text-decoration: none;
+        transition: color 0.25s ease;
+    }
+    .stew-header-cart:hover {
+        color: #C9A96E;
+    }
+    .stew-header-cart__count {
+        background: #C9A96E;
+        color: #FFFFFF;
+        font-size: 0.6875rem;
+        font-weight: 700;
+        min-width: 18px;
+        height: 18px;
+        line-height: 18px;
+        text-align: center;
+        border-radius: 50%;
+        position: absolute;
+        top: -6px;
+        right: -8px;
+    }
+
+    /* Toast notification */
+    .stew-toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 99999;
+        background: #1A1A1A;
+        color: #FFFFFF;
+        padding: 14px 24px;
+        border-radius: 8px;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 400px;
+    }
+    .stew-toast.stew-toast--visible {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    .stew-toast__icon {
+        color: #C9A96E;
+        flex-shrink: 0;
+    }
+    .stew-toast a {
+        color: #C9A96E !important;
+        text-decoration: none !important;
+        margin-left: 8px;
+        white-space: nowrap;
+    }
+    .stew-toast a:hover {
+        text-decoration: underline !important;
+    }
+
+    @media (max-width: 575px) {
+        .stew-toast {
+            left: 16px;
+            right: 16px;
+            bottom: 16px;
+            max-width: none;
+        }
+    }
+    </style>
+
+    <div class="stew-toast" id="stew-cart-toast">
+        <svg class="stew-toast__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span class="stew-toast__text">Produkt wurde hinzugefügt</span>
+        <a href="<?php echo esc_url( wc_get_cart_url() ); ?>">Warenkorb →</a>
+    </div>
+
+    <script>
+    jQuery(function($) {
+        var toastTimer;
+        $(document.body).on('added_to_cart', function(e, fragments, cartHash, $btn) {
+            // Show toast
+            var $toast = $('#stew-cart-toast');
+            clearTimeout(toastTimer);
+            $toast.addClass('stew-toast--visible');
+            toastTimer = setTimeout(function() {
+                $toast.removeClass('stew-toast--visible');
+            }, 4000);
+        });
+    });
+    </script>
+    <?php
+}
+add_action( 'wp_footer', 'stew_cart_toast_scripts', 99 );
+
+/* =====================================================================
    2. WOOCOMMERCE SUPPORT
    ===================================================================== */
 
