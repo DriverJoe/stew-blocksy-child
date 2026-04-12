@@ -1673,6 +1673,30 @@ body.stew-theme ul.products li.product .price .woocommerce-Price-amount {
     border-radius: var(--stew-radius);
 }
 
+/* "View Basket" button in WooCommerce notices */
+.woocommerce-message .button,
+.woocommerce-message .wc-forward,
+.woocommerce-info .button,
+.woocommerce-info .wc-forward {
+    background: #1A1A1A !important;
+    color: #FFFFFF !important;
+    padding: 10px 20px !important;
+    border-radius: 6px !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    font-size: 0.875rem !important;
+    display: inline-block !important;
+    transition: background 0.25s ease !important;
+}
+
+.woocommerce-message .button:hover,
+.woocommerce-message .wc-forward:hover,
+.woocommerce-info .button:hover,
+.woocommerce-info .wc-forward:hover {
+    background: #C9A96E !important;
+    color: #FFFFFF !important;
+}
+
 /* ============================================
    WooCommerce Quantity Input
    ============================================ */
