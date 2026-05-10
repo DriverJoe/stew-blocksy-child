@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.0.1' );
+define( 'STEW_CHILD_VERSION', '2.0.2' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -210,11 +210,11 @@ function stew_cart_toast_scripts() {
         display: none !important;
     }
 
-    /* Header cart icon — inline with nav */
+    /* Header cart icon — sits left of Blocksy's search/hamburger triggers */
     .stew-header-cart {
         position: fixed;
         top: 0;
-        right: 24px;
+        right: 64px;
         z-index: 9999;
         display: flex;
         align-items: center;
@@ -223,6 +223,11 @@ function stew_cart_toast_scripts() {
         text-decoration: none;
         transition: color 0.25s ease;
         height: var(--header-height, 70px);
+    }
+    @media (max-width: 999.98px) {
+        .stew-header-cart {
+            right: 60px;
+        }
     }
     .stew-header-cart:hover {
         color: #C9A96E;
