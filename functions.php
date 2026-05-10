@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.0.2' );
+define( 'STEW_CHILD_VERSION', '2.0.3' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -210,11 +210,13 @@ function stew_cart_toast_scripts() {
         display: none !important;
     }
 
-    /* Header cart icon — sits left of Blocksy's search/hamburger triggers */
+    /* Header cart icon — sits left of Blocksy's search/hamburger triggers.
+       Right offset accommodates Blocksy's search button on desktop (~85px from
+       viewport edge at >=1000px) and the hamburger on mobile (~30px). */
     .stew-header-cart {
         position: fixed;
         top: 0;
-        right: 64px;
+        right: 110px;
         z-index: 9999;
         display: flex;
         align-items: center;
