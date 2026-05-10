@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.0.3' );
+define( 'STEW_CHILD_VERSION', '2.0.4' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -210,26 +210,17 @@ function stew_cart_toast_scripts() {
         display: none !important;
     }
 
-    /* Header cart icon — sits left of Blocksy's search/hamburger triggers.
-       Right offset accommodates Blocksy's search button on desktop (~85px from
-       viewport edge at >=1000px) and the hamburger on mobile (~30px). */
+    /* Header cart icon — moved inline into Blocksy's primary header flex
+       container by JS below, so flexbox handles spacing automatically. */
     .stew-header-cart {
-        position: fixed;
-        top: 0;
-        right: 110px;
-        z-index: 9999;
-        display: flex;
+        position: relative;
+        display: inline-flex;
         align-items: center;
         gap: 4px;
+        margin-left: 1rem;
         color: #1A1A1A;
         text-decoration: none;
         transition: color 0.25s ease;
-        height: var(--header-height, 70px);
-    }
-    @media (max-width: 999.98px) {
-        .stew-header-cart {
-            right: 60px;
-        }
     }
     .stew-header-cart:hover {
         color: #C9A96E;
@@ -306,9 +297,17 @@ function stew_cart_toast_scripts() {
 
     <script>
     jQuery(function($) {
+        // Move the cart icon inline into Blocksy's primary header flex container,
+        // before the search trigger. Flexbox spacing then handles desktop + mobile
+        // without needing manual right offsets.
+        var $cart = $('.stew-header-cart');
+        var $primary = $('[data-items="primary"]').first();
+        if ($cart.length && $primary.length && !$primary.find('.stew-header-cart').length) {
+            $primary.append($cart);
+        }
+
         var toastTimer;
         $(document.body).on('added_to_cart', function(e, fragments, cartHash, $btn) {
-            // Show toast
             var $toast = $('#stew-cart-toast');
             clearTimeout(toastTimer);
             $toast.addClass('stew-toast--visible');
