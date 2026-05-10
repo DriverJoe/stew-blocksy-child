@@ -4,11 +4,11 @@
  *
  * Funktionen:
  * - Registrierung der Rollen 'wholesale' und 'vip_partner'
- * - Rollenbasierte Preisrabatte (Haendler 15%, VIP 25%)
- * - Hinweis "Einloggen fuer Haendlerpreise" fuer nicht eingeloggte Besucher
+ * - Rollenbasierte Preisrabatte (Händler 15%, VIP 25%)
+ * - Hinweis "Einloggen für Händlerpreise" für nicht eingeloggte Besucher
  * - Registrierungsformular-Erweiterung (Kontotyp, Firma)
- * - Admin-Benachrichtigung bei neuen Haendler-Registrierungen
- * - Admin-Spalte fuer ausstehende Haendler-Antraege
+ * - Admin-Benachrichtigung bei neuen Händler-Registrierungen
+ * - Admin-Spalte für ausstehende Händler-Anträge
  * - Admin-Einstellungsseite unter WooCommerce
  *
  * Einbindung in functions.php:
@@ -39,10 +39,10 @@ function stew_register_custom_roles() {
         'delete_posts'           => false,
     );
 
-    // Wholesale-Rolle (Haendler)
+    // Wholesale-Rolle (Händler)
     add_role(
         'wholesale',
-        __( 'Haendler', 'stew' ),
+        __( 'Händler', 'stew' ),
         $customer_caps
     );
 
@@ -56,7 +56,7 @@ function stew_register_custom_roles() {
     // Pending-Wholesale-Rolle (wartend auf Freigabe)
     add_role(
         'pending_wholesale',
-        __( 'Haendler (ausstehend)', 'stew' ),
+        __( 'Händler (ausstehend)', 'stew' ),
         $customer_caps
     );
 }
@@ -116,7 +116,7 @@ function stew_register_pricing_settings() {
     register_setting( 'stew_pricing_options', 'stew_trade_notice_text', array(
         'type'              => 'string',
         'sanitize_callback' => 'sanitize_text_field',
-        'default'           => 'Einloggen fuer Haendlerpreise',
+        'default'           => 'Einloggen für Händlerpreise',
     ) );
     register_setting( 'stew_pricing_options', 'stew_admin_notify_email', array(
         'type'              => 'string',
@@ -137,7 +137,7 @@ function stew_render_pricing_settings_page() {
     $wholesale_discount   = get_option( 'stew_wholesale_discount', 15 );
     $vip_discount         = get_option( 'stew_vip_discount', 25 );
     $trade_notice_enabled = get_option( 'stew_trade_notice_enabled', 'yes' );
-    $trade_notice_text    = get_option( 'stew_trade_notice_text', 'Einloggen fuer Haendlerpreise' );
+    $trade_notice_text    = get_option( 'stew_trade_notice_text', 'Einloggen für Händlerpreise' );
     $admin_notify_email   = get_option( 'stew_admin_notify_email', get_option( 'admin_email' ) );
     ?>
     <div class="wrap">
@@ -149,7 +149,7 @@ function stew_render_pricing_settings_page() {
                 <tr>
                     <th scope="row">
                         <label for="stew_wholesale_discount">
-                            <?php echo esc_html__( 'Haendler-Rabatt (%)', 'stew' ); ?>
+                            <?php echo esc_html__( 'Händler-Rabatt (%)', 'stew' ); ?>
                         </label>
                     </th>
                     <td>
@@ -157,7 +157,7 @@ function stew_render_pricing_settings_page() {
                                value="<?php echo esc_attr( $wholesale_discount ); ?>"
                                min="0" max="100" step="1" class="small-text" />
                         <p class="description">
-                            <?php echo esc_html__( 'Prozentualer Rabatt fuer Haendler (Standard: 15%)', 'stew' ); ?>
+                            <?php echo esc_html__( 'Prozentualer Rabatt für Händler (Standard: 15%)', 'stew' ); ?>
                         </p>
                     </td>
                 </tr>
@@ -172,14 +172,14 @@ function stew_render_pricing_settings_page() {
                                value="<?php echo esc_attr( $vip_discount ); ?>"
                                min="0" max="100" step="1" class="small-text" />
                         <p class="description">
-                            <?php echo esc_html__( 'Prozentualer Rabatt fuer VIP-Partner (Standard: 25%)', 'stew' ); ?>
+                            <?php echo esc_html__( 'Prozentualer Rabatt für VIP-Partner (Standard: 25%)', 'stew' ); ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
                         <label for="stew_trade_notice_enabled">
-                            <?php echo esc_html__( 'Haendlerhinweis anzeigen', 'stew' ); ?>
+                            <?php echo esc_html__( 'Händlerhinweis anzeigen', 'stew' ); ?>
                         </label>
                     </th>
                     <td>
@@ -192,7 +192,7 @@ function stew_render_pricing_settings_page() {
                             </option>
                         </select>
                         <p class="description">
-                            <?php echo esc_html__( 'Zeigt einen Hinweis auf Shop- und Produktseiten fuer nicht eingeloggte Besucher.', 'stew' ); ?>
+                            <?php echo esc_html__( 'Zeigt einen Hinweis auf Shop- und Produktseiten für nicht eingeloggte Besucher.', 'stew' ); ?>
                         </p>
                     </td>
                 </tr>
@@ -219,7 +219,7 @@ function stew_render_pricing_settings_page() {
                                value="<?php echo esc_attr( $admin_notify_email ); ?>"
                                class="regular-text" />
                         <p class="description">
-                            <?php echo esc_html__( 'E-Mail-Adresse fuer Benachrichtigungen bei neuen Haendler-Registrierungen.', 'stew' ); ?>
+                            <?php echo esc_html__( 'E-Mail-Adresse für Benachrichtigungen bei neuen Händler-Registrierungen.', 'stew' ); ?>
                         </p>
                     </td>
                 </tr>
@@ -228,18 +228,18 @@ function stew_render_pricing_settings_page() {
         </form>
 
         <hr />
-        <h2><?php echo esc_html__( 'Ausstehende Kundenantraege', 'stew' ); ?></h2>
+        <h2><?php echo esc_html__( 'Ausstehende Kundenanträge', 'stew' ); ?></h2>
         <?php stew_render_pending_customers_table(); ?>
 
         <hr />
-        <h2><?php echo esc_html__( 'Ausstehende Haendler-Antraege', 'stew' ); ?></h2>
+        <h2><?php echo esc_html__( 'Ausstehende Händler-Anträge', 'stew' ); ?></h2>
         <?php stew_render_pending_wholesale_table(); ?>
     </div>
     <?php
 }
 
 /**
- * Tabelle der ausstehenden Haendler-Antraege rendern.
+ * Tabelle der ausstehenden Händler-Anträge rendern.
  */
 function stew_render_pending_wholesale_table() {
     $pending_users = get_users( array(
@@ -249,7 +249,7 @@ function stew_render_pending_wholesale_table() {
     ) );
 
     if ( empty( $pending_users ) ) {
-        echo '<p>' . esc_html__( 'Keine ausstehenden Antraege.', 'stew' ) . '</p>';
+        echo '<p>' . esc_html__( 'Keine ausstehenden Anträge.', 'stew' ) . '</p>';
         return;
     }
     ?>
@@ -300,7 +300,7 @@ function stew_render_pending_wholesale_table() {
 
 
 /**
- * Tabelle der ausstehenden Kundenantraege (Privatkunden) rendern.
+ * Tabelle der ausstehenden Kundenanträge (Privatkunden) rendern.
  */
 function stew_render_pending_customers_table() {
     $pending_users = get_users( array(
@@ -310,7 +310,7 @@ function stew_render_pending_customers_table() {
     ) );
 
     if ( empty( $pending_users ) ) {
-        echo '<p>' . esc_html__( 'Keine ausstehenden Kundenantraege.', 'stew' ) . '</p>';
+        echo '<p>' . esc_html__( 'Keine ausstehenden Kundenanträge.', 'stew' ) . '</p>';
         return;
     }
     ?>
@@ -368,7 +368,7 @@ function stew_handle_approve_customer() {
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_approve_customer_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitspruefung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
     }
 
     $user = get_userdata( $user_id );
@@ -383,9 +383,9 @@ function stew_handle_approve_customer() {
     $subject = __( 'Ihr Konto wurde freigeschaltet — STEW', 'stew' );
     $message = sprintf(
         "Guten Tag %s,\n\n" .
-        "Ihr Konto bei STEW wurde freigeschaltet. Sie koennen ab sofort einkaufen.\n\n" .
+        "Ihr Konto bei STEW wurde freigeschaltet. Sie können ab sofort einkaufen.\n\n" .
         "Loggen Sie sich hier ein:\n%s\n\n" .
-        "Freundliche Gruesse\nIhr STEW Team",
+        "Freundliche Grüsse\nIhr STEW Team",
         $user->display_name,
         wp_login_url( wc_get_page_permalink( 'shop' ) )
     );
@@ -397,7 +397,7 @@ function stew_handle_approve_customer() {
 add_action( 'admin_post_stew_approve_customer', 'stew_handle_approve_customer' );
 
 /**
- * Kundenantrag ablehnen (Konto loeschen).
+ * Kundenantrag ablehnen (Konto löschen).
  */
 function stew_handle_reject_customer() {
     $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
@@ -407,7 +407,7 @@ function stew_handle_reject_customer() {
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_reject_customer_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitspruefung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
     }
 
     $user = get_userdata( $user_id );
@@ -419,9 +419,9 @@ function stew_handle_reject_customer() {
     $message = sprintf(
         "Guten Tag %s,\n\n" .
         "Leider konnten wir Ihren Kontoantrag nicht freigeben. " .
-        "Bitte kontaktieren Sie uns fuer weitere Informationen:\n" .
+        "Bitte kontaktieren Sie uns für weitere Informationen:\n" .
         "info@stew.ch\n\n" .
-        "Freundliche Gruesse\nIhr STEW Team",
+        "Freundliche Grüsse\nIhr STEW Team",
         $user->display_name
     );
     wp_mail( $user->user_email, $subject, $message );
@@ -436,12 +436,12 @@ add_action( 'admin_post_stew_reject_customer', 'stew_handle_reject_customer' );
 
 /**
  * ============================================================================
- * 3. ADMIN-AKTIONEN: HAENDLER FREIGEBEN / ABLEHNEN
+ * 3. ADMIN-AKTIONEN: HÄNDLER FREIGEBEN / ABLEHNEN
  * ============================================================================
  */
 
 /**
- * Haendler-Antrag freigeben.
+ * Händler-Antrag freigeben.
  */
 function stew_handle_approve_wholesale() {
     $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
@@ -451,7 +451,7 @@ function stew_handle_approve_wholesale() {
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_approve_wholesale_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitspruefung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
     }
 
     $user = get_userdata( $user_id );
@@ -459,21 +459,21 @@ function stew_handle_approve_wholesale() {
         wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew' ) );
     }
 
-    // Rolle aendern
+    // Rolle ändern
     $user->set_role( 'wholesale' );
     update_user_meta( $user_id, 'stew_wholesale_approved', current_time( 'mysql' ) );
     update_user_meta( $user_id, 'stew_wholesale_approved_by', get_current_user_id() );
 
     // Benachrichtigung an den Benutzer
-    $subject = __( 'Ihr Haendlerkonto wurde freigeschaltet — STEW', 'stew' );
+    $subject = __( 'Ihr Händlerkonto wurde freigeschaltet — STEW', 'stew' );
     $message = sprintf(
         /* translators: %s: user display name */
         __(
             "Guten Tag %s,\n\n" .
-            "Ihr Haendlerkonto bei STEW wurde freigeschaltet. Sie profitieren ab sofort von unseren Haendlerpreisen.\n\n" .
+            "Ihr Händlerkonto bei STEW wurde freigeschaltet. Sie profitieren ab sofort von unseren Händlerpreisen.\n\n" .
             "Loggen Sie sich ein, um die reduzierten Preise zu sehen:\n" .
             "%s\n\n" .
-            "Freundliche Gruesse\n" .
+            "Freundliche Grüsse\n" .
             "Ihr STEW Team",
             'stew'
         ),
@@ -488,7 +488,7 @@ function stew_handle_approve_wholesale() {
 add_action( 'admin_post_stew_approve_wholesale', 'stew_handle_approve_wholesale' );
 
 /**
- * Haendler-Antrag ablehnen.
+ * Händler-Antrag ablehnen.
  */
 function stew_handle_reject_wholesale() {
     $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
@@ -498,7 +498,7 @@ function stew_handle_reject_wholesale() {
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_reject_wholesale_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitspruefung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
     }
 
     $user = get_userdata( $user_id );
@@ -511,15 +511,15 @@ function stew_handle_reject_wholesale() {
     update_user_meta( $user_id, 'stew_wholesale_rejected', current_time( 'mysql' ) );
 
     // Benachrichtigung an den Benutzer
-    $subject = __( 'Ihr Haendlerantrag bei STEW', 'stew' );
+    $subject = __( 'Ihr Händlerantrag bei STEW', 'stew' );
     $message = sprintf(
         /* translators: %s: user display name */
         __(
             "Guten Tag %s,\n\n" .
-            "Leider konnten wir Ihren Haendlerantrag nicht freigeben. " .
-            "Bitte kontaktieren Sie uns fuer weitere Informationen:\n" .
+            "Leider konnten wir Ihren Händlerantrag nicht freigeben. " .
+            "Bitte kontaktieren Sie uns für weitere Informationen:\n" .
             "info@stew.ch\n\n" .
-            "Freundliche Gruesse\n" .
+            "Freundliche Grüsse\n" .
             "Ihr STEW Team",
             'stew'
         ),
@@ -533,7 +533,7 @@ function stew_handle_reject_wholesale() {
 add_action( 'admin_post_stew_reject_wholesale', 'stew_handle_reject_wholesale' );
 
 /**
- * Admin-Notices fuer Freigabe/Ablehnung.
+ * Admin-Notices für Freigabe/Ablehnung.
  */
 function stew_admin_notices_wholesale() {
     $screen = get_current_screen();
@@ -543,13 +543,13 @@ function stew_admin_notices_wholesale() {
 
     if ( isset( $_GET['approved'] ) && '1' === $_GET['approved'] ) {
         echo '<div class="notice notice-success is-dismissible"><p>';
-        echo esc_html__( 'Haendlerkonto wurde erfolgreich freigeschaltet.', 'stew' );
+        echo esc_html__( 'Händlerkonto wurde erfolgreich freigeschaltet.', 'stew' );
         echo '</p></div>';
     }
 
     if ( isset( $_GET['rejected'] ) && '1' === $_GET['rejected'] ) {
         echo '<div class="notice notice-warning is-dismissible"><p>';
-        echo esc_html__( 'Haendlerantrag wurde abgelehnt.', 'stew' );
+        echo esc_html__( 'Händlerantrag wurde abgelehnt.', 'stew' );
         echo '</p></div>';
     }
 
@@ -575,7 +575,7 @@ add_action( 'admin_notices', 'stew_admin_notices_wholesale' );
  */
 
 /**
- * Rabattprozentsatz fuer die aktuelle Benutzerrolle ermitteln.
+ * Rabattprozentsatz für die aktuelle Benutzerrolle ermitteln.
  *
  * @return float Rabatt in Prozent (0-100).
  */
@@ -669,7 +669,7 @@ add_filter( 'woocommerce_product_variation_get_price', 'stew_filter_variation_pr
 // Note: variation regular_price is NOT filtered — same strikethrough logic.
 
 /**
- * Variationspreis-Hash anpassen fuer korrektes Caching.
+ * Variationspreis-Hash anpassen für korrektes Caching.
  *
  * @param array      $hash    Der Preis-Hash.
  * @param WC_Product $product Das Produkt.
@@ -704,7 +704,7 @@ function stew_display_discount_badge() {
     if ( in_array( 'vip_partner', $roles, true ) ) {
         $label = __( 'VIP-Partner-Preis', 'stew' );
     } elseif ( in_array( 'wholesale', $roles, true ) ) {
-        $label = __( 'Haendlerpreis', 'stew' );
+        $label = __( 'Händlerpreis', 'stew' );
     }
 
     if ( $label ) {
@@ -751,7 +751,7 @@ function stew_custom_price_html( $price_html, $product ) {
 add_filter( 'woocommerce_get_price_html', 'stew_custom_price_html', 100, 2 );
 
 /**
- * Warenkorb-Preis mit Rabatt anpassen (fuer korrekte Berechnung).
+ * Warenkorb-Preis mit Rabatt anpassen (für korrekte Berechnung).
  *
  * @param WC_Cart $cart Der Warenkorb.
  */
@@ -787,20 +787,20 @@ add_action( 'woocommerce_before_calculate_totals', 'stew_adjust_cart_prices', 99
 
 /**
  * ============================================================================
- * 5. HAENDLERHINWEIS FUER NICHT EINGELOGGTE BESUCHER
+ * 5. HÄNDLERHINWEIS FÜR NICHT EINGELOGGTE BESUCHER
  * ============================================================================
  */
 
 /**
- * Hinweis "Einloggen fuer Haendlerpreise" auf Shop- und Produktseiten anzeigen.
+ * Hinweis "Einloggen für Händlerpreise" auf Shop- und Produktseiten anzeigen.
  */
 function stew_display_trade_pricing_notice() {
-    // Nur fuer nicht eingeloggte Besucher
+    // Nur für nicht eingeloggte Besucher
     if ( is_user_logged_in() ) {
         return;
     }
 
-    // Pruefen ob aktiviert
+    // Prüfen ob aktiviert
     if ( 'yes' !== get_option( 'stew_trade_notice_enabled', 'yes' ) ) {
         return;
     }
@@ -810,7 +810,7 @@ function stew_display_trade_pricing_notice() {
         return;
     }
 
-    $notice_text = get_option( 'stew_trade_notice_text', 'Einloggen fuer Haendlerpreise' );
+    $notice_text = get_option( 'stew_trade_notice_text', 'Einloggen für Händlerpreise' );
     $login_url   = wc_get_page_permalink( 'myaccount' );
 
     printf(
@@ -835,7 +835,7 @@ add_action( 'woocommerce_single_product_summary', 'stew_display_trade_pricing_no
  */
 
 /**
- * Zusaetzliche Felder im WooCommerce-Registrierungsformular.
+ * Zusätzliche Felder im WooCommerce-Registrierungsformular.
  */
 function stew_registration_form_fields() {
     ?>
@@ -845,7 +845,7 @@ function stew_registration_form_fields() {
         </label>
         <select name="stew_account_type" id="stew_account_type" class="woocommerce-Input woocommerce-Input--select input-select" required>
             <option value="private"><?php echo esc_html__( 'Privatkunde', 'stew' ); ?></option>
-            <option value="wholesale"><?php echo esc_html__( 'Haendler / Gewerbe', 'stew' ); ?></option>
+            <option value="wholesale"><?php echo esc_html__( 'Händler / Gewerbe', 'stew' ); ?></option>
         </select>
     </p>
 
@@ -942,12 +942,12 @@ add_action( 'woocommerce_created_customer', 'stew_save_registration_fields' );
 
 /**
  * ============================================================================
- * 7. ADMIN-BENACHRICHTIGUNG BEI NEUEN HAENDLER-REGISTRIERUNGEN
+ * 7. ADMIN-BENACHRICHTIGUNG BEI NEUEN HÄNDLER-REGISTRIERUNGEN
  * ============================================================================
  */
 
 /**
- * Admin per E-Mail ueber neue Haendler-Registrierung benachrichtigen.
+ * Admin per E-Mail über neue Händler-Registrierung benachrichtigen.
  *
  * @param int    $user_id      Benutzer-ID.
  * @param string $company_name Firmenname.
@@ -962,7 +962,7 @@ function stew_notify_admin_new_wholesale( $user_id, $company_name ) {
 
     $subject = sprintf(
         /* translators: %s: company name */
-        __( '[STEW] Neuer Haendlerantrag: %s', 'stew' ),
+        __( '[STEW] Neuer Händlerantrag: %s', 'stew' ),
         $company_name
     );
 
@@ -970,13 +970,13 @@ function stew_notify_admin_new_wholesale( $user_id, $company_name ) {
 
     $message = sprintf(
         __(
-            "Neuer Haendlerantrag eingegangen:\n\n" .
+            "Neuer Händlerantrag eingegangen:\n\n" .
             "Name: %1\$s\n" .
             "E-Mail: %2\$s\n" .
             "Firma: %3\$s\n" .
             "UID: %4\$s\n" .
             "Registriert: %5\$s\n\n" .
-            "Antrag pruefen und freigeben:\n%6\$s",
+            "Antrag prüfen und freigeben:\n%6\$s",
             'stew'
         ),
         $user->display_name,
@@ -998,7 +998,7 @@ function stew_notify_admin_new_wholesale( $user_id, $company_name ) {
  */
 
 /**
- * Spalte "Kontotyp" zur Benutzerliste hinzufuegen.
+ * Spalte "Kontotyp" zur Benutzerliste hinzufügen.
  *
  * @param array $columns Spalten.
  * @return array Erweiterte Spalten.
@@ -1011,7 +1011,7 @@ function stew_add_user_columns( $columns ) {
 add_filter( 'manage_users_columns', 'stew_add_user_columns' );
 
 /**
- * Spalteninhalt fuer "Kontotyp" und "Firma" rendern.
+ * Spalteninhalt für "Kontotyp" und "Firma" rendern.
  *
  * @param string $value       Aktueller Wert.
  * @param string $column_name Spaltenname.
@@ -1027,10 +1027,10 @@ function stew_render_user_columns( $value, $column_name, $user_id ) {
             return '<span style="color:#d4af37;font-weight:bold;">' . esc_html__( 'VIP-Partner', 'stew' ) . '</span>';
         }
         if ( in_array( 'wholesale', $roles, true ) ) {
-            return '<span style="color:#2196f3;font-weight:bold;">' . esc_html__( 'Haendler', 'stew' ) . '</span>';
+            return '<span style="color:#2196f3;font-weight:bold;">' . esc_html__( 'Händler', 'stew' ) . '</span>';
         }
         if ( in_array( 'pending_wholesale', $roles, true ) ) {
-            return '<span style="color:#ff9800;font-weight:bold;">' . esc_html__( 'Haendler (ausstehend)', 'stew' ) . '</span>';
+            return '<span style="color:#ff9800;font-weight:bold;">' . esc_html__( 'Händler (ausstehend)', 'stew' ) . '</span>';
         }
         return esc_html__( 'Privatkunde', 'stew' );
     }
@@ -1060,17 +1060,17 @@ add_filter( 'manage_users_sortable_columns', 'stew_sortable_user_columns' );
 
 /**
  * ============================================================================
- * 9. ADMIN-DASHBOARD: AUSSTEHENDE ANTRAEGE ANZEIGEN
+ * 9. ADMIN-DASHBOARD: AUSSTEHENDE ANTRÄGE ANZEIGEN
  * ============================================================================
  */
 
 /**
- * Dashboard-Widget fuer ausstehende Haendler-Antraege.
+ * Dashboard-Widget für ausstehende Händler-Anträge.
  */
 function stew_add_dashboard_widget() {
     wp_add_dashboard_widget(
         'stew_pending_wholesale',
-        __( 'Ausstehende Kontenantraege', 'stew' ),
+        __( 'Ausstehende Kontenanträge', 'stew' ),
         'stew_render_dashboard_widget'
     );
 }
@@ -1099,13 +1099,13 @@ function stew_render_dashboard_widget() {
     $total = $count_wholesale + $count_customers;
 
     if ( 0 === $total ) {
-        echo '<p>' . esc_html__( 'Keine ausstehenden Antraege.', 'stew' ) . '</p>';
+        echo '<p>' . esc_html__( 'Keine ausstehenden Anträge.', 'stew' ) . '</p>';
         return;
     }
 
     printf(
         '<p><strong>%s</strong></p>',
-        sprintf( esc_html__( '%d Antrag/Antraege ausstehend', 'stew' ), $total )
+        sprintf( esc_html__( '%d Antrag/Anträge ausstehend', 'stew' ), $total )
     );
 
     if ( ! empty( $pending_customers ) ) {
@@ -1122,7 +1122,7 @@ function stew_render_dashboard_widget() {
     }
 
     if ( ! empty( $pending_wholesale ) ) {
-        echo '<h4>' . esc_html__( 'Haendler', 'stew' ) . '</h4>';
+        echo '<h4>' . esc_html__( 'Händler', 'stew' ) . '</h4>';
         echo '<ul>';
         foreach ( $pending_wholesale as $user ) {
             $company = get_user_meta( $user->ID, 'billing_company', true );
@@ -1139,21 +1139,21 @@ function stew_render_dashboard_widget() {
     printf(
         '<p><a href="%s" class="button">%s</a></p>',
         esc_url( admin_url( 'admin.php?page=stew-role-pricing' ) ),
-        esc_html__( 'Alle Antraege ansehen', 'stew' )
+        esc_html__( 'Alle Anträge ansehen', 'stew' )
     );
 }
 
 
 /**
  * ============================================================================
- * 10. ZAHLUNGSMETHODE "RECHNUNG" NUR FUER HAENDLER
+ * 10. ZAHLUNGSMETHODE "RECHNUNG" NUR FÜR HÄNDLER
  * ============================================================================
  */
 
 /**
- * Zahlungsmethode "Rechnung" nur fuer Wholesale/VIP-Rollen anzeigen.
+ * Zahlungsmethode "Rechnung" nur für Wholesale/VIP-Rollen anzeigen.
  *
- * @param array $available_gateways Verfuegbare Zahlungsmethoden.
+ * @param array $available_gateways Verfügbare Zahlungsmethoden.
  * @return array Gefilterte Zahlungsmethoden.
  */
 function stew_restrict_invoice_payment( $available_gateways ) {
@@ -1161,7 +1161,7 @@ function stew_restrict_invoice_payment( $available_gateways ) {
         return $available_gateways;
     }
 
-    // "Rechnung" (cheque) nur fuer Haendler und VIP-Partner
+    // "Rechnung" (cheque) nur für Händler und VIP-Partner
     if ( isset( $available_gateways['cheque'] ) ) {
         if ( ! is_user_logged_in() ) {
             unset( $available_gateways['cheque'] );
@@ -1191,7 +1191,7 @@ add_filter( 'woocommerce_available_payment_gateways', 'stew_restrict_invoice_pay
  */
 
 /**
- * Inline-CSS fuer den Haendlerhinweis und Rabatt-Badge.
+ * Inline-CSS für den Händlerhinweis und Rabatt-Badge.
  */
 function stew_role_pricing_inline_styles() {
     if ( ! is_shop() && ! is_product() && ! is_product_category() && ! is_product_tag() ) {

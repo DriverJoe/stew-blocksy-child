@@ -752,86 +752,19 @@ add_filter( 'woocommerce_output_related_products_args', 'stew_related_products_a
    ===================================================================== */
 
 /**
- * Add "Technische Daten" tab to WooCommerce product tabs.
+ * Rename the WC default "Additional information" tab to "Technische Daten".
+ * Tab content is rendered by the template override at
+ * woocommerce/single-product/tabs/additional-information.php, which reads
+ * both ACF postmeta and WC product attributes.
  */
-function stew_product_specs_tab( $tabs ) {
-    global $product;
-    if ( ! $product ) return $tabs;
-
-    $pid   = $product->get_id();
-    $power = get_post_meta( $pid, 'power_watts', true );
-    $ip    = get_post_meta( $pid, 'ip_protection', true );
-    $part  = get_post_meta( $pid, 'manufacturer_part_number', true );
-    $brand = get_post_meta( $pid, 'manufacturer_brand', true );
-
-    // Only add tab if product has specs
-    if ( $power || $ip || $part || $brand ) {
-        $tabs['stew_specs'] = array(
-            'title'    => __( 'Technische Daten', 'stew-blocksy-child' ),
-            'priority' => 15,
-            'callback' => 'stew_product_specs_tab_content',
-        );
+function stew_rename_additional_info_tab( $tabs ) {
+    if ( isset( $tabs['additional_information'] ) ) {
+        $tabs['additional_information']['title']    = __( 'Technische Daten', 'stew-blocksy-child' );
+        $tabs['additional_information']['priority'] = 15;
     }
     return $tabs;
 }
-add_filter( 'woocommerce_product_tabs', 'stew_product_specs_tab' );
-
-/**
- * Output the content of the "Technische Daten" tab.
- */
-function stew_product_specs_tab_content() {
-    global $product;
-    $pid = $product->get_id();
-
-    $fields = array(
-        'cc_cv_type'               => 'CC/CV Typ',
-        'power_watts'              => 'Leistung',
-        'output_current_ma'        => 'Ausgangsstrom',
-        'output_channels'          => 'Ausgangskanäle',
-        'ip_protection'            => 'IP-Schutzart',
-        'input_voltage'            => 'Eingangsspannung',
-        'series_type'              => 'Serien-Typ',
-        'manufacturer_brand'       => 'Hersteller',
-        'manufacturer_part_number' => 'Hersteller-Art.-Nr.',
-    );
-
-    // Dimensions
-    $dim_l = get_post_meta( $pid, 'dimensions_length_mm', true );
-    $dim_w = get_post_meta( $pid, 'dimensions_width_mm', true );
-    $dim_h = get_post_meta( $pid, 'dimensions_height_mm', true );
-
-    echo '<table class="stew-specs-table" style="width:100%;border-collapse:collapse;">';
-    echo '<tbody>';
-    foreach ( $fields as $key => $label ) {
-        $val = get_post_meta( $pid, $key, true );
-        if ( empty( $val ) ) continue;
-        if ( is_array( $val ) ) {
-            $val = implode( ', ', array_map( 'stew_dimming_label', $val ) );
-        }
-        if ( $key === 'power_watts' ) $val .= ' W';
-        echo '<tr>';
-        echo '<th style="padding:0.75rem 1rem;font-size:0.875rem;font-weight:500;color:#737373;text-align:left;width:40%;border-bottom:1px solid #E8E5E0;">' . esc_html( $label ) . '</th>';
-        echo '<td style="padding:0.75rem 1rem;font-size:0.875rem;border-bottom:1px solid #E8E5E0;">' . esc_html( $val ) . '</td>';
-        echo '</tr>';
-    }
-    // Dimensions row
-    if ( $dim_l && $dim_w && $dim_h ) {
-        echo '<tr>';
-        echo '<th style="padding:0.75rem 1rem;font-size:0.875rem;font-weight:500;color:#737373;text-align:left;width:40%;border-bottom:1px solid #E8E5E0;">Abmessungen (L&times;B&times;H)</th>';
-        echo '<td style="padding:0.75rem 1rem;font-size:0.875rem;border-bottom:1px solid #E8E5E0;">' . esc_html( $dim_l . ' × ' . $dim_w . ' × ' . $dim_h . ' mm' ) . '</td>';
-        echo '</tr>';
-    }
-    // Dimming
-    $dimming = get_post_meta( $pid, 'dimming_type', true );
-    if ( $dimming ) {
-        $dim_val = is_array( $dimming ) ? implode( ', ', array_map( 'stew_dimming_label', $dimming ) ) : stew_dimming_label( $dimming );
-        echo '<tr>';
-        echo '<th style="padding:0.75rem 1rem;font-size:0.875rem;font-weight:500;color:#737373;text-align:left;width:40%;border-bottom:1px solid #E8E5E0;">Dimmung</th>';
-        echo '<td style="padding:0.75rem 1rem;font-size:0.875rem;border-bottom:1px solid #E8E5E0;">' . esc_html( $dim_val ) . '</td>';
-        echo '</tr>';
-    }
-    echo '</tbody></table>';
-}
+add_filter( 'woocommerce_product_tabs', 'stew_rename_additional_info_tab', 98 );
 
 /* =====================================================================
    19. REGISTER SHOP FILTER SIDEBAR
