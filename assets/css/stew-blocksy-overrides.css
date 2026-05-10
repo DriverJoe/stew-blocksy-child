@@ -449,10 +449,7 @@ footer.ct-footer a:hover,
 [data-footer*="type-1"] .ct-footer h4,
 footer.ct-footer h2,
 footer.ct-footer h3,
-footer.ct-footer h4,
-[data-footer] h2,
-[data-footer] h3,
-[data-footer] h4 {
+footer.ct-footer h4 {
     color: #FFFFFF !important;
     font-family: var(--stew-font, 'Inter', sans-serif);
     font-weight: 600;
