@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.0.5' );
+define( 'STEW_CHILD_VERSION', '2.0.6' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -297,14 +297,24 @@ function stew_cart_toast_scripts() {
 
     <script>
     jQuery(function($) {
-        // Move the cart icon inline into Blocksy's header, immediately before
-        // the search trigger. They become flex siblings so spacing comes for
-        // free across desktop + mobile.
-        var $cart = $('.stew-header-cart');
-        var $search = $('button.ct-header-search').first();
-        if ($cart.length && $search.length && !$search.prev().is('.stew-header-cart')) {
-            $cart.detach().insertBefore($search);
+        // Move the cart icon inline into Blocksy's header, before the visible
+        // trigger button (search on desktop, hamburger on mobile). Flexbox
+        // spacing then handles layout without manual right offsets.
+        function stewPlaceCart() {
+            var $cart = $('.stew-header-cart');
+            if (!$cart.length) return;
+            var $anchor = $('button.ct-header-search:visible, button.ct-header-trigger.ct-toggle:visible').first();
+            if ($anchor.length && !$anchor.prev().is('.stew-header-cart')) {
+                $cart.detach().insertBefore($anchor);
+            }
         }
+        stewPlaceCart();
+        // Re-place on resize so it follows the active breakpoint
+        var resizeTimer;
+        $(window).on('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(stewPlaceCart, 150);
+        });
 
         var toastTimer;
         $(document.body).on('added_to_cart', function(e, fragments, cartHash, $btn) {
