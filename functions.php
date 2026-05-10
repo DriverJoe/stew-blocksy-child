@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.0.4' );
+define( 'STEW_CHILD_VERSION', '2.0.5' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -297,13 +297,13 @@ function stew_cart_toast_scripts() {
 
     <script>
     jQuery(function($) {
-        // Move the cart icon inline into Blocksy's primary header flex container,
-        // before the search trigger. Flexbox spacing then handles desktop + mobile
-        // without needing manual right offsets.
+        // Move the cart icon inline into Blocksy's header, immediately before
+        // the search trigger. They become flex siblings so spacing comes for
+        // free across desktop + mobile.
         var $cart = $('.stew-header-cart');
-        var $primary = $('[data-items="primary"]').first();
-        if ($cart.length && $primary.length && !$primary.find('.stew-header-cart').length) {
-            $primary.append($cart);
+        var $search = $('button.ct-header-search').first();
+        if ($cart.length && $search.length && !$search.prev().is('.stew-header-cart')) {
+            $cart.detach().insertBefore($search);
         }
 
         var toastTimer;
