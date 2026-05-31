@@ -280,10 +280,11 @@ ul.products li.product [class*="categor"]:not(.button) {
    ========================================================================== */
 
 /* Match Blocksy's specificity: [data-header*="type-1"] .ct-header */
-[data-header*="type-1"] .ct-header,
-.ct-header,
+/* :not(.ct-panel) excludes the offcanvas mobile drawer which also has class ct-header */
+[data-header*="type-1"] .ct-header:not(.ct-panel),
+.ct-header:not(.ct-panel),
 header[data-header],
-[data-header] {
+[data-header]:not(.ct-panel) {
     background: rgba(255, 255, 255, 0.80) !important;
     background-color: rgba(255, 255, 255, 0.80) !important;
     background-image: none !important;
@@ -295,18 +296,18 @@ header[data-header],
 }
 
 /* Override Blocksy's inline row backgrounds — match their specificity exactly */
-[data-header*="type-1"] .ct-header [data-row*="middle"],
-[data-header*="type-1"] .ct-header [data-row*="top"],
-[data-header*="type-1"] .ct-header [data-row*="bottom"],
-[data-header*="type-1"] .ct-header [data-row],
-[data-header] [data-row],
-.ct-header [data-row] {
+[data-header*="type-1"] .ct-header:not(.ct-panel) [data-row*="middle"],
+[data-header*="type-1"] .ct-header:not(.ct-panel) [data-row*="top"],
+[data-header*="type-1"] .ct-header:not(.ct-panel) [data-row*="bottom"],
+[data-header*="type-1"] .ct-header:not(.ct-panel) [data-row],
+[data-header]:not(.ct-panel) [data-row],
+.ct-header:not(.ct-panel) [data-row] {
     background-color: transparent !important;
     background: transparent !important;
     background-image: none !important;
 }
 
-.ct-header[data-sticky="yes"] {
+.ct-header:not(.ct-panel)[data-sticky="yes"] {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -315,11 +316,11 @@ header[data-header],
    ========================================================================== */
 
 /* Match Blocksy specificity: [data-header*="type-1"] .ct-header [data-id="menu"] > ul > li > a */
-[data-header*="type-1"] .ct-header [data-id="menu"] > ul > li > a,
-.ct-header nav a,
-.ct-header .ct-menu > li > a,
-[data-header] nav a,
-[data-header] .ct-menu > li > a {
+[data-header*="type-1"] .ct-header:not(.ct-panel) [data-id="menu"] > ul > li > a,
+.ct-header:not(.ct-panel) nav a,
+.ct-header:not(.ct-panel) .ct-menu > li > a,
+[data-header]:not(.ct-panel) nav a,
+[data-header]:not(.ct-panel) .ct-menu > li > a {
     --theme-link-initial-color: #1A1A1A !important;
     --theme-font-weight: 500 !important;
     --theme-font-size: 0.875rem !important;
@@ -335,7 +336,7 @@ header[data-header],
 }
 
 /* Gold underline pseudo-element */
-.ct-header .ct-menu > li > a::after {
+.ct-header:not(.ct-panel) .ct-menu > li > a::after {
     content: '';
     position: absolute;
     bottom: -2px;
@@ -348,29 +349,29 @@ header[data-header],
 }
 
 /* Expand underline on hover, focus, and active states */
-.ct-header .ct-menu > li > a:hover::after,
-.ct-header .ct-menu > li > a:focus::after,
-.ct-header .ct-menu > .current-menu-item > a::after,
-.ct-header .ct-menu > .current-menu-ancestor > a::after {
+.ct-header:not(.ct-panel) .ct-menu > li > a:hover::after,
+.ct-header:not(.ct-panel) .ct-menu > li > a:focus::after,
+.ct-header:not(.ct-panel) .ct-menu > .current-menu-item > a::after,
+.ct-header:not(.ct-panel) .ct-menu > .current-menu-ancestor > a::after {
     width: 100%;
     left: 0;
 }
 
-.ct-header nav a:hover,
-.ct-header nav a:focus,
-.ct-header .ct-menu > li > a:hover,
-[data-header] nav a:hover {
+.ct-header:not(.ct-panel) nav a:hover,
+.ct-header:not(.ct-panel) nav a:focus,
+.ct-header:not(.ct-panel) .ct-menu > li > a:hover,
+[data-header]:not(.ct-panel) nav a:hover {
     color: hsl(38, 80%, 50%) !important;
 }
 
 /* Active state */
-.ct-header .ct-menu > .current-menu-item > a,
-.ct-header .ct-menu > .current-menu-ancestor > a {
+.ct-header:not(.ct-panel) .ct-menu > .current-menu-item > a,
+.ct-header:not(.ct-panel) .ct-menu > .current-menu-ancestor > a {
     color: hsl(38, 80%, 50%) !important;
 }
 
 /* Sub-menu */
-.ct-header .sub-menu {
+.ct-header:not(.ct-panel) .sub-menu {
     border-radius: var(--stew-radius, 6px);
     border: 1px solid rgba(232, 229, 224, 0.5);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
@@ -381,17 +382,17 @@ header[data-header],
    3. LOGO & SITE TITLE
    ========================================================================== */
 
-.ct-header .site-logo-container img {
+.ct-header:not(.ct-panel) .site-logo-container img {
     max-height: 40px;
     width: auto;
 }
 
 /* Site title text in header (when no logo image is set) */
-[data-header*="type-1"] .ct-header [data-id="logo"] .site-title,
-.ct-header .site-title,
-.ct-header .site-title a,
-[data-header] .site-title,
-[data-header] .site-title a {
+[data-header*="type-1"] .ct-header:not(.ct-panel) [data-id="logo"] .site-title,
+.ct-header:not(.ct-panel) .site-title,
+.ct-header:not(.ct-panel) .site-title a,
+[data-header]:not(.ct-panel) .site-title,
+[data-header]:not(.ct-panel) .site-title a {
     --theme-link-initial-color: #1A1A1A !important;
     color: #1A1A1A !important;
     font-family: var(--stew-font, 'Inter', sans-serif) !important;
@@ -399,9 +400,9 @@ header[data-header],
 }
 
 /* Header icon colors (cart, search, etc.) */
-.ct-header .ct-header-cart,
-.ct-header [class*="ct-header-"] svg,
-[data-header] svg {
+.ct-header:not(.ct-panel) .ct-header-cart,
+.ct-header:not(.ct-panel) [class*="ct-header-"] svg,
+[data-header]:not(.ct-panel) svg {
     color: #1A1A1A !important;
 }
 
@@ -727,6 +728,37 @@ footer#stew-footer .stew-footer__bottom p {
 
 .ct-panel .sub-menu a:hover,
 #offcanvas .sub-menu a:hover {
+    color: #C9A96E !important;
+}
+
+/* ============================================
+   Mobile drawer panel — beat Blocksy specificity
+   ============================================ */
+.ct-panel.ct-header,
+.ct-panel.ct-header .ct-panel-inner,
+.ct-panel.ct-header .ct-panel-inner.ct-default,
+#offcanvas .ct-panel-inner,
+.ct-offcanvas .ct-panel-inner {
+    background: #1A1A1A !important;
+    background-color: #1A1A1A !important;
+    color: #FFFFFF !important;
+    --theme-text-color: #FFFFFF !important;
+    --theme-link-initial-color: #FFFFFF !important;
+    --theme-link-hover-color: #C9A96E !important;
+    --theme-heading-color: #FFFFFF !important;
+    --theme-palette-color-7: #1A1A1A !important;
+}
+
+.ct-panel.ct-header a,
+.ct-panel.ct-header .ct-menu-link,
+#offcanvas a,
+.ct-offcanvas a {
+    color: #FFFFFF !important;
+}
+
+.ct-panel.ct-header a:hover,
+.ct-panel.ct-header .ct-menu-link:hover,
+#offcanvas a:hover {
     color: #C9A96E !important;
 }
 

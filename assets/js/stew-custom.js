@@ -82,20 +82,20 @@
      * Mobile filter toggle — shows/hides .stew-filter-sidebar on small screens
      */
     function initMobileFilters() {
-        var $sidebar = $('.stew-filter-sidebar');
+        var $sidebar = $('.stew-shop-sidebar');
         if (!$sidebar.length) return;
 
-        // Build toggle button
-        var $toggle = $('<button/>', {
-            'class': 'stew-filter-toggle stew-btn stew-btn--outline',
-            'type':  'button',
-            'text':  'Filter anzeigen'
-        });
+        var $toggle = $('#filter-toggle');
+        if (!$toggle.length) {
+            $toggle = $('<button/>', {
+                'id':    'filter-toggle',
+                'class': 'stew-filter-toggle stew-btn stew-btn--outline',
+                'type':  'button',
+                'text':  'Filter anzeigen'
+            });
+            $sidebar.before($toggle);
+        }
 
-        // Insert before sidebar
-        $sidebar.before($toggle);
-
-        // Default state: hide sidebar & toggle on mobile, show on desktop
         function handleResize() {
             if ($(window).width() >= 1024) {
                 $sidebar.show();
@@ -105,11 +105,9 @@
                 $toggle.show().text('Filter anzeigen');
             }
         }
-
         handleResize();
         $(window).on('resize', handleResize);
 
-        // Click handler
         $toggle.on('click', function () {
             $sidebar.slideToggle(300, function () {
                 var isVisible = $sidebar.is(':visible');

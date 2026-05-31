@@ -325,6 +325,25 @@ function stew_cart_toast_scripts() {
                 $toast.removeClass('stew-toast--visible');
             }, 4000);
         });
+
+        // Show toast on page load if URL contains ?added-to-cart=
+        try {
+            var params = new URLSearchParams(window.location.search);
+            if (params.has('added-to-cart')) {
+                var $toast = $('#stew-cart-toast');
+                clearTimeout(toastTimer);
+                $toast.addClass('stew-toast--visible');
+                toastTimer = setTimeout(function() {
+                    $toast.removeClass('stew-toast--visible');
+                }, 4000);
+                // Clean the URL so the toast doesn't re-fire on refresh
+                if (window.history && history.replaceState) {
+                    params.delete('added-to-cart');
+                    var clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
+                    history.replaceState(null, '', clean);
+                }
+            }
+        } catch (e) { /* ignore */ }
     });
     </script>
     <?php
@@ -355,6 +374,16 @@ function stew_woocommerce_support() {
     add_theme_support( 'wc-product-gallery-slider' );
 }
 add_action( 'after_setup_theme', 'stew_woocommerce_support' );
+
+/**
+ * WooCommerce-Standardoptionen beim Theme-Wechsel setzen.
+ * Aktiviert AJAX-„In den Warenkorb" und verhindert Redirect zur Warenkorb-Seite.
+ */
+function stew_set_woocommerce_defaults() {
+    update_option( 'woocommerce_enable_ajax_add_to_cart', 'yes' );
+    update_option( 'woocommerce_cart_redirect_after_add', 'no' );
+}
+add_action( 'after_switch_theme', 'stew_set_woocommerce_defaults' );
 
 /* =====================================================================
    3. CUSTOM IMAGE SIZES
@@ -416,6 +445,17 @@ function stew_add_to_cart_url( $url, $product ) {
     return $url;
 }
 add_filter( 'woocommerce_product_add_to_cart_url', 'stew_add_to_cart_url', 10, 2 );
+
+/**
+ * Telefon-Feld an der Kasse zur Pflicht machen.
+ */
+function stew_require_billing_phone( $fields ) {
+    if ( isset( $fields['phone'] ) ) {
+        $fields['phone']['required'] = true;
+    }
+    return $fields;
+}
+add_filter( 'woocommerce_billing_fields', 'stew_require_billing_phone', 20 );
 
 /* =====================================================================
    6. REMOVE DEFAULT WOOCOMMERCE SIDEBAR
@@ -736,6 +776,31 @@ function stew_product_highlights() {
     }
 }
 add_action( 'woocommerce_single_product_summary', 'stew_product_highlights', 35 );
+
+/**
+ * Datenblatt-Platzhalter-Button auf Produktseite anzeigen.
+ * Sendet eine vorausgefüllte Anfrage-E-Mail an info@stew.ch.
+ */
+function stew_display_datasheet_button() {
+    if ( ! is_product() ) {
+        return;
+    }
+    global $product;
+    if ( ! $product ) {
+        return;
+    }
+    $name    = $product->get_name();
+    $sku     = $product->get_sku();
+    $subject = rawurlencode( sprintf( 'Datenblatt-Anfrage: %s', $name ) );
+    $body    = rawurlencode( sprintf( "Bitte senden Sie mir das Datenblatt zu folgendem Produkt:\n\nProdukt: %s\nArt.-Nr.: %s\n\nVielen Dank.", $name, $sku ) );
+    $mailto  = sprintf( 'mailto:info@stew.ch?subject=%s&body=%s', $subject, $body );
+    printf(
+        '<a class="stew-datasheet-btn button" href="%s">%s</a>',
+        esc_url( $mailto ),
+        esc_html__( 'Datenblatt anfragen', 'stew-blocksy-child' )
+    );
+}
+add_action( 'woocommerce_single_product_summary', 'stew_display_datasheet_button', 35 );
 
 /* =====================================================================
    16. PRODUCT MANUFACTURER (SINGLE PRODUCT PAGE)
