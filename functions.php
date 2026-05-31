@@ -466,6 +466,22 @@ function stew_require_billing_phone( $fields ) {
 }
 add_filter( 'woocommerce_billing_fields', 'stew_require_billing_phone', 20 );
 
+/**
+ * Breadcrumb "Home" zu "Startseite" umbenennen (WooCommerce + Blocksy).
+ */
+function stew_breadcrumb_home_text( $args ) {
+    if ( is_array( $args ) && isset( $args['home'] ) ) {
+        $args['home'] = __( 'Startseite', 'stew-blocksy-child' );
+    }
+    return $args;
+}
+add_filter( 'woocommerce_breadcrumb_defaults', 'stew_breadcrumb_home_text' );
+
+function stew_blocksy_breadcrumb_home_text( $home ) {
+    return __( 'Startseite', 'stew-blocksy-child' );
+}
+add_filter( 'blocksy:breadcrumbs:home-text', 'stew_blocksy_breadcrumb_home_text' );
+
 /* =====================================================================
    6. REMOVE DEFAULT WOOCOMMERCE SIDEBAR
    ===================================================================== */
