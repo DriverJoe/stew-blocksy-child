@@ -482,6 +482,24 @@ function stew_blocksy_breadcrumb_home_text( $home ) {
 }
 add_filter( 'blocksy:breadcrumbs:home-text', 'stew_blocksy_breadcrumb_home_text' );
 
+/**
+ * Translate 'Home' to 'Startseite' for the Blocksy textdomain when the
+ * theme's German pack isn't installed for the active locale.
+ */
+function stew_translate_blocksy_home( $translation, $text, $domain ) {
+    if ( 'blocksy' === $domain && 'Home' === $text ) {
+        return 'Startseite';
+    }
+    return $translation;
+}
+add_filter( 'gettext', 'stew_translate_blocksy_home', 10, 3 );
+add_filter( 'gettext_with_context', function( $translation, $text, $context, $domain ) {
+    if ( 'blocksy' === $domain && 'Home' === $text && 'breadcrumb' === $context ) {
+        return 'Startseite';
+    }
+    return $translation;
+}, 10, 4 );
+
 /* =====================================================================
    6. REMOVE DEFAULT WOOCOMMERCE SIDEBAR
    ===================================================================== */
