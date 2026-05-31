@@ -326,29 +326,38 @@ function stew_cart_toast_scripts() {
             }, 4000);
         });
 
-        // Show toast on page load if URL contains ?added-to-cart=
-        try {
-            var params = new URLSearchParams(window.location.search);
-            if (params.has('added-to-cart')) {
-                var $toast = $('#stew-cart-toast');
-                clearTimeout(toastTimer);
-                $toast.addClass('stew-toast--visible');
-                toastTimer = setTimeout(function() {
-                    $toast.removeClass('stew-toast--visible');
-                }, 4000);
-                // Clean the URL so the toast doesn't re-fire on refresh
-                if (window.history && history.replaceState) {
-                    params.delete('added-to-cart');
-                    var clean = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-                    history.replaceState(null, '', clean);
-                }
-            }
-        } catch (e) { /* ignore */ }
+        // Show toast on page load if stew_show_toast cookie is set
+        // (covers full-page-reload add-to-cart paths where URL params get stripped)
+        function stewReadAndClearCookie(name) {
+            var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name + '=([^;]*)'));
+            if (!m) return null;
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+            return decodeURIComponent(m[1]);
+        }
+        if (stewReadAndClearCookie('stew_show_toast')) {
+            var $toast = $('#stew-cart-toast');
+            clearTimeout(toastTimer);
+            $toast.addClass('stew-toast--visible');
+            toastTimer = setTimeout(function() {
+                $toast.removeClass('stew-toast--visible');
+            }, 4000);
+        }
     });
     </script>
     <?php
 }
 add_action( 'wp_footer', 'stew_cart_toast_scripts', 99 );
+
+/**
+ * Set a short-lived cookie when a product is added to cart so the
+ * toast can fire on the next page load (covers non-AJAX adds).
+ */
+function stew_set_toast_cookie() {
+    if ( ! headers_sent() ) {
+        setcookie( 'stew_show_toast', '1', time() + 60, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
+    }
+}
+add_action( 'woocommerce_add_to_cart', 'stew_set_toast_cookie', 10, 0 );
 
 /* =====================================================================
    2. WOOCOMMERCE SUPPORT
