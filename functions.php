@@ -467,6 +467,30 @@ function stew_require_billing_phone( $fields ) {
 add_filter( 'woocommerce_billing_fields', 'stew_require_billing_phone', 20 );
 
 /**
+ * Versandregel: Wenn kostenloser Versand verfuegbar ist (Warenkorb >= CHF 500),
+ * den Pauschalversand ausblenden — damit der Kunde nicht versehentlich zahlt.
+ */
+function stew_hide_flat_rate_when_free_available( $rates ) {
+    $free_available = false;
+    foreach ( $rates as $rate ) {
+        if ( 'free_shipping' === $rate->method_id ) {
+            $free_available = true;
+            break;
+        }
+    }
+    if ( ! $free_available ) {
+        return $rates;
+    }
+    foreach ( $rates as $rate_id => $rate ) {
+        if ( 'flat_rate' === $rate->method_id ) {
+            unset( $rates[ $rate_id ] );
+        }
+    }
+    return $rates;
+}
+add_filter( 'woocommerce_package_rates', 'stew_hide_flat_rate_when_free_available', 100 );
+
+/**
  * Breadcrumb "Home" zu "Startseite" umbenennen (WooCommerce + Blocksy).
  */
 function stew_breadcrumb_home_text( $args ) {
