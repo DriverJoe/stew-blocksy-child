@@ -1185,25 +1185,33 @@ body.stew-theme ul.products li.product .price .woocommerce-Price-amount {
     border-bottom: none;
 }
 
-/* Datasheet button */
-.stew-datasheet-btn {
-    display: inline-flex;
+/* Datasheet button — outline by default (no amber-on-amber against the WC .button rule),
+   fills amber on hover. !important needed to beat the global .button gold-bg rule. */
+.stew-datasheet-btn,
+a.stew-datasheet-btn,
+a.stew-datasheet-btn.button {
+    display: inline-flex !important;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    background: var(--stew-off-white);
-    border: 1px solid var(--stew-border);
-    border-radius: var(--stew-radius);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--stew-text);
-    text-decoration: none;
-    transition: var(--stew-transition);
+    padding: 0.75rem 1.5rem !important;
+    background: #FFFFFF !important;
+    background-color: #FFFFFF !important;
+    border: 1.5px solid #1A1A1A !important;
+    border-radius: var(--stew-radius, 6px) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: #1A1A1A !important;
+    text-decoration: none !important;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease !important;
 }
 
-.stew-datasheet-btn:hover {
-    border-color: var(--stew-primary);
-    color: var(--stew-primary);
+.stew-datasheet-btn:hover,
+a.stew-datasheet-btn:hover,
+a.stew-datasheet-btn.button:hover {
+    background: hsl(38, 80%, 50%) !important;
+    background-color: hsl(38, 80%, 50%) !important;
+    border-color: hsl(38, 80%, 50%) !important;
+    color: #FFFFFF !important;
     transform: translateY(-1px);
 }
 
