@@ -42,21 +42,21 @@ function stew_register_custom_roles() {
     // Wholesale-Rolle (Händler)
     add_role(
         'wholesale',
-        __( 'Händler', 'stew' ),
+        __( 'Händler', 'stew-blocksy-child' ),
         $customer_caps
     );
 
     // VIP-Partner-Rolle
     add_role(
         'vip_partner',
-        __( 'VIP-Partner', 'stew' ),
+        __( 'VIP-Partner', 'stew-blocksy-child' ),
         $customer_caps
     );
 
     // Pending-Wholesale-Rolle (wartend auf Freigabe)
     add_role(
         'pending_wholesale',
-        __( 'Händler (ausstehend)', 'stew' ),
+        __( 'Händler (ausstehend)', 'stew-blocksy-child' ),
         $customer_caps
     );
 }
@@ -85,8 +85,8 @@ add_action( 'switch_theme', 'stew_remove_custom_roles' );
 function stew_add_pricing_settings_page() {
     add_submenu_page(
         'woocommerce',
-        __( 'Rollenbasierte Preise', 'stew' ),
-        __( 'Rollenbasierte Preise', 'stew' ),
+        __( 'Rollenbasierte Preise', 'stew-blocksy-child' ),
+        __( 'Rollenbasierte Preise', 'stew-blocksy-child' ),
         'manage_woocommerce',
         'stew-role-pricing',
         'stew_render_pricing_settings_page'
@@ -131,7 +131,7 @@ add_action( 'admin_init', 'stew_register_pricing_settings' );
  */
 function stew_render_pricing_settings_page() {
     if ( ! current_user_can( 'manage_woocommerce' ) ) {
-        wp_die( esc_html__( 'Keine Berechtigung.', 'stew' ) );
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew-blocksy-child' ) );
     }
 
     $wholesale_discount   = get_option( 'stew_wholesale_discount', 15 );
@@ -141,7 +141,7 @@ function stew_render_pricing_settings_page() {
     $admin_notify_email   = get_option( 'stew_admin_notify_email', get_option( 'admin_email' ) );
     ?>
     <div class="wrap">
-        <h1><?php echo esc_html__( 'Rollenbasierte Preise — STEW', 'stew' ); ?></h1>
+        <h1><?php echo esc_html__( 'Rollenbasierte Preise — STEW', 'stew-blocksy-child' ); ?></h1>
         <form method="post" action="options.php">
             <?php settings_fields( 'stew_pricing_options' ); ?>
             <?php wp_nonce_field( 'stew_pricing_nonce_action', 'stew_pricing_nonce' ); ?>
@@ -149,7 +149,7 @@ function stew_render_pricing_settings_page() {
                 <tr>
                     <th scope="row">
                         <label for="stew_wholesale_discount">
-                            <?php echo esc_html__( 'Händler-Rabatt (%)', 'stew' ); ?>
+                            <?php echo esc_html__( 'Händler-Rabatt (%)', 'stew-blocksy-child' ); ?>
                         </label>
                     </th>
                     <td>
@@ -157,14 +157,14 @@ function stew_render_pricing_settings_page() {
                                value="<?php echo esc_attr( $wholesale_discount ); ?>"
                                min="0" max="100" step="1" class="small-text" />
                         <p class="description">
-                            <?php echo esc_html__( 'Prozentualer Rabatt für Händler (Standard: 15%)', 'stew' ); ?>
+                            <?php echo esc_html__( 'Prozentualer Rabatt für Händler (Standard: 15%)', 'stew-blocksy-child' ); ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
                         <label for="stew_vip_discount">
-                            <?php echo esc_html__( 'VIP-Partner-Rabatt (%)', 'stew' ); ?>
+                            <?php echo esc_html__( 'VIP-Partner-Rabatt (%)', 'stew-blocksy-child' ); ?>
                         </label>
                     </th>
                     <td>
@@ -172,34 +172,34 @@ function stew_render_pricing_settings_page() {
                                value="<?php echo esc_attr( $vip_discount ); ?>"
                                min="0" max="100" step="1" class="small-text" />
                         <p class="description">
-                            <?php echo esc_html__( 'Prozentualer Rabatt für VIP-Partner (Standard: 25%)', 'stew' ); ?>
+                            <?php echo esc_html__( 'Prozentualer Rabatt für VIP-Partner (Standard: 25%)', 'stew-blocksy-child' ); ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
                         <label for="stew_trade_notice_enabled">
-                            <?php echo esc_html__( 'Händlerhinweis anzeigen', 'stew' ); ?>
+                            <?php echo esc_html__( 'Händlerhinweis anzeigen', 'stew-blocksy-child' ); ?>
                         </label>
                     </th>
                     <td>
                         <select id="stew_trade_notice_enabled" name="stew_trade_notice_enabled">
                             <option value="yes" <?php selected( $trade_notice_enabled, 'yes' ); ?>>
-                                <?php echo esc_html__( 'Ja', 'stew' ); ?>
+                                <?php echo esc_html__( 'Ja', 'stew-blocksy-child' ); ?>
                             </option>
                             <option value="no" <?php selected( $trade_notice_enabled, 'no' ); ?>>
-                                <?php echo esc_html__( 'Nein', 'stew' ); ?>
+                                <?php echo esc_html__( 'Nein', 'stew-blocksy-child' ); ?>
                             </option>
                         </select>
                         <p class="description">
-                            <?php echo esc_html__( 'Zeigt einen Hinweis auf Shop- und Produktseiten für nicht eingeloggte Besucher.', 'stew' ); ?>
+                            <?php echo esc_html__( 'Zeigt einen Hinweis auf Shop- und Produktseiten für nicht eingeloggte Besucher.', 'stew-blocksy-child' ); ?>
                         </p>
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
                         <label for="stew_trade_notice_text">
-                            <?php echo esc_html__( 'Hinweistext', 'stew' ); ?>
+                            <?php echo esc_html__( 'Hinweistext', 'stew-blocksy-child' ); ?>
                         </label>
                     </th>
                     <td>
@@ -211,7 +211,7 @@ function stew_render_pricing_settings_page() {
                 <tr>
                     <th scope="row">
                         <label for="stew_admin_notify_email">
-                            <?php echo esc_html__( 'Benachrichtigungs-E-Mail', 'stew' ); ?>
+                            <?php echo esc_html__( 'Benachrichtigungs-E-Mail', 'stew-blocksy-child' ); ?>
                         </label>
                     </th>
                     <td>
@@ -219,20 +219,20 @@ function stew_render_pricing_settings_page() {
                                value="<?php echo esc_attr( $admin_notify_email ); ?>"
                                class="regular-text" />
                         <p class="description">
-                            <?php echo esc_html__( 'E-Mail-Adresse für Benachrichtigungen bei neuen Händler-Registrierungen.', 'stew' ); ?>
+                            <?php echo esc_html__( 'E-Mail-Adresse für Benachrichtigungen bei neuen Händler-Registrierungen.', 'stew-blocksy-child' ); ?>
                         </p>
                     </td>
                 </tr>
             </table>
-            <?php submit_button( __( 'Einstellungen speichern', 'stew' ) ); ?>
+            <?php submit_button( __( 'Einstellungen speichern', 'stew-blocksy-child' ) ); ?>
         </form>
 
         <hr />
-        <h2><?php echo esc_html__( 'Ausstehende Kundenanträge', 'stew' ); ?></h2>
+        <h2><?php echo esc_html__( 'Ausstehende Kundenanträge', 'stew-blocksy-child' ); ?></h2>
         <?php stew_render_pending_customers_table(); ?>
 
         <hr />
-        <h2><?php echo esc_html__( 'Ausstehende Händler-Anträge', 'stew' ); ?></h2>
+        <h2><?php echo esc_html__( 'Ausstehende Händler-Anträge', 'stew-blocksy-child' ); ?></h2>
         <?php stew_render_pending_wholesale_table(); ?>
     </div>
     <?php
@@ -249,18 +249,18 @@ function stew_render_pending_wholesale_table() {
     ) );
 
     if ( empty( $pending_users ) ) {
-        echo '<p>' . esc_html__( 'Keine ausstehenden Anträge.', 'stew' ) . '</p>';
+        echo '<p>' . esc_html__( 'Keine ausstehenden Anträge.', 'stew-blocksy-child' ) . '</p>';
         return;
     }
     ?>
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th><?php echo esc_html__( 'Name', 'stew' ); ?></th>
-                <th><?php echo esc_html__( 'E-Mail', 'stew' ); ?></th>
-                <th><?php echo esc_html__( 'Firma', 'stew' ); ?></th>
-                <th><?php echo esc_html__( 'Registriert am', 'stew' ); ?></th>
-                <th><?php echo esc_html__( 'Aktionen', 'stew' ); ?></th>
+                <th><?php echo esc_html__( 'Name', 'stew-blocksy-child' ); ?></th>
+                <th><?php echo esc_html__( 'E-Mail', 'stew-blocksy-child' ); ?></th>
+                <th><?php echo esc_html__( 'Firma', 'stew-blocksy-child' ); ?></th>
+                <th><?php echo esc_html__( 'Registriert am', 'stew-blocksy-child' ); ?></th>
+                <th><?php echo esc_html__( 'Aktionen', 'stew-blocksy-child' ); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -284,11 +284,11 @@ function stew_render_pending_wholesale_table() {
                         );
                         ?>
                         <a href="<?php echo esc_url( $approve_url ); ?>" class="button button-primary button-small">
-                            <?php echo esc_html__( 'Freigeben', 'stew' ); ?>
+                            <?php echo esc_html__( 'Freigeben', 'stew-blocksy-child' ); ?>
                         </a>
                         <a href="<?php echo esc_url( $reject_url ); ?>" class="button button-small"
-                           onclick="return confirm('<?php echo esc_js( __( 'Antrag wirklich ablehnen?', 'stew' ) ); ?>');">
-                            <?php echo esc_html__( 'Ablehnen', 'stew' ); ?>
+                           onclick="return confirm('<?php echo esc_js( __( 'Antrag wirklich ablehnen?', 'stew-blocksy-child' ) ); ?>');">
+                            <?php echo esc_html__( 'Ablehnen', 'stew-blocksy-child' ); ?>
                         </a>
                     </td>
                 </tr>
@@ -310,17 +310,17 @@ function stew_render_pending_customers_table() {
     ) );
 
     if ( empty( $pending_users ) ) {
-        echo '<p>' . esc_html__( 'Keine ausstehenden Kundenanträge.', 'stew' ) . '</p>';
+        echo '<p>' . esc_html__( 'Keine ausstehenden Kundenanträge.', 'stew-blocksy-child' ) . '</p>';
         return;
     }
     ?>
     <table class="wp-list-table widefat fixed striped">
         <thead>
             <tr>
-                <th><?php echo esc_html__( 'Name', 'stew' ); ?></th>
-                <th><?php echo esc_html__( 'E-Mail', 'stew' ); ?></th>
-                <th><?php echo esc_html__( 'Registriert am', 'stew' ); ?></th>
-                <th><?php echo esc_html__( 'Aktionen', 'stew' ); ?></th>
+                <th><?php echo esc_html__( 'Name', 'stew-blocksy-child' ); ?></th>
+                <th><?php echo esc_html__( 'E-Mail', 'stew-blocksy-child' ); ?></th>
+                <th><?php echo esc_html__( 'Registriert am', 'stew-blocksy-child' ); ?></th>
+                <th><?php echo esc_html__( 'Aktionen', 'stew-blocksy-child' ); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -343,11 +343,11 @@ function stew_render_pending_customers_table() {
                         );
                         ?>
                         <a href="<?php echo esc_url( $approve_url ); ?>" class="button button-primary button-small">
-                            <?php echo esc_html__( 'Freigeben', 'stew' ); ?>
+                            <?php echo esc_html__( 'Freigeben', 'stew-blocksy-child' ); ?>
                         </a>
                         <a href="<?php echo esc_url( $reject_url ); ?>" class="button button-small"
-                           onclick="return confirm('<?php echo esc_js( __( 'Antrag wirklich ablehnen?', 'stew' ) ); ?>');">
-                            <?php echo esc_html__( 'Ablehnen', 'stew' ); ?>
+                           onclick="return confirm('<?php echo esc_js( __( 'Antrag wirklich ablehnen?', 'stew-blocksy-child' ) ); ?>');">
+                            <?php echo esc_html__( 'Ablehnen', 'stew-blocksy-child' ); ?>
                         </a>
                     </td>
                 </tr>
@@ -364,23 +364,23 @@ function stew_handle_approve_customer() {
     $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
 
     if ( ! $user_id || ! current_user_can( 'manage_woocommerce' ) ) {
-        wp_die( esc_html__( 'Keine Berechtigung.', 'stew' ) );
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew-blocksy-child' ) );
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_approve_customer_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew-blocksy-child' ) );
     }
 
     $user = get_userdata( $user_id );
     if ( ! $user ) {
-        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew' ) );
+        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew-blocksy-child' ) );
     }
 
     $user->set_role( 'customer' );
     update_user_meta( $user_id, 'stew_customer_approved', current_time( 'mysql' ) );
     update_user_meta( $user_id, 'stew_customer_approved_by', get_current_user_id() );
 
-    $subject = __( 'Ihr Konto wurde freigeschaltet — STEW', 'stew' );
+    $subject = __( 'Ihr Konto wurde freigeschaltet — STEW', 'stew-blocksy-child' );
     $message = sprintf(
         "Guten Tag %s,\n\n" .
         "Ihr Konto bei STEW wurde freigeschaltet. Sie können ab sofort einkaufen.\n\n" .
@@ -403,19 +403,19 @@ function stew_handle_reject_customer() {
     $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
 
     if ( ! $user_id || ! current_user_can( 'manage_woocommerce' ) ) {
-        wp_die( esc_html__( 'Keine Berechtigung.', 'stew' ) );
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew-blocksy-child' ) );
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_reject_customer_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew-blocksy-child' ) );
     }
 
     $user = get_userdata( $user_id );
     if ( ! $user ) {
-        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew' ) );
+        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew-blocksy-child' ) );
     }
 
-    $subject = __( 'Ihr Kontoantrag bei STEW', 'stew' );
+    $subject = __( 'Ihr Kontoantrag bei STEW', 'stew-blocksy-child' );
     $message = sprintf(
         "Guten Tag %s,\n\n" .
         "Leider konnten wir Ihren Kontoantrag nicht freigeben. " .
@@ -447,16 +447,16 @@ function stew_handle_approve_wholesale() {
     $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
 
     if ( ! $user_id || ! current_user_can( 'manage_woocommerce' ) ) {
-        wp_die( esc_html__( 'Keine Berechtigung.', 'stew' ) );
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew-blocksy-child' ) );
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_approve_wholesale_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew-blocksy-child' ) );
     }
 
     $user = get_userdata( $user_id );
     if ( ! $user ) {
-        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew' ) );
+        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew-blocksy-child' ) );
     }
 
     // Rolle ändern
@@ -465,7 +465,7 @@ function stew_handle_approve_wholesale() {
     update_user_meta( $user_id, 'stew_wholesale_approved_by', get_current_user_id() );
 
     // Benachrichtigung an den Benutzer
-    $subject = __( 'Ihr Händlerkonto wurde freigeschaltet — STEW', 'stew' );
+    $subject = __( 'Ihr Händlerkonto wurde freigeschaltet — STEW', 'stew-blocksy-child' );
     $message = sprintf(
         /* translators: %s: user display name */
         __(
@@ -475,7 +475,7 @@ function stew_handle_approve_wholesale() {
             "%s\n\n" .
             "Freundliche Grüsse\n" .
             "Ihr STEW Team",
-            'stew'
+            'stew-blocksy-child'
         ),
         $user->display_name,
         wp_login_url( wc_get_page_permalink( 'shop' ) )
@@ -494,16 +494,16 @@ function stew_handle_reject_wholesale() {
     $user_id = isset( $_GET['user_id'] ) ? absint( $_GET['user_id'] ) : 0;
 
     if ( ! $user_id || ! current_user_can( 'manage_woocommerce' ) ) {
-        wp_die( esc_html__( 'Keine Berechtigung.', 'stew' ) );
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew-blocksy-child' ) );
     }
 
     if ( ! isset( $_GET['stew_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['stew_nonce'] ) ), 'stew_reject_wholesale_' . $user_id ) ) {
-        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew' ) );
+        wp_die( esc_html__( 'Sicherheitsprüfung fehlgeschlagen.', 'stew-blocksy-child' ) );
     }
 
     $user = get_userdata( $user_id );
     if ( ! $user ) {
-        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew' ) );
+        wp_die( esc_html__( 'Benutzer nicht gefunden.', 'stew-blocksy-child' ) );
     }
 
     // Zurueck auf Customer-Rolle setzen
@@ -511,7 +511,7 @@ function stew_handle_reject_wholesale() {
     update_user_meta( $user_id, 'stew_wholesale_rejected', current_time( 'mysql' ) );
 
     // Benachrichtigung an den Benutzer
-    $subject = __( 'Ihr Händlerantrag bei STEW', 'stew' );
+    $subject = __( 'Ihr Händlerantrag bei STEW', 'stew-blocksy-child' );
     $message = sprintf(
         /* translators: %s: user display name */
         __(
@@ -521,7 +521,7 @@ function stew_handle_reject_wholesale() {
             "info@stew.ch\n\n" .
             "Freundliche Grüsse\n" .
             "Ihr STEW Team",
-            'stew'
+            'stew-blocksy-child'
         ),
         $user->display_name
     );
@@ -543,25 +543,25 @@ function stew_admin_notices_wholesale() {
 
     if ( isset( $_GET['approved'] ) && '1' === $_GET['approved'] ) {
         echo '<div class="notice notice-success is-dismissible"><p>';
-        echo esc_html__( 'Händlerkonto wurde erfolgreich freigeschaltet.', 'stew' );
+        echo esc_html__( 'Händlerkonto wurde erfolgreich freigeschaltet.', 'stew-blocksy-child' );
         echo '</p></div>';
     }
 
     if ( isset( $_GET['rejected'] ) && '1' === $_GET['rejected'] ) {
         echo '<div class="notice notice-warning is-dismissible"><p>';
-        echo esc_html__( 'Händlerantrag wurde abgelehnt.', 'stew' );
+        echo esc_html__( 'Händlerantrag wurde abgelehnt.', 'stew-blocksy-child' );
         echo '</p></div>';
     }
 
     if ( isset( $_GET['customer_approved'] ) && '1' === $_GET['customer_approved'] ) {
         echo '<div class="notice notice-success is-dismissible"><p>';
-        echo esc_html__( 'Kundenkonto wurde erfolgreich freigeschaltet.', 'stew' );
+        echo esc_html__( 'Kundenkonto wurde erfolgreich freigeschaltet.', 'stew-blocksy-child' );
         echo '</p></div>';
     }
 
     if ( isset( $_GET['customer_rejected'] ) && '1' === $_GET['customer_rejected'] ) {
         echo '<div class="notice notice-warning is-dismissible"><p>';
-        echo esc_html__( 'Kundenantrag wurde abgelehnt.', 'stew' );
+        echo esc_html__( 'Kundenantrag wurde abgelehnt.', 'stew-blocksy-child' );
         echo '</p></div>';
     }
 }
@@ -573,6 +573,31 @@ add_action( 'admin_notices', 'stew_admin_notices_wholesale' );
  * 4. PREISFILTER — ROLLENBASIERTE RABATTE
  * ============================================================================
  */
+
+/**
+ * Cache-Bypass für rollenbasierte Preise.
+ * Verhindert, dass die rabattierten Preise eines Händlers
+ * an Retail-Besucher ausgeliefert werden, falls ein Full-Page-Cache
+ * (Cloudflare APO / WP Rocket / LiteSpeed) vor der Seite läuft.
+ */
+function stew_prevent_cache_for_discounted_users() {
+    if ( is_admin() ) return;
+    if ( ! function_exists( 'stew_get_role_discount' ) ) return;
+    if ( stew_get_role_discount() <= 0 ) return;
+    if ( ! defined( 'DONOTCACHEPAGE' ) ) define( 'DONOTCACHEPAGE', true );
+    if ( ! defined( 'DONOTCACHEOBJECT' ) ) define( 'DONOTCACHEOBJECT', true );
+    if ( ! defined( 'DONOTCACHEDB' ) ) define( 'DONOTCACHEDB', true );
+    nocache_headers();
+    // Set a role cookie so cache plugins can vary the cache key.
+    if ( ! isset( $_COOKIE['stew_role'] ) && ! headers_sent() ) {
+        $user  = wp_get_current_user();
+        $roles = (array) $user->roles;
+        $role  = in_array( 'vip_partner', $roles, true ) ? 'vip'
+               : ( in_array( 'wholesale', $roles, true ) ? 'wholesale' : 'retail' );
+        setcookie( 'stew_role', $role, time() + DAY_IN_SECONDS, COOKIEPATH ? COOKIEPATH : '/', COOKIE_DOMAIN );
+    }
+}
+add_action( 'wp', 'stew_prevent_cache_for_discounted_users', 5 );
 
 /**
  * Rabattprozentsatz für die aktuelle Benutzerrolle ermitteln.
@@ -702,9 +727,9 @@ function stew_display_discount_badge() {
 
     $label = '';
     if ( in_array( 'vip_partner', $roles, true ) ) {
-        $label = __( 'VIP-Partner-Preis', 'stew' );
+        $label = __( 'VIP-Partner-Preis', 'stew-blocksy-child' );
     } elseif ( in_array( 'wholesale', $roles, true ) ) {
-        $label = __( 'Händlerpreis', 'stew' );
+        $label = __( 'Händlerpreis', 'stew-blocksy-child' );
     }
 
     if ( $label ) {
@@ -841,30 +866,30 @@ function stew_registration_form_fields() {
     ?>
     <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
         <label for="stew_account_type">
-            <?php echo esc_html__( 'Kontotyp', 'stew' ); ?>&nbsp;<span class="required">*</span>
+            <?php echo esc_html__( 'Kontotyp', 'stew-blocksy-child' ); ?>&nbsp;<span class="required">*</span>
         </label>
         <select name="stew_account_type" id="stew_account_type" class="woocommerce-Input woocommerce-Input--select input-select" required>
-            <option value="private"><?php echo esc_html__( 'Privatkunde', 'stew' ); ?></option>
-            <option value="wholesale"><?php echo esc_html__( 'Händler / Gewerbe', 'stew' ); ?></option>
+            <option value="private"><?php echo esc_html__( 'Privatkunde', 'stew-blocksy-child' ); ?></option>
+            <option value="wholesale"><?php echo esc_html__( 'Händler / Gewerbe', 'stew-blocksy-child' ); ?></option>
         </select>
     </p>
 
     <div id="stew-company-fields" style="display:none;">
         <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
             <label for="stew_company_name">
-                <?php echo esc_html__( 'Firmenname', 'stew' ); ?>&nbsp;<span class="required">*</span>
+                <?php echo esc_html__( 'Firmenname', 'stew-blocksy-child' ); ?>&nbsp;<span class="required">*</span>
             </label>
             <input type="text" class="woocommerce-Input woocommerce-Input--text input-text"
                    name="stew_company_name" id="stew_company_name"
-                   placeholder="<?php echo esc_attr__( 'Firmenname', 'stew' ); ?>" />
+                   placeholder="<?php echo esc_attr__( 'Firmenname', 'stew-blocksy-child' ); ?>" />
         </p>
         <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
             <label for="stew_company_uid">
-                <?php echo esc_html__( 'UID-Nummer (optional)', 'stew' ); ?>
+                <?php echo esc_html__( 'UID-Nummer (optional)', 'stew-blocksy-child' ); ?>
             </label>
             <input type="text" class="woocommerce-Input woocommerce-Input--text input-text"
                    name="stew_company_uid" id="stew_company_uid"
-                   placeholder="<?php echo esc_attr__( 'CHE-XXX.XXX.XXX', 'stew' ); ?>" />
+                   placeholder="<?php echo esc_attr__( 'CHE-XXX.XXX.XXX', 'stew-blocksy-child' ); ?>" />
         </p>
     </div>
 
@@ -903,7 +928,7 @@ function stew_validate_registration_fields( $errors, $username, $email ) {
         if ( empty( $company_name ) ) {
             $errors->add(
                 'stew_company_required',
-                __( 'Bitte geben Sie Ihren Firmennamen an.', 'stew' )
+                __( 'Bitte geben Sie Ihren Firmennamen an.', 'stew-blocksy-child' )
             );
         }
     }
@@ -962,7 +987,7 @@ function stew_notify_admin_new_wholesale( $user_id, $company_name ) {
 
     $subject = sprintf(
         /* translators: %s: company name */
-        __( '[STEW] Neuer Händlerantrag: %s', 'stew' ),
+        __( '[STEW] Neuer Händlerantrag: %s', 'stew-blocksy-child' ),
         $company_name
     );
 
@@ -977,7 +1002,7 @@ function stew_notify_admin_new_wholesale( $user_id, $company_name ) {
             "UID: %4\$s\n" .
             "Registriert: %5\$s\n\n" .
             "Antrag prüfen und freigeben:\n%6\$s",
-            'stew'
+            'stew-blocksy-child'
         ),
         $user->display_name,
         $user->user_email,
@@ -1004,8 +1029,8 @@ function stew_notify_admin_new_wholesale( $user_id, $company_name ) {
  * @return array Erweiterte Spalten.
  */
 function stew_add_user_columns( $columns ) {
-    $columns['stew_account_type'] = __( 'Kontotyp', 'stew' );
-    $columns['stew_company']      = __( 'Firma', 'stew' );
+    $columns['stew_account_type'] = __( 'Kontotyp', 'stew-blocksy-child' );
+    $columns['stew_company']      = __( 'Firma', 'stew-blocksy-child' );
     return $columns;
 }
 add_filter( 'manage_users_columns', 'stew_add_user_columns' );
@@ -1024,15 +1049,15 @@ function stew_render_user_columns( $value, $column_name, $user_id ) {
         $roles = (array) $user->roles;
 
         if ( in_array( 'vip_partner', $roles, true ) ) {
-            return '<span style="color:#d4af37;font-weight:bold;">' . esc_html__( 'VIP-Partner', 'stew' ) . '</span>';
+            return '<span style="color:#d4af37;font-weight:bold;">' . esc_html__( 'VIP-Partner', 'stew-blocksy-child' ) . '</span>';
         }
         if ( in_array( 'wholesale', $roles, true ) ) {
-            return '<span style="color:#2196f3;font-weight:bold;">' . esc_html__( 'Händler', 'stew' ) . '</span>';
+            return '<span style="color:#2196f3;font-weight:bold;">' . esc_html__( 'Händler', 'stew-blocksy-child' ) . '</span>';
         }
         if ( in_array( 'pending_wholesale', $roles, true ) ) {
-            return '<span style="color:#ff9800;font-weight:bold;">' . esc_html__( 'Händler (ausstehend)', 'stew' ) . '</span>';
+            return '<span style="color:#ff9800;font-weight:bold;">' . esc_html__( 'Händler (ausstehend)', 'stew-blocksy-child' ) . '</span>';
         }
-        return esc_html__( 'Privatkunde', 'stew' );
+        return esc_html__( 'Privatkunde', 'stew-blocksy-child' );
     }
 
     if ( 'stew_company' === $column_name ) {
@@ -1070,7 +1095,7 @@ add_filter( 'manage_users_sortable_columns', 'stew_sortable_user_columns' );
 function stew_add_dashboard_widget() {
     wp_add_dashboard_widget(
         'stew_pending_wholesale',
-        __( 'Ausstehende Kontenanträge', 'stew' ),
+        __( 'Ausstehende Kontenanträge', 'stew-blocksy-child' ),
         'stew_render_dashboard_widget'
     );
 }
@@ -1099,17 +1124,17 @@ function stew_render_dashboard_widget() {
     $total = $count_wholesale + $count_customers;
 
     if ( 0 === $total ) {
-        echo '<p>' . esc_html__( 'Keine ausstehenden Anträge.', 'stew' ) . '</p>';
+        echo '<p>' . esc_html__( 'Keine ausstehenden Anträge.', 'stew-blocksy-child' ) . '</p>';
         return;
     }
 
     printf(
         '<p><strong>%s</strong></p>',
-        sprintf( esc_html__( '%d Antrag/Anträge ausstehend', 'stew' ), $total )
+        sprintf( esc_html__( '%d Antrag/Anträge ausstehend', 'stew-blocksy-child' ), $total )
     );
 
     if ( ! empty( $pending_customers ) ) {
-        echo '<h4>' . esc_html__( 'Kunden', 'stew' ) . '</h4>';
+        echo '<h4>' . esc_html__( 'Kunden', 'stew-blocksy-child' ) . '</h4>';
         echo '<ul>';
         foreach ( $pending_customers as $user ) {
             printf(
@@ -1122,7 +1147,7 @@ function stew_render_dashboard_widget() {
     }
 
     if ( ! empty( $pending_wholesale ) ) {
-        echo '<h4>' . esc_html__( 'Händler', 'stew' ) . '</h4>';
+        echo '<h4>' . esc_html__( 'Händler', 'stew-blocksy-child' ) . '</h4>';
         echo '<ul>';
         foreach ( $pending_wholesale as $user ) {
             $company = get_user_meta( $user->ID, 'billing_company', true );
@@ -1130,7 +1155,7 @@ function stew_render_dashboard_widget() {
                 '<li><strong>%s</strong> (%s) — %s</li>',
                 esc_html( $user->display_name ),
                 esc_html( $user->user_email ),
-                $company ? esc_html( $company ) : esc_html__( 'Keine Firma', 'stew' )
+                $company ? esc_html( $company ) : esc_html__( 'Keine Firma', 'stew-blocksy-child' )
             );
         }
         echo '</ul>';
@@ -1139,7 +1164,7 @@ function stew_render_dashboard_widget() {
     printf(
         '<p><a href="%s" class="button">%s</a></p>',
         esc_url( admin_url( 'admin.php?page=stew-role-pricing' ) ),
-        esc_html__( 'Alle Anträge ansehen', 'stew' )
+        esc_html__( 'Alle Anträge ansehen', 'stew-blocksy-child' )
     );
 }
 

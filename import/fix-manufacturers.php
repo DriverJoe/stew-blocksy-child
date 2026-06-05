@@ -4,6 +4,10 @@
  * Run with: wp --allow-root eval-file fix-manufacturers.php
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // Manufacturer fixes (SKU => correct manufacturer)
 $manufacturer_fixes = array(
     '1100021200' => 'EAGLERISE',

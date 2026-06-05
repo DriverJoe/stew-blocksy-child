@@ -166,13 +166,18 @@ function stew_header_cart_icon() {
         return;
     }
     $count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+    $cart_label = sprintf(
+        /* translators: %d: number of items in cart */
+        _n( 'Warenkorb, %d Artikel', 'Warenkorb, %d Artikel', $count, 'stew-blocksy-child' ),
+        $count
+    );
     ?>
-    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="stew-header-cart" title="<?php esc_attr_e( 'Warenkorb', 'stew-blocksy-child' ); ?>">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="stew-header-cart" aria-label="<?php echo esc_attr( $cart_label ); ?>">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
         </svg>
-        <span class="stew-header-cart__count" <?php echo $count === 0 ? 'style="display:none;"' : ''; ?>><?php echo esc_html( $count ); ?></span>
+        <span class="stew-header-cart__count" aria-hidden="true" <?php echo $count === 0 ? 'style="display:none;"' : ''; ?>><?php echo esc_html( $count ); ?></span>
     </a>
     <?php
 }
@@ -507,22 +512,37 @@ function stew_blocksy_breadcrumb_home_text( $home ) {
 add_filter( 'blocksy:breadcrumbs:home-text', 'stew_blocksy_breadcrumb_home_text' );
 
 /**
- * Translate 'Home' to 'Startseite' for the Blocksy textdomain when the
- * theme's German pack isn't installed for the active locale.
+ * Konsolidierter gettext-Filter: faengt fehlende de_CH-Strings
+ * von Blocksy + WooCommerce ab. Notwendig weil Blocksy nur de_DE liefert
+ * und WC Blocks ein paar Strings auf en_US zurueckfallen laesst.
  */
-function stew_translate_blocksy_home( $translation, $text, $domain ) {
-    if ( 'blocksy' === $domain && 'Home' === $text ) {
-        return 'Startseite';
+function stew_consolidated_gettext( $translation, $text, $domain ) {
+    if ( 'blocksy' === $domain ) {
+        $map = array(
+            'Home'                 => 'Startseite',
+            'Search'               => 'Suche',
+            'Skip to content'      => 'Zum Inhalt springen',
+            'Expand dropdown menu' => 'Untermenü öffnen',
+        );
+        if ( isset( $map[ $text ] ) ) return $map[ $text ];
+    }
+    if ( 'woocommerce' === $domain ) {
+        $map = array(
+            'Next'                                      => 'Weiter',
+            'Previous'                                  => 'Zurück',
+            'Next page'                                 => 'Nächste Seite',
+            'Previous page'                             => 'Vorherige Seite',
+            'Your basket is currently empty!'           => 'Ihr Warenkorb ist derzeit leer.',
+            'New in store'                              => 'Neu im Shop',
+            'Return to shop'                            => 'Zurück zum Shop',
+            'Add to basket'                             => 'In den Warenkorb',
+            'View basket'                               => 'Warenkorb ansehen',
+        );
+        if ( isset( $map[ $text ] ) ) return $map[ $text ];
     }
     return $translation;
 }
-add_filter( 'gettext', 'stew_translate_blocksy_home', 10, 3 );
-add_filter( 'gettext_with_context', function( $translation, $text, $context, $domain ) {
-    if ( 'blocksy' === $domain && 'Home' === $text && 'breadcrumb' === $context ) {
-        return 'Startseite';
-    }
-    return $translation;
-}, 10, 4 );
+add_filter( 'gettext', 'stew_consolidated_gettext', 10, 3 );
 
 /* =====================================================================
    6. REMOVE DEFAULT WOOCOMMERCE SIDEBAR

@@ -13,33 +13,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $product;
 
 $spec_fields = array(
-    'cc_cv_type'              => __( 'CC/CV Typ', 'stew-child' ),
-    'power_watts'             => __( 'Leistung (Watt)', 'stew-child' ),
-    'output_current_ma'       => __( 'Ausgangsstrom (mA)', 'stew-child' ),
-    'dimming_type'            => __( 'Dimmung', 'stew-child' ),
-    'output_channels'         => __( 'Ausgangskanäle', 'stew-child' ),
-    'ip_protection'           => __( 'IP-Schutzart', 'stew-child' ),
-    'dimensions_length_mm'    => __( 'Länge (mm)', 'stew-child' ),
-    'dimensions_width_mm'     => __( 'Breite (mm)', 'stew-child' ),
-    'dimensions_height_mm'    => __( 'Höhe (mm)', 'stew-child' ),
-    'dimension_category'      => __( 'Grössenkategorie', 'stew-child' ),
-    'input_voltage'           => __( 'Eingangsspannung', 'stew-child' ),
-    'series_type'             => __( 'Serien-Typ', 'stew-child' ),
-    'additional_functions'    => __( 'Zusatzfunktionen', 'stew-child' ),
-    'manufacturer_brand'      => __( 'Hersteller', 'stew-child' ),
-    'manufacturer_part_number'=> __( 'Hersteller-Artikelnummer', 'stew-child' ),
-    'ugr_rating'              => __( 'UGR-Wert', 'stew-child' ),
-    'cri_value'               => __( 'CRI-Wert', 'stew-child' ),
-    'cct_colour_temp'         => __( 'Farbtemperatur (K)', 'stew-child' ),
-    'beam_angle'              => __( 'Abstrahlwinkel', 'stew-child' ),
-    'lumen_output'            => __( 'Lichtstrom (lm)', 'stew-child' ),
-    'tilt_range'              => __( 'Schwenkbereich', 'stew-child' ),
-    'cutout_diameter'         => __( 'Einbaudurchmesser', 'stew-child' ),
-    'ceiling_thickness'       => __( 'Deckendicke', 'stew-child' ),
-    'recess_depth'            => __( 'Einbautiefe', 'stew-child' ),
-    'led_source'              => __( 'LED-Quelle', 'stew-child' ),
-    'system_wattage'          => __( 'Systemleistung', 'stew-child' ),
-    'lifetime'                => __( 'Lebensdauer', 'stew-child' ),
+    'cc_cv_type'              => __( 'CC/CV Typ', 'stew-blocksy-child' ),
+    'power_watts'             => __( 'Leistung (Watt)', 'stew-blocksy-child' ),
+    'output_current_ma'       => __( 'Ausgangsstrom (mA)', 'stew-blocksy-child' ),
+    'dimming_type'            => __( 'Dimmung', 'stew-blocksy-child' ),
+    'output_channels'         => __( 'Ausgangskanäle', 'stew-blocksy-child' ),
+    'ip_protection'           => __( 'IP-Schutzart', 'stew-blocksy-child' ),
+    'dimensions_length_mm'    => __( 'Länge (mm)', 'stew-blocksy-child' ),
+    'dimensions_width_mm'     => __( 'Breite (mm)', 'stew-blocksy-child' ),
+    'dimensions_height_mm'    => __( 'Höhe (mm)', 'stew-blocksy-child' ),
+    'dimension_category'      => __( 'Grössenkategorie', 'stew-blocksy-child' ),
+    'input_voltage'           => __( 'Eingangsspannung', 'stew-blocksy-child' ),
+    'series_type'             => __( 'Serien-Typ', 'stew-blocksy-child' ),
+    'additional_functions'    => __( 'Zusatzfunktionen', 'stew-blocksy-child' ),
+    'manufacturer_brand'      => __( 'Hersteller', 'stew-blocksy-child' ),
+    'manufacturer_part_number'=> __( 'Hersteller-Artikelnummer', 'stew-blocksy-child' ),
+    'ugr_rating'              => __( 'UGR-Wert', 'stew-blocksy-child' ),
+    'cri_value'               => __( 'CRI-Wert', 'stew-blocksy-child' ),
+    'cct_colour_temp'         => __( 'Farbtemperatur (K)', 'stew-blocksy-child' ),
+    'beam_angle'              => __( 'Abstrahlwinkel', 'stew-blocksy-child' ),
+    'lumen_output'            => __( 'Lichtstrom (lm)', 'stew-blocksy-child' ),
+    'tilt_range'              => __( 'Schwenkbereich', 'stew-blocksy-child' ),
+    'cutout_diameter'         => __( 'Einbaudurchmesser', 'stew-blocksy-child' ),
+    'ceiling_thickness'       => __( 'Deckendicke', 'stew-blocksy-child' ),
+    'recess_depth'            => __( 'Einbautiefe', 'stew-blocksy-child' ),
+    'led_source'              => __( 'LED-Quelle', 'stew-blocksy-child' ),
+    'system_wattage'          => __( 'Systemleistung', 'stew-blocksy-child' ),
+    'lifetime'                => __( 'Lebensdauer', 'stew-blocksy-child' ),
 );
 
 // Collect non-empty specs
@@ -59,7 +59,7 @@ $attributes = $product->get_attributes();
 ?>
 
 <?php if ( ! empty( $filled_specs ) || ! empty( $attributes ) ) : ?>
-    <h2 class="stew-section-heading"><?php esc_html_e( 'Technische Daten', 'stew-child' ); ?></h2>
+    <h2 class="stew-section-heading"><?php esc_html_e( 'Technische Daten', 'stew-blocksy-child' ); ?></h2>
 
     <table class="stew-specs-table woocommerce-product-attributes shop_attributes">
         <tbody>
@@ -74,6 +74,9 @@ $attributes = $product->get_attributes();
             // WooCommerce product attributes
             foreach ( $attributes as $attribute ) :
                 if ( ! $attribute->get_visible() ) continue;
+                if ( 'pa_hersteller' === $attribute->get_name() ) {
+                    continue;
+                }
             ?>
                 <tr>
                     <th><?php echo esc_html( wc_attribute_label( $attribute->get_name() ) ); ?></th>
@@ -104,11 +107,11 @@ $attributes = $product->get_attributes();
     ?>
         <p style="margin-top: 1.5rem;">
             <a href="<?php echo esc_url( $datasheet ); ?>" class="stew-datasheet-btn" target="_blank" rel="noopener">
-                <?php esc_html_e( 'Datenblatt herunterladen (PDF)', 'stew-child' ); ?>
+                <?php esc_html_e( 'Datenblatt herunterladen (PDF)', 'stew-blocksy-child' ); ?>
             </a>
         </p>
     <?php endif; ?>
 
 <?php else : ?>
-    <p><?php esc_html_e( 'Keine technischen Daten verfügbar.', 'stew-child' ); ?></p>
+    <p><?php esc_html_e( 'Keine technischen Daten verfügbar.', 'stew-blocksy-child' ); ?></p>
 <?php endif; ?>
