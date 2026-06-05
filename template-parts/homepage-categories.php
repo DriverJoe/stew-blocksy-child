@@ -63,6 +63,18 @@ if ( empty( $cards ) ) {
 				$card_title = $card['title'];
 				$card_image = ! empty( $card['image'] ) ? $card['image'] : null;
 				$card_link  = ! empty( $card['link'] ) ? $card['link'] : '';
+
+				// Skip card if it links to an empty product category.
+				$skip = false;
+				if ( $card_link && preg_match( '#/product-category/([^/]+)/?#', $card_link, $m ) ) {
+					$term = get_term_by( 'slug', $m[1], 'product_cat' );
+					if ( $term && (int) $term->count === 0 ) {
+						$skip = true;
+					}
+				}
+				if ( $skip ) {
+					continue;
+				}
 			?>
 				<a href="<?php echo esc_url( $card_link ); ?>" class="stew-category-card">
 					<?php if ( $card_image ) : ?>

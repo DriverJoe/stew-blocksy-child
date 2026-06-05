@@ -49,13 +49,38 @@ $product_count = $product_count ? absint( $product_count ) : 4;
 
 			<div class="stew-homepage-featured__products">
 				<?php
-				if ( shortcode_exists( 'products' ) ) {
-					// Show featured products if any exist, otherwise show recent
-					$featured = wc_get_products( array( 'featured' => true, 'limit' => 1 ) );
-					$visibility = ! empty( $featured ) ? ' visibility="featured"' : '';
-					echo do_shortcode(
-						'[products limit="' . esc_attr( $product_count ) . '" columns="4"' . $visibility . ' orderby="date"]'
-					);
+				$query_args = array(
+					'post_type'      => 'product',
+					'posts_per_page' => $product_count,
+					'post_status'    => 'publish',
+					'meta_query'     => array(
+						array( 'key' => '_thumbnail_id', 'compare' => 'EXISTS' ),
+					),
+					'tax_query'      => array(
+						array(
+							'taxonomy' => 'product_visibility',
+							'field'    => 'name',
+							'terms'    => 'featured',
+							'operator' => 'IN',
+						),
+					),
+				);
+				$featured_query = new WP_Query( $query_args );
+
+				// Fallback: if no FEATURED+image products, drop the featured filter.
+				if ( ! $featured_query->have_posts() ) {
+					unset( $query_args['tax_query'] );
+					$featured_query = new WP_Query( $query_args );
+				}
+
+				if ( $featured_query->have_posts() ) {
+					echo '<ul class="products columns-' . esc_attr( $product_count ) . '">';
+					while ( $featured_query->have_posts() ) {
+						$featured_query->the_post();
+						wc_get_template_part( 'content', 'product' );
+					}
+					echo '</ul>';
+					wp_reset_postdata();
 				}
 				?>
 			</div>

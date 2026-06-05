@@ -79,51 +79,12 @@
     }
 
     /**
-     * Mobile filter toggle — shows/hides .stew-filter-sidebar on small screens
-     */
-    function initMobileFilters() {
-        var $sidebar = $('.stew-shop-sidebar');
-        if (!$sidebar.length) return;
-
-        var $toggle = $('#filter-toggle');
-        if (!$toggle.length) {
-            $toggle = $('<button/>', {
-                'id':    'filter-toggle',
-                'class': 'stew-filter-toggle stew-btn stew-btn--outline',
-                'type':  'button',
-                'text':  'Filter anzeigen'
-            });
-            $sidebar.before($toggle);
-        }
-
-        function handleResize() {
-            if ($(window).width() >= 1024) {
-                $sidebar.show();
-                $toggle.hide();
-            } else {
-                $sidebar.hide();
-                $toggle.show().text('Filter anzeigen');
-            }
-        }
-        handleResize();
-        $(window).on('resize', handleResize);
-
-        $toggle.on('click', function () {
-            $sidebar.slideToggle(300, function () {
-                var isVisible = $sidebar.is(':visible');
-                $toggle.text(isVisible ? 'Filter ausblenden' : 'Filter anzeigen');
-            });
-        });
-    }
-
-    /**
      * Initialize on DOM ready
      */
     $(document).ready(function () {
         initSmoothScroll();
         initProductCards();
         initNewsletter();
-        initMobileFilters();
     });
 
 })(jQuery);

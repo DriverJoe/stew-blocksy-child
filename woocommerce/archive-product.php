@@ -191,11 +191,28 @@ $expanded_by_default = array( 'kategorie', 'betriebsart' );
 
 		<?php else : ?>
 
+			<?php
+			$rendered_empty_notice = false;
+			if ( is_product_category() ) {
+				$cat_obj = get_queried_object();
+				if ( $cat_obj && 0 === (int) $cat_obj->count ) {
+					echo '<div class="stew-empty-category-notice">';
+					echo '<h3>' . esc_html__( 'Diese Kategorie ist derzeit leer', 'stew-blocksy-child' ) . '</h3>';
+					echo '<p>' . esc_html__( 'Wir arbeiten daran — schauen Sie bald wieder vorbei oder durchsuchen Sie alle ', 'stew-blocksy-child' );
+					echo '<a href="' . esc_url( get_term_link( 'led-treiber', 'product_cat' ) ) . '">' . esc_html__( 'LED Treiber', 'stew-blocksy-child' ) . '</a>.';
+					echo '</p>';
+					echo '</div>';
+					$rendered_empty_notice = true;
+				}
+			}
+			if ( ! $rendered_empty_notice ) :
+			?>
 			<div class="stew-shop-empty">
 				<p>Keine Produkte gefunden. Bitte passen Sie die Filter an.</p>
 				<?php $shop_url = get_permalink( wc_get_page_id( 'shop' ) ); ?>
 				<a href="<?php echo esc_url( $shop_url ); ?>" class="stew-btn stew-btn--outline">Alle Produkte anzeigen</a>
 			</div>
+			<?php endif; ?>
 
 		<?php endif; ?>
 
