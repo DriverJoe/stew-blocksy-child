@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.1.1' );
+define( 'STEW_CHILD_VERSION', '2.1.2' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -265,10 +265,16 @@ function stew_cart_toast_scripts() {
         align-items: center;
         gap: 10px;
         max-width: 400px;
+        /* While invisible, don't intercept clicks/touches. Without this
+           the toast still has display:flex + opacity:0 and silently
+           swallows taps on whatever sits beneath it — on mobile that's
+           the floating "Filter" button at the bottom of the shop page. */
+        pointer-events: none;
     }
     .stew-toast.stew-toast--visible {
         transform: translateY(0);
         opacity: 1;
+        pointer-events: auto;
     }
     .stew-toast__icon {
         color: #C9A96E;
