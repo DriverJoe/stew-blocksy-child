@@ -845,9 +845,27 @@ footer#stew-footer .stew-footer__bottom p {
 .stew-homepage-featured__products ul.products li.product .woocommerce-loop-product__title {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
+    line-height: 1.4 !important;
     color: #1A1A1A !important;
     padding: 1rem 1.25rem 0.25rem !important;
     margin: 0 !important;
+    /* Reserve 2 lines so single-line titles don't shift price/button up
+       and cause misalignment across cards in the grid. */
+    min-height: calc(1rem + 0.25rem + 2 * 1.4 * 0.875rem);
+}
+
+/* Equal-height cards with button glued to bottom — keeps featured + shop
+   product grids visually clean regardless of title line count. */
+.woocommerce ul.products li.product,
+.stew-homepage-featured__products ul.products li.product {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.woocommerce ul.products li.product .ct-woo-card-actions,
+.stew-homepage-featured__products ul.products li.product .ct-woo-card-actions {
+    margin-top: auto !important;
+    padding-top: 0.75rem !important;
 }
 
 /* --- 6.5 Product price --- */
