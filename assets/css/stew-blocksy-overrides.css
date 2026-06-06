@@ -771,13 +771,26 @@ footer#stew-footer .stew-footer__bottom p {
    We let Blocksy handle the overall page layout (header, breadcrumbs, etc.)
    and only style the product grid + cards here. */
 
-.woocommerce ul.products {
+.woocommerce ul.products,
+.stew-homepage-featured__products ul.products {
     display: grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
     gap: 1.5rem !important;
     padding: 0 !important;
     margin: 0 !important;
     list-style: none !important;
+}
+
+@media (max-width: 999px) {
+    .stew-homepage-featured__products ul.products {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 575px) {
+    .stew-homepage-featured__products ul.products {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 @media (max-width: 999px) {

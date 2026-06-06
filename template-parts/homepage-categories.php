@@ -64,19 +64,22 @@ if ( empty( $cards ) ) {
 				$card_image = ! empty( $card['image'] ) ? $card['image'] : null;
 				$card_link  = ! empty( $card['link'] ) ? $card['link'] : '';
 
-				// Skip card if it links to an empty product category.
-				$skip = false;
+				// Detect empty linked category — don't hide the card,
+				// mark it visually as "Bald verfuegbar". Badge lifts
+				// automatically when products are assigned to the category.
+				$is_empty_category = false;
 				if ( $card_link && preg_match( '#/product-category/([^/]+)/?#', $card_link, $m ) ) {
 					$term = get_term_by( 'slug', $m[1], 'product_cat' );
 					if ( $term && (int) $term->count === 0 ) {
-						$skip = true;
+						$is_empty_category = true;
 					}
 				}
-				if ( $skip ) {
-					continue;
+				$card_classes = 'stew-category-card';
+				if ( $is_empty_category ) {
+					$card_classes .= ' stew-category-card--coming-soon';
 				}
 			?>
-				<a href="<?php echo esc_url( $card_link ); ?>" class="stew-category-card">
+				<a href="<?php echo esc_url( $card_link ); ?>" class="<?php echo esc_attr( $card_classes ); ?>"<?php if ( $is_empty_category ) : ?> aria-label="<?php echo esc_attr( $card_title . ' — ' . __( 'Bald verfügbar', 'stew-blocksy-child' ) ); ?>"<?php endif; ?>>
 					<?php if ( $card_image ) : ?>
 						<div class="stew-category-card__image">
 							<img
@@ -87,6 +90,9 @@ if ( empty( $cards ) ) {
 								loading="lazy"
 							/>
 							<span class="stew-category-card__overlay-name"><?php echo esc_html( $card_title ); ?></span>
+							<?php if ( $is_empty_category ) : ?>
+								<span class="stew-category-card__badge"><?php esc_html_e( 'Bald verfügbar', 'stew-blocksy-child' ); ?></span>
+							<?php endif; ?>
 						</div>
 					<?php endif; ?>
 					<div class="stew-category-card__info">
