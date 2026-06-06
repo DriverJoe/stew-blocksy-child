@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.0.9' );
+define( 'STEW_CHILD_VERSION', '2.1.0' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -550,6 +550,37 @@ function stew_prevent_shop_404_on_filter() {
     exit;
 }
 add_action( 'template_redirect', 'stew_prevent_shop_404_on_filter', 11 );
+
+/* =====================================================================
+   5b. INTERAKTIVES ADMIN-HANDBUCH
+   ===================================================================== */
+
+/**
+ * Admin-Menu-Eintrag "Handbuch" hinzufuegen.
+ * Nur fuer Administratoren sichtbar (Capability: manage_options).
+ */
+function stew_add_handbuch_menu() {
+    add_menu_page(
+        __( 'Admin-Handbuch', 'stew-blocksy-child' ),
+        __( 'Handbuch', 'stew-blocksy-child' ),
+        'manage_options',
+        'stew-handbuch',
+        'stew_render_handbuch_page',
+        'dashicons-book-alt',
+        3 // Direkt unter Dashboard
+    );
+}
+add_action( 'admin_menu', 'stew_add_handbuch_menu' );
+
+/**
+ * Die Handbuch-Seite rendern.
+ */
+function stew_render_handbuch_page() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        wp_die( esc_html__( 'Keine Berechtigung.', 'stew-blocksy-child' ) );
+    }
+    include STEW_CHILD_DIR . '/admin-pages/handbuch.php';
+}
 
 /**
  * Breadcrumb "Home" zu "Startseite" umbenennen (WooCommerce + Blocksy).
