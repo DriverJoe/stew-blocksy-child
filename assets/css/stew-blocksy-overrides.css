@@ -841,7 +841,8 @@ footer#stew-footer .stew-footer__bottom p {
 
 /* --- 6.4 Product title --- */
 
-.woocommerce ul.products li.product .woocommerce-loop-product__title {
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.stew-homepage-featured__products ul.products li.product .woocommerce-loop-product__title {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
     color: #1A1A1A !important;
@@ -851,7 +852,8 @@ footer#stew-footer .stew-footer__bottom p {
 
 /* --- 6.5 Product price --- */
 
-.woocommerce ul.products li.product .price {
+.woocommerce ul.products li.product .price,
+.stew-homepage-featured__products ul.products li.product .price {
     font-size: 0.875rem !important;
     font-weight: 500 !important;
     color: #1A1A1A !important;
@@ -861,7 +863,8 @@ footer#stew-footer .stew-footer__bottom p {
 
 /* --- 6.6 Add to cart button --- */
 
-.woocommerce ul.products li.product .button {
+.woocommerce ul.products li.product .button,
+.stew-homepage-featured__products ul.products li.product .button {
     display: block;
     width: calc(100% - 2.5rem);
     margin: 0 1.25rem 1.25rem !important;
@@ -879,7 +882,8 @@ footer#stew-footer .stew-footer__bottom p {
     font-family: var(--stew-font, 'Inter', sans-serif);
 }
 
-.woocommerce ul.products li.product .button:hover {
+.woocommerce ul.products li.product .button:hover,
+.stew-homepage-featured__products ul.products li.product .button:hover {
     background: #2A2A2A;
 }
 
