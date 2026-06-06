@@ -496,6 +496,62 @@ function stew_hide_flat_rate_when_free_available( $rates ) {
 add_filter( 'woocommerce_package_rates', 'stew_hide_flat_rate_when_free_available', 100 );
 
 /**
+ * Verhindert die WordPress-Standard-404-Antwort, wenn der Shop-Filter
+ * weniger Produkte zurueckgibt als die aktuelle Seitenzahl benoetigt.
+ *
+ * Szenario: Besucher ist auf /shop/page/3/, klickt einen restriktiveren
+ * Filter (z.B. Casambi = 9 Produkte) → URL wird /shop/page/3/?filter_...
+ * → WP findet keine Posts auf Seite 3 → 404. Stattdessen leiten wir
+ * auf Seite 1 mit denselben Filter-Parametern weiter, damit der Besucher
+ * die gefilterten Produkte sieht statt der "Oops"-Seite.
+ */
+function stew_shop_redirect_overflow_pagination() {
+    if ( is_admin() || ! is_shop() ) {
+        return;
+    }
+    $paged = max( 1, (int) get_query_var( 'paged' ) );
+    if ( $paged <= 1 ) {
+        return;
+    }
+    global $wp_query;
+    if ( ! $wp_query ) {
+        return;
+    }
+    if ( $paged > (int) $wp_query->max_num_pages ) {
+        $shop_url     = get_permalink( wc_get_page_id( 'shop' ) );
+        $query_string = isset( $_SERVER['QUERY_STRING'] ) ? sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ) ) : '';
+        $redirect_url = $shop_url . ( $query_string ? '?' . $query_string : '' );
+        wp_safe_redirect( $redirect_url, 302 );
+        exit;
+    }
+}
+add_action( 'template_redirect', 'stew_shop_redirect_overflow_pagination', 9 );
+
+/**
+ * Stoppt ebenfalls den Standard-404 fuer Shop-Pagination, falls die
+ * obige Funktion zu spaet feuert (z.B. wenn WP bereits is_404() gesetzt
+ * hat, bevor template_redirect laeuft). Setzt is_404 zurueck und gibt
+ * die Shop-Archiv-Vorlage aus.
+ */
+function stew_prevent_shop_404_on_filter() {
+    global $wp_query;
+    if ( ! is_404() ) {
+        return;
+    }
+    // Nur fuer URLs, die wie eine Shop-Pagination aussehen.
+    $request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+    if ( ! preg_match( '#^/shop(/page/\d+)?/?(\?|$)#', $request_uri ) ) {
+        return;
+    }
+    $shop_url     = get_permalink( wc_get_page_id( 'shop' ) );
+    $query_string = isset( $_SERVER['QUERY_STRING'] ) ? sanitize_text_field( wp_unslash( $_SERVER['QUERY_STRING'] ) ) : '';
+    $redirect_url = $shop_url . ( $query_string ? '?' . $query_string : '' );
+    wp_safe_redirect( $redirect_url, 302 );
+    exit;
+}
+add_action( 'template_redirect', 'stew_prevent_shop_404_on_filter', 11 );
+
+/**
  * Breadcrumb "Home" zu "Startseite" umbenennen (WooCommerce + Blocksy).
  */
 function stew_breadcrumb_home_text( $args ) {

@@ -74,7 +74,7 @@ $product_count = $product_count ? absint( $product_count ) : 4;
 				}
 
 				if ( $featured_query->have_posts() ) {
-					echo '<ul class="products columns-' . esc_attr( $product_count ) . '">';
+					echo '<ul class="products columns-3">';
 					while ( $featured_query->have_posts() ) {
 						$featured_query->the_post();
 						wc_get_template_part( 'content', 'product' );
