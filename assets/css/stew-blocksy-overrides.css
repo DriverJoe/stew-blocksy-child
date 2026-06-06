@@ -282,9 +282,16 @@ ul.products li.product [class*="categor"]:not(.button) {
 /* Match Blocksy's specificity: [data-header*="type-1"] .ct-header */
 /* :not(.ct-panel) excludes the offcanvas mobile drawer which also has class ct-header */
 [data-header*="type-1"] .ct-header:not(.ct-panel),
+/* Scope this rule to the actual header element. Earlier selector
+   `[data-header]:not(.ct-panel)` matched <body> (Blocksy sets
+   data-header="type-1" on body for global styling), which made
+   backdrop-filter apply to body and turned body into a containing
+   block for ALL position:fixed descendants. That broke the
+   mobile filter toggle button (its bottom:24px was resolving
+   13kpx below the viewport instead of anchoring to it). */
 .ct-header:not(.ct-panel),
-header[data-header],
-[data-header]:not(.ct-panel) {
+header.ct-header,
+header[data-header] {
     background: rgba(255, 255, 255, 0.80) !important;
     background-color: rgba(255, 255, 255, 0.80) !important;
     background-image: none !important;
@@ -849,9 +856,23 @@ footer#stew-footer .stew-footer__bottom p {
     color: #1A1A1A !important;
     padding: 1rem 1.25rem 0.25rem !important;
     margin: 0 !important;
-    /* Reserve 2 lines so single-line titles don't shift price/button up
-       and cause misalignment across cards in the grid. */
+    /* Reserve 2 lines on desktop so single-line titles don't shift the
+       price/button up and cause misalignment across cards. */
     min-height: calc(1rem + 0.25rem + 2 * 1.4 * 0.875rem);
+}
+
+/* On mobile, cards stack single-column so vertical alignment across
+   the grid doesn't matter. Drop the 2-line clamp + min-height so long
+   product names render in full (LED Converters often need 3 lines on
+   narrow viewports). */
+@media (max-width: 767px) {
+    .woocommerce ul.products li.product .woocommerce-loop-product__title,
+    .stew-homepage-featured__products ul.products li.product .woocommerce-loop-product__title {
+        min-height: 0 !important;
+        -webkit-line-clamp: unset !important;
+        overflow: visible !important;
+        display: block !important;
+    }
 }
 
 /* Equal-height cards with button glued to bottom — keeps featured + shop
