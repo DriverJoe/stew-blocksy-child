@@ -1963,3 +1963,28 @@ section.stew-homepage-newsletter p {
     z-index: 2 !important;
     line-height: 1 !important;
 }
+
+/* WC Blocks combobox/select: remove inner SELECT border so only the outer
+   container border shows ("Land/Region", "Kanton" were rendering as two
+   stacked boxes — beige outer + amber inner). */
+.wp-block-woocommerce-checkout .wc-blocks-components-select__select,
+.wp-block-woocommerce-checkout .wc-blocks-components-select__select:focus,
+.wp-block-woocommerce-checkout .wc-blocks-components-select__select:hover {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+/* The outer container becomes the focused/styled element instead. */
+.wp-block-woocommerce-checkout .wc-blocks-components-select__container:focus-within {
+    border-color: var(--theme-palette-color-1, #1a1a1a) !important;
+}
+
+/* Hide the native select's own dropdown chevron — Blocks renders its own SVG
+   chevron and the native one stacks on top in some browsers. */
+.wp-block-woocommerce-checkout .wc-blocks-components-select__select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
