@@ -1913,3 +1913,53 @@ section.stew-homepage-newsletter p {
     font-size: 0.9375rem;
     margin: 0;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   WC Blocks Checkout — floating-label overlap fix (2026-06-30)
+   ─────────────────────────────────────────────────────────────────────────
+   Bug: when a field has a value (typed or autofilled), the floating label
+   shrinks to top:6px @ 0.82× but the input value still sits at padding-top
+   12px — the two collide by ~8px vertically. Fix: push input value down,
+   pin the shrunk label cleanly above it, give it a white background so it
+   reads as a notch over the border.
+   Applies on /checkout/, /basket/, and the order-edit form. */
+.wp-block-woocommerce-checkout .wc-block-components-text-input input,
+.wp-block-woocommerce-checkout .wc-block-components-text-input select,
+.wp-block-woocommerce-checkout .wc-block-components-combobox input,
+.wp-block-woocommerce-checkout .wc-block-components-combobox select,
+.wp-block-woocommerce-cart .wc-block-components-text-input input,
+.wp-block-woocommerce-cart .wc-block-components-text-input select {
+    padding-top: 22px !important;
+    padding-bottom: 6px !important;
+}
+
+/* When label is shrunk (focus, has-value, autofilled, or React's is-active),
+   pin it cleanly above the input value with a white "notch" background. */
+.wp-block-woocommerce-checkout .wc-block-components-text-input.is-active > label,
+.wp-block-woocommerce-checkout .wc-block-components-text-input:focus-within > label,
+.wp-block-woocommerce-checkout .wc-block-components-text-input:has(input:not(:placeholder-shown)) > label,
+.wp-block-woocommerce-checkout .wc-block-components-text-input:has(input:-webkit-autofill) > label,
+.wp-block-woocommerce-checkout .wc-block-components-combobox.is-active > label,
+.wp-block-woocommerce-checkout .wc-block-components-combobox:focus-within > label {
+    top: 0 !important;
+    transform: translate(0, -50%) scale(0.78) !important;
+    transform-origin: top left !important;
+    background: #fff !important;
+    padding: 0 6px !important;
+    z-index: 2 !important;
+    line-height: 1 !important;
+}
+
+/* Same for combobox / select dropdowns (Land/Region, Kanton) — Land has a
+   permanently-rendered selected value so its label must always be shrunk. */
+.wp-block-woocommerce-checkout .wc-block-components-combobox > label,
+.wp-block-woocommerce-checkout .wc-block-components-country-input > label,
+.wp-block-woocommerce-checkout .wc-block-components-state-input > label {
+    top: 0 !important;
+    transform: translate(0, -50%) scale(0.78) !important;
+    transform-origin: top left !important;
+    background: #fff !important;
+    padding: 0 6px !important;
+    z-index: 2 !important;
+    line-height: 1 !important;
+}
