@@ -1998,3 +1998,24 @@ section.stew-homepage-newsletter p {
 .wp-block-woocommerce-checkout .wc-block-components-country-input .wc-blocks-components-select__container {
     border-color: rgb(232, 229, 224) !important;
 }
+
+/* My Account "button" links amber-on-amber fix (2026-06-30)
+   The default <a class="button"> on /my-account/payment-methods/,
+   /addresses/, etc. inherit amber text on amber bg — invisible to
+   the user. Force white text + visible hover state. Same family of
+   fixes as the Datenblatt button. */
+.woocommerce-account a.button,
+.woocommerce-account button.button,
+.woocommerce-MyAccount-content a.button,
+.woocommerce-MyAccount-content button.button {
+    color: #FFFFFF !important;
+}
+
+.woocommerce-account a.button:hover,
+.woocommerce-account button.button:hover,
+.woocommerce-MyAccount-content a.button:hover,
+.woocommerce-MyAccount-content button.button:hover {
+    background-color: #1A1A1A !important;
+    color: #FFFFFF !important;
+    border-color: #1A1A1A !important;
+}
