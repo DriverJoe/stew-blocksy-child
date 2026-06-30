@@ -417,11 +417,13 @@ header[data-header] {
    4. FOOTER — Dark with gold accents (Erco / Flos contrast)
    ========================================================================== */
 
-/* Match Blocksy's specificity: [data-footer*="type-1"] .ct-footer */
+/* Match Blocksy's specificity: [data-footer*="type-1"] .ct-footer.
+   DON'T use bare `[data-footer]` — it matches <body> (Blocksy sticks
+   `data-footer="type-1"` there), turning body background dark + text
+   white-0.6 across every page. */
 [data-footer*="type-1"] .ct-footer,
 footer.ct-footer,
-footer[data-footer],
-[data-footer] {
+footer[data-footer] {
     background: #0F0F0F !important;
     background-color: #0F0F0F !important;
     color: rgba(255, 255, 255, 0.6) !important;
@@ -429,26 +431,27 @@ footer[data-footer],
     border-top: 1px solid rgba(255, 255, 255, 0.10) !important;
 }
 
-/* Override Blocksy's inline footer row backgrounds */
+/* Override Blocksy's inline footer row backgrounds (scoped to .ct-footer) */
 [data-footer*="type-1"] .ct-footer [data-row*="bottom"],
 [data-footer*="type-1"] .ct-footer [data-row],
-[data-footer] [data-row],
 footer.ct-footer [data-row] {
     background-color: #0F0F0F !important;
     background: #0F0F0F !important;
     color: rgba(255, 255, 255, 0.6) !important;
 }
 
+/* Scope link rules to .ct-footer descendants only.
+   DON'T use bare `[data-footer] a` — Blocksy puts `data-footer="type-1"`
+   on the <body>, so that selector matches every link on every page
+   (caught 2026-06-30: white email link on Kontakt page). */
 [data-footer*="type-1"] .ct-footer a,
-footer.ct-footer a,
-[data-footer] a {
+footer.ct-footer a {
     color: rgba(255, 255, 255, 0.6) !important;
     transition: color 0.25s ease;
 }
 
 [data-footer*="type-1"] .ct-footer a:hover,
-footer.ct-footer a:hover,
-[data-footer] a:hover {
+footer.ct-footer a:hover {
     color: hsl(38, 80%, 50%) !important;
 }
 
