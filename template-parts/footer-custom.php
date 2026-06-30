@@ -13,6 +13,14 @@
 
 defined( 'ABSPATH' ) || exit;
 
+/* Defensive fallback: if site-settings.php hasn't loaded yet (stale OPcache
+ * during a deploy window, or include path broken), define a noop helper
+ * that returns empty strings. The template's `if ( $field )` guards then
+ * skip the rows gracefully — never fatals. */
+if ( ! function_exists( 'stew_site_setting' ) ) {
+    function stew_site_setting( $_key ) { return ''; }
+}
+
 /* Read all site-wide values once. Falls back to sensible defaults if
  * a value has never been saved (see stew_site_settings_defaults()). */
 $company_name    = stew_site_setting( 'company_name' );

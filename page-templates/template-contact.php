@@ -20,6 +20,12 @@ if ( ! $page_title ) {
 $form_title     = get_field( 'contact_form_title' );
 $cf7_shortcode  = get_field( 'contact_cf7_shortcode' );
 
+/* Defensive: if site-settings.php hasn't loaded yet, define a noop so
+ * this template never fatals — falls through to per-page ACF values. */
+if ( ! function_exists( 'stew_site_setting' ) ) {
+    function stew_site_setting( $_key ) { return ''; }
+}
+
 /* Prefer site-wide values from Site-Einstellungen so address/phone/email
  * stay in sync between this page and the footer. Fall back to per-page
  * ACF values (legacy) if Site-Einstellungen hasn't been populated yet. */
