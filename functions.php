@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.1.6' );
+define( 'STEW_CHILD_VERSION', '2.2.0' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -556,6 +556,11 @@ function stew_prevent_shop_404_on_filter() {
     exit;
 }
 add_action( 'template_redirect', 'stew_prevent_shop_404_on_filter', 11 );
+
+/* =====================================================================
+   5a. SITE-EINSTELLUNGEN (footer + contact data — admin-editable)
+   ===================================================================== */
+require_once STEW_CHILD_DIR . '/admin-pages/site-settings.php';
 
 /* =====================================================================
    5b. INTERAKTIVES ADMIN-HANDBUCH

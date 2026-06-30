@@ -20,13 +20,16 @@ if ( ! $page_title ) {
 $form_title     = get_field( 'contact_form_title' );
 $cf7_shortcode  = get_field( 'contact_cf7_shortcode' );
 
-$company_name   = get_field( 'company_name' );
-$address_line_1 = get_field( 'address_line_1' );
-$address_line_2 = get_field( 'address_line_2' );
-$address_country = get_field( 'address_country' );
-$phone          = get_field( 'phone' );
-$email          = get_field( 'email' );
-$opening_hours  = get_field( 'opening_hours' );
+/* Prefer site-wide values from Site-Einstellungen so address/phone/email
+ * stay in sync between this page and the footer. Fall back to per-page
+ * ACF values (legacy) if Site-Einstellungen hasn't been populated yet. */
+$company_name    = stew_site_setting( 'company_name' )    ?: get_field( 'company_name' );
+$address_line_1  = stew_site_setting( 'address_line_1' )  ?: get_field( 'address_line_1' );
+$address_line_2  = stew_site_setting( 'address_line_2' )  ?: get_field( 'address_line_2' );
+$address_country = stew_site_setting( 'address_country' ) ?: get_field( 'address_country' );
+$phone           = stew_site_setting( 'phone' )           ?: get_field( 'phone' );
+$email           = stew_site_setting( 'email' )           ?: get_field( 'email' );
+$opening_hours   = stew_site_setting( 'opening_hours' )   ?: get_field( 'opening_hours' );
 
 get_header();
 ?>
