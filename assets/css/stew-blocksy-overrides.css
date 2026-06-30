@@ -1988,3 +1988,10 @@ section.stew-homepage-newsletter p {
     -moz-appearance: none !important;
     appearance: none !important;
 }
+
+/* Country container gets an amber border by default from WC Blocks (the
+   "primary" address field treatment). Normalise to match the beige border
+   of other text inputs + the Kanton dropdown. */
+.wp-block-woocommerce-checkout .wc-block-components-country-input .wc-blocks-components-select__container {
+    border-color: rgb(232, 229, 224) !important;
+}
