@@ -148,16 +148,7 @@ $expanded_by_default = array( 'kategorie', 'betriebsart' );
 			</div>
 		<?php endforeach; ?>
 
-		<?php /* Price filter — starts collapsed */ ?>
-		<div class="stew-filter-group" data-filter="preis">
-			<button class="stew-filter-toggle" aria-expanded="false" type="button">
-				<span class="stew-filter-toggle__label">Preis</span>
-				<svg class="stew-filter-toggle__icon" width="12" height="12" viewBox="0 0 12 12"><polyline points="2 4 6 8 10 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-			</button>
-			<div class="stew-filter-body" style="display:none">
-				<?php the_widget( 'WC_Widget_Price_Filter', array( 'title' => '' ) ); ?>
-			</div>
-		</div>
+		<?php /* Preis filter removed 2026-07-07 per Ronny — "we do not need price as a filter". */ ?>
 
 	</aside>
 
