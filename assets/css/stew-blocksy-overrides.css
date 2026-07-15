@@ -2029,7 +2029,12 @@ section.stew-homepage-newsletter p {
    (/?s=…), author and date archives rendered black cards with
    the dark default text colours: invisible. Force cards white.
    The dark footer uses .ct-footer, never .entry-card, so a
-   global override is safe. */
+   global override is safe.
+   NB: Blocksy's inline dynamic CSS emits per-archive rules
+   ([data-prefix="search"] .entry-card etc.) at (0,2,0) AFTER
+   this stylesheet, so a bare .entry-card.card-content ties and
+   loses on order — the [data-prefix] variant wins at (0,3,0). */
+[data-prefix] .entry-card.card-content,
 .entry-card.card-content {
     background-color: var(--theme-palette-color-7, #FFFFFF);
 }
