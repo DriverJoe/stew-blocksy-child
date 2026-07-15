@@ -2019,3 +2019,26 @@ section.stew-homepage-newsletter p {
     color: #FFFFFF !important;
     border-color: #1A1A1A !important;
 }
+
+/* ============================================================
+   Search results entry cards — dark-on-dark fix (2026-07-15)
+   Blocksy's blog entry cards set background-color to
+   var(--theme-palette-color-8). In the stock Blocksy palette
+   colour 8 is white, but the STEW palette repurposes it as
+   near-black #0F0F0F (the footer tone) — so search results
+   (/?s=…), author and date archives rendered black cards with
+   the dark default text colours: invisible. Force cards white.
+   The dark footer uses .ct-footer, never .entry-card, so a
+   global override is safe. */
+.entry-card.card-content {
+    background-color: var(--theme-palette-color-7, #FFFFFF);
+}
+
+/* Products rendered as blog-style entry cards (WP search mixes
+   post types) leak the importing author + import date
+   ("Joe / 17 März 2026") as the bottom meta row — meaningless
+   and confusing on a product. Hide it; the category label
+   (meta_1) above the title stays. */
+.entry-card.type-product .entry-meta[data-id="meta_2"] {
+    display: none;
+}
