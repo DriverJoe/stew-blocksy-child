@@ -29,7 +29,7 @@ function stew_site_settings_defaults() {
         'address_line_2'     => '6060 Sarnen',
         'address_country'    => 'Schweiz',
         'phone'              => '',
-        'email'              => 'info@stew.ch',
+        'email'              => 'info@lichttreiber.ch',
         'opening_hours'      => "Mo-Fr: 08:00 - 17:00",
         'footer_logo_text'   => 'STEW.',
         'footer_description' => 'Online Shop für Leuchten und Steuergeräte. Professionelle LED-Beleuchtung für anspruchsvolle Projekte.',

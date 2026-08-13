@@ -691,7 +691,7 @@ function stew_register_acf_field_groups() {
                 'label'         => 'E-Mail',
                 'name'          => 'email',
                 'type'          => 'email',
-                'default_value' => 'info@stew.ch',
+                'default_value' => 'info@lichttreiber.ch',
                 'wrapper'       => array( 'width' => '50' ),
             ),
             array(

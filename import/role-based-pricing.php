@@ -420,7 +420,7 @@ function stew_handle_reject_customer() {
         "Guten Tag %s,\n\n" .
         "Leider konnten wir Ihren Kontoantrag nicht freigeben. " .
         "Bitte kontaktieren Sie uns für weitere Informationen:\n" .
-        "info@stew.ch\n\n" .
+        "info@lichttreiber.ch\n\n" .
         "Freundliche Grüsse\nIhr STEW Team",
         $user->display_name
     );
@@ -518,7 +518,7 @@ function stew_handle_reject_wholesale() {
             "Guten Tag %s,\n\n" .
             "Leider konnten wir Ihren Händlerantrag nicht freigeben. " .
             "Bitte kontaktieren Sie uns für weitere Informationen:\n" .
-            "info@stew.ch\n\n" .
+            "info@lichttreiber.ch\n\n" .
             "Freundliche Grüsse\n" .
             "Ihr STEW Team",
             'stew-blocksy-child'

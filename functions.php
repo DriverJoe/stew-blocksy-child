@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.2.7' );
+define( 'STEW_CHILD_VERSION', '2.2.8' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -964,7 +964,7 @@ add_action( 'woocommerce_single_product_summary', 'stew_product_highlights', 35 
 
 /**
  * Datenblatt-Platzhalter-Button auf Produktseite anzeigen.
- * Sendet eine vorausgefüllte Anfrage-E-Mail an info@stew.ch.
+ * Sendet eine vorausgefüllte Anfrage-E-Mail an info@lichttreiber.ch.
  */
 function stew_display_datasheet_button() {
     if ( ! is_product() ) {
@@ -978,7 +978,7 @@ function stew_display_datasheet_button() {
     $sku     = $product->get_sku();
     $subject = rawurlencode( sprintf( 'Datenblatt-Anfrage: %s', $name ) );
     $body    = rawurlencode( sprintf( "Bitte senden Sie mir das Datenblatt zu folgendem Produkt:\n\nProdukt: %s\nArt.-Nr.: %s\n\nVielen Dank.", $name, $sku ) );
-    $mailto  = sprintf( 'mailto:info@stew.ch?subject=%s&body=%s', $subject, $body );
+    $mailto  = sprintf( 'mailto:info@lichttreiber.ch?subject=%s&body=%s', $subject, $body );
     printf(
         '<a class="stew-datasheet-btn button" href="%s">%s</a>',
         esc_url( $mailto ),
