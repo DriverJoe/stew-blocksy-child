@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.2.4' );
+define( 'STEW_CHILD_VERSION', '2.2.7' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -1191,15 +1191,58 @@ function stew_shop_filter_scripts() {
     ?>
     <script>
     document.addEventListener("DOMContentLoaded", function() {
-        /* Mobile sidebar toggle */
-        var toggle = document.getElementById("filter-toggle");
-        var sidebar = document.getElementById("shop-filters");
+        /* Mobile filter drawer.
+           Opening it used to be a one-way trip: the pill that opens it is centred
+           on screen, so on a phone it sits under the 300px panel and below it in
+           the stacking order — tapping it again hit the panel, not the button.
+           Four ways out now: the ×, the backdrop, Esc, and the apply bar. */
+        var toggle   = document.getElementById("filter-toggle");
+        var sidebar  = document.getElementById("shop-filters");
+        var backdrop = document.getElementById("filter-backdrop");
+        var closeBtn = document.getElementById("filter-close");
+        var applyBtn = document.getElementById("filter-apply");
+        var shopMain = document.querySelector(".stew-shop-main");
+
+        function setDrawer(open) {
+            if (!sidebar) return;
+            sidebar.classList.toggle("stew-shop-sidebar--open", open);
+            document.body.classList.toggle("stew-filters-open", open);
+            if (toggle) toggle.classList.toggle("stew-shop-filter-toggle--active", open);
+            if (backdrop) backdrop.hidden = !open;
+        }
+
         if (toggle && sidebar) {
             toggle.addEventListener("click", function() {
-                sidebar.classList.toggle("stew-shop-sidebar--open");
-                toggle.classList.toggle("stew-shop-filter-toggle--active");
+                setDrawer(!sidebar.classList.contains("stew-shop-sidebar--open"));
             });
         }
+        if (closeBtn) {
+            closeBtn.addEventListener("click", function() { setDrawer(false); });
+        }
+        if (backdrop) {
+            backdrop.addEventListener("click", function() { setDrawer(false); });
+        }
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") { setDrawer(false); }
+        });
+        if (applyBtn) {
+            applyBtn.addEventListener("click", function() {
+                setDrawer(false);
+                if (shopMain) { shopMain.scrollIntoView({ behavior: "smooth", block: "start" }); }
+            });
+        }
+
+        /* The apply button carries the live count — that's the reason to tap it.
+           facetwp-loaded is a jQuery event, so it needs a jQuery listener. */
+        function syncApplyCount() {
+            if (!applyBtn || typeof FWP === "undefined" || !FWP.settings || !FWP.settings.pager) { return; }
+            var n = parseInt(FWP.settings.pager.total_rows, 10);
+            if (!isNaN(n)) {
+                applyBtn.textContent = (n === 1) ? "1 Produkt anzeigen" : n + " Produkte anzeigen";
+            }
+        }
+        if (window.jQuery) { jQuery(document).on("facetwp-loaded", syncApplyCount); }
+        syncApplyCount();
 
         /* Collapsible filter groups */
         document.querySelectorAll(".stew-filter-toggle").forEach(function(btn) {
@@ -1245,3 +1288,59 @@ function stew_disable_gutenberg_for_templates( $use_block_editor, $post ) {
     return $use_block_editor;
 }
 add_filter( 'use_block_editor_for_post', 'stew_disable_gutenberg_for_templates', 10, 2 );
+
+/**
+ * ─── FacetWP filter sidebar ────────────────────────────────────────────────
+ *
+ * The shop's filters moved from the hand-rolled `?filter_x=` sidebar to
+ * FacetWP (approved by Ronny 2026-06-30, licensed + installed 2026-07-07,
+ * built + live 2026-08-13).
+ *
+ * The old sidebar branch in woocommerce/archive-product.php is kept rather
+ * than deleted: FacetWP is an annual licence, and if it ever lapses or the
+ * plugin is deactivated, function_exists( 'FWP' ) goes false and the shop
+ * falls back to the `?filter_x=` sidebar instead of losing filtering entirely.
+ */
+function stew_use_facetwp() {
+	return function_exists( 'FWP' );
+}
+
+/**
+ * archive-product.php renders the result count and the sorting dropdown itself,
+ * in the topbar — WooCommerce adds its own copies inside the loop, which the
+ * shop has always shown twice. Harmless before, but with FacetWP those copies
+ * sit inside .facetwp-template and get replaced on every refresh, which unbinds
+ * the sorting <select>. Drop them on the FacetWP path only, so the legacy
+ * sidebar fallback keeps rendering exactly as it always has.
+ */
+if ( stew_use_facetwp() ) {
+	remove_action( 'woocommerce_before_shop_loop', 'woocommerce_result_count', 20 );
+	remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
+}
+
+/**
+ * FacetWP ships no German for its front-end strings, so the soft-limit toggle
+ * reads "See 33 more" in the middle of a German sidebar.
+ */
+function stew_facetwp_i18n( $text ) {
+	$de = array(
+		'See {num} more' => '{num} weitere anzeigen',
+		'See less'       => 'Weniger anzeigen',
+		'Reset'          => 'Zurücksetzen',
+		'Search'         => 'Suchen',
+		'No results'     => 'Keine Ergebnisse',
+	);
+
+	return $de[ $text ] ?? $text;
+}
+add_filter( 'facetwp_i18n', 'stew_facetwp_i18n' );
+
+/**
+ * WordPress stores "&" in term names as "&amp;" (Luce&Light, Wever & Ducré),
+ * and FacetWP runs the name through esc_html() — so the raw entity shows up in
+ * the sidebar. Decode once here rather than fixing individual terms, which WP
+ * would just re-encode on the next save.
+ */
+add_filter( 'facetwp_facet_display_value', function ( $label ) {
+	return html_entity_decode( $label, ENT_QUOTES, 'UTF-8' );
+} );

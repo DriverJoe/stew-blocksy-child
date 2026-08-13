@@ -819,6 +819,76 @@ body.stew-theme ul.products li.product .price .woocommerce-Price-amount {
     }
 }
 
+/* ── Mobile filter drawer: the ways out ──
+   The drawer used to have none. The floating "Filter" pill is centred on screen,
+   so on a phone it sits underneath the 300px panel and below it in the stacking
+   order — once open, nothing could close it. Three exits now: the ×, the backdrop,
+   and the apply bar that takes you straight back to the products. All desktop-hidden. */
+.stew-shop-sidebar__close,
+.stew-shop-sidebar__apply-bar,
+.stew-shop-backdrop {
+    display: none;
+}
+
+@media (max-width: 1023px) {
+    .stew-shop-sidebar__close {
+        display: block;
+        background: none;
+        border: 0;
+        padding: 0 0 0 14px;
+        margin: 0;
+        font-size: 28px;
+        line-height: 1;
+        color: var(--stew-text, #1A1A1A);
+        cursor: pointer;
+    }
+
+    /* Sticky rather than fixed: the panel is the scroll container, so the bar
+       rides with it and needs no separate open/closed positioning. The negative
+       margins cancel the panel's 24px padding so it spans edge to edge. */
+    .stew-shop-sidebar__apply-bar {
+        display: block;
+        position: sticky;
+        bottom: -24px;
+        margin: 20px -24px -24px;
+        padding: 12px 24px;
+        background: #fff;
+        border-top: 1px solid var(--stew-border, #E8E5E0);
+    }
+
+    .stew-shop-sidebar__apply {
+        display: block;
+        width: 100%;
+        padding: 13px 20px;
+        border: none;
+        border-radius: 999px;
+        background: var(--stew-text, #1A1A1A);
+        color: #fff;
+        font-family: var(--stew-font, 'Inter', sans-serif);
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .stew-shop-backdrop:not([hidden]) {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9998;
+    }
+
+    /* While the drawer is open: no page scrolling behind it, and hide the pill —
+       it's unreachable under the panel anyway. */
+    body.stew-filters-open {
+        overflow: hidden;
+    }
+
+    body.stew-filters-open .stew-shop-filter-toggle {
+        display: none;
+    }
+}
+
 .stew-shop-sidebar__header {
     display: flex;
     justify-content: space-between;
@@ -845,6 +915,24 @@ body.stew-theme ul.products li.product .price .woocommerce-Price-amount {
 }
 
 .stew-shop-sidebar__reset:hover {
+    text-decoration: underline;
+}
+
+/* FacetWP renders its own <a class="facetwp-reset"> for the reset facet, and
+   .facetwp-facet carries a default bottom margin that would break the header row. */
+.stew-shop-sidebar__header .facetwp-facet {
+    margin-bottom: 0;
+}
+
+.stew-shop-sidebar__header .facetwp-reset {
+    font-size: 0.75rem;
+    color: var(--stew-primary, hsl(38, 80%, 50%)) !important;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.stew-shop-sidebar__header .facetwp-reset:hover {
     text-decoration: underline;
 }
 
