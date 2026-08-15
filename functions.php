@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.2.8' );
+define( 'STEW_CHILD_VERSION', '2.2.9' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -352,6 +352,24 @@ function stew_cart_toast_scripts() {
             toastTimer = setTimeout(function() {
                 $toast.removeClass('stew-toast--visible');
             }, 4000);
+        }
+
+        // Refresh the header cart badge. It is rendered server-side, so on a page
+        // served from the page cache (added 2026-08-14) it would otherwise be
+        // frozen at whatever the anonymous visitor who warmed the cache saw: 0.
+        // WooCommerce sets woocommerce_items_in_cart whenever the cart is not
+        // empty — the value is always "1", a flag rather than a count — so only
+        // shoppers who actually have a cart cost a request here. Bots and
+        // empty-cart visitors make none, which is the whole point of the cache.
+        if (/(?:^|;\s*)woocommerce_items_in_cart=/.test(document.cookie)) {
+            $.getJSON('/?wc-ajax=get_refreshed_fragments', function(data) {
+                var html = data && data.fragments && data.fragments['.stew-header-cart__count'];
+                var $count = $('.stew-header-cart__count');
+                if (!html || !$count.length) return;
+                $count.replaceWith(html);
+                var n = parseInt($('.stew-header-cart__count').text(), 10) || 0;
+                $('.stew-header-cart').attr('aria-label', 'Warenkorb, ' + n + ' Artikel');
+            });
         }
     });
     </script>
