@@ -781,6 +781,12 @@ $admin_url       = admin_url();
             <p class="lang-de">Geliefert wird in Schweiz und Liechtenstein.</p>
             <p class="en">Delivery to Switzerland and Liechtenstein.</p>
 
+            <div class="callout warn">
+                <strong>Im Einstellungsfeld steht 13.88 — das ist richtig</strong>
+                <span class="lang-de">WooCommerce rechnet die MwSt bei Versandkosten <em>immer</em> obendrauf, auch wenn alle Produktpreise inkl. MwSt sind. Damit der Kunde genau CHF 15.00 zahlt, muss im Feld der Betrag <strong>ohne</strong> MwSt stehen: 13.88 + 8.1 % = CHF 15.00. Der Kunde sieht im Warenkorb korrekt CHF 15.00. <strong>Bitte nicht auf 15.00 zurückstellen</strong> — sonst zahlt der Kunde CHF 16.21.</span>
+                <span class="en">WooCommerce always adds VAT on top of a shipping cost, even when product prices include VAT. To charge exactly CHF 15.00 the field must hold the amount <strong>excluding</strong> VAT: 13.88 + 8.1% = CHF 15.00. The customer correctly sees CHF 15.00 at checkout. Do not change it back to 15.00, or the customer pays CHF 16.21.</span>
+            </div>
+
             <h3>Ändern <span class="en">Edit</span></h3>
             <ol class="steps">
                 <li>Menü: <kbd>WooCommerce → Einstellungen → Versand</kbd>. <span class="en">Menu path.</span></li>
