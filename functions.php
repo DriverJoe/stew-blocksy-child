@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.2.12' );
+define( 'STEW_CHILD_VERSION', '2.2.13' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -192,7 +192,8 @@ add_action( 'wp_body_open', function() {
  */
 function stew_cart_count_fragment( $fragments ) {
     $count = WC()->cart->get_cart_contents_count();
-    $fragments['.stew-header-cart__count'] = '<span class="stew-header-cart__count" ' . ( $count === 0 ? 'style="display:none;"' : '' ) . '>' . esc_html( $count ) . '</span>';
+    // A11: keep aria-hidden on the refreshed span - the link's aria-label carries the count.
+    $fragments['.stew-header-cart__count'] = '<span class="stew-header-cart__count" aria-hidden="true" ' . ( $count === 0 ? 'style="display:none;"' : '' ) . '>' . esc_html( $count ) . '</span>';
     return $fragments;
 }
 add_filter( 'woocommerce_add_to_cart_fragments', 'stew_cart_count_fragment' );
@@ -669,10 +670,30 @@ add_filter( 'blocksy:breadcrumbs:home-text', 'stew_blocksy_breadcrumb_home_text'
 function stew_consolidated_gettext( $translation, $text, $domain ) {
     if ( 'blocksy' === $domain ) {
         $map = array(
+            // B1: Blocksy live-search dropdown strings (Blocksy ships no de_CH pack).
+            'No results'           => 'Keine Ergebnisse',
+            'Search results'       => 'Suchergebnisse',
+            'Show more'            => 'Mehr anzeigen',
+            'More'                 => 'Mehr',
             'Home'                 => 'Startseite',
             'Search'               => 'Suche',
             'Skip to content'      => 'Zum Inhalt springen',
             'Expand dropdown menu' => 'Untermenü öffnen',
+            // C8: 404-Seite (template-parts/404.php) + Suchformular (searchform.php).
+            'Oops! That page can&rsquo;t be found.' => 'Hoppla! Diese Seite wurde nicht gefunden.',
+            'It looks like nothing was found at this location. Maybe try to search for something else?' => 'Unter dieser Adresse wurde leider nichts gefunden. Vielleicht hilft die Suche weiter?',
+            'Search for...'        => 'Suchbegriff eingeben',
+            'Search button'        => 'Suchen',
+            // C9: Header-Trigger, Offcanvas + Such-Modal (aria-labels), Pagination, Kommentarformular.
+            'Menu'                 => 'Menü',
+            'Close drawer'         => 'Menü schliessen',
+            'Offcanvas modal'      => 'Menü',
+            'Search modal'         => 'Suche',
+            'Close search modal'   => 'Suche schliessen',
+            'Prev'                 => 'Zurück',
+            'Next'                 => 'Weiter',
+            'Email'                => 'E-Mail',
+            'Cancel Reply'         => 'Antwort abbrechen',
         );
         if ( isset( $map[ $text ] ) ) return $map[ $text ];
     }
@@ -687,8 +708,15 @@ function stew_consolidated_gettext( $translation, $text, $domain ) {
             'Return to shop'                            => 'Zurück zum Shop',
             'Add to basket'                             => 'In den Warenkorb',
             'View basket'                               => 'Warenkorb ansehen',
+            // A8: das de_CH-Paket uebersetzt den Kanton "Uri" (i18n/states.php) als "URI".
+            'Uri'                                       => 'Uri',
         );
         if ( isset( $map[ $text ] ) ) return $map[ $text ];
+    }
+    // A5: Titel der Stripe-UPE-Kartenmethode kommt aus __() (class-wc-stripe-upe-payment-method-cc.php),
+    // nicht aus der Titel-Einstellung des Gateways; das Plugin hat kein deutsches Sprachpaket.
+    if ( 'woocommerce-gateway-stripe' === $domain && 'Credit / Debit Card' === $text ) {
+        return 'Kreditkarte / Debitkarte';
     }
     return $translation;
 }
@@ -1259,9 +1287,19 @@ function stew_search_products_by_sku( $search, $query ) {
         '%' . $wpdb->esc_like( $term ) . '%'
     );
 
+    // B2: also match the manufacturer (pa_hersteller term name). Spaces are ignored on
+    // both sides so "Mean Well", "MeanWell" and "MEAN WELL" all find the MEAN WELL products.
+    $hersteller_sql = $wpdb->prepare(
+        "{$wpdb->posts}.ID IN (SELECT tr.object_id FROM {$wpdb->term_relationships} tr"
+        . " INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id"
+        . " INNER JOIN {$wpdb->terms} t ON t.term_id = tt.term_id"
+        . " WHERE tt.taxonomy = 'pa_hersteller' AND REPLACE( t.name, ' ', '' ) LIKE %s)",
+        '%' . $wpdb->esc_like( str_replace( ' ', '', $term ) ) . '%'
+    );
+
     // Core returns " AND ((title LIKE) OR (excerpt LIKE) OR (content LIKE)) [AND (post_password = '')]".
-    // Slip the SKU match inside that first group so the password guard stays ANDed.
-    $widened = preg_replace( '/^\s*AND\s*\(/', " AND ( {$sku_sql} OR ", $search, 1, $done );
+    // Slip the SKU and manufacturer matches inside that first group so the password guard stays ANDed.
+    $widened = preg_replace( '/^\s*AND\s*\(/', " AND ( {$sku_sql} OR {$hersteller_sql} OR ", $search, 1, $done );
 
     return $done ? $widened : $search;
 }
@@ -1329,6 +1367,17 @@ function stew_shop_filter_scripts() {
         }
         if (window.jQuery) { jQuery(document).on("facetwp-loaded", syncApplyCount); }
         syncApplyCount();
+
+        /* D13: FacetWP's setHash() pushes location.pathname + its query string. Reached
+           via a WP pager URL (/page/2/) that keeps /page/2/ although FacetWP resets to
+           page 1, so reload / share / back show page 2. Strip the segment first;
+           facetwp-refresh fires right before setHash() and the guard is setHash()'s own
+           condition, so the initial load and popstate refreshes are left alone. */
+        document.addEventListener("facetwp-refresh", function() {
+            if (typeof FWP === "undefined" || !FWP.loaded || FWP.is_popstate || FWP.is_load_more) { return; }
+            var path = location.pathname.replace(/\/page\/\d+\/?$/, "/");
+            if (path !== location.pathname) { history.replaceState(null, "", path + location.search + location.hash); }
+        });
 
         /* Collapsible filter groups */
         document.querySelectorAll(".stew-filter-toggle").forEach(function(btn) {
@@ -1430,3 +1479,83 @@ add_filter( 'facetwp_i18n', 'stew_facetwp_i18n' );
 add_filter( 'facetwp_facet_display_value', function ( $label ) {
 	return html_entity_decode( $label, ENT_QUOTES, 'UTF-8' );
 } );
+
+/* =====================================================================
+   B1. SITE SEARCH = PRODUCT SEARCH
+   ===================================================================== */
+
+/**
+ * B1: the search forms submitted "/?s=term" without post_type=product, so WP
+ * answered with the blog search template (English "Search Results for",
+ * entry cards without price) and WooCommerce's single-result SKU redirect
+ * never fired - both need is_post_type_archive('product'), which WP decides
+ * from post_type at parse time.
+ *
+ * 1) Every get_search_form() form (header modal on desktop and on the 1b-2
+ *    mobile icon, 404 page, content-none) gets Blocksy's hidden
+ *    post_type=product; the live dropdown reads that same field, so it is
+ *    scoped to products too (subtype=product).
+ * 2) Requests that still arrive as a bare "s" (Blocksy's live-search
+ *    "Show more" link -> /search/term/, old links, pages cached before the
+ *    deploy) are normalised before WooCommerce picks template and redirect.
+ */
+function stew_search_form_products_only( $args ) {
+    $args['ct_post_type'] = array( 'product' );
+    return $args;
+}
+add_filter( 'search_form_args', 'stew_search_form_products_only' );
+
+function stew_search_request_products_only( $qv ) {
+    if ( isset( $qv['s'] ) && empty( $qv['post_type'] ) ) {
+        $qv['post_type'] = 'product';
+    }
+    return $qv;
+}
+add_filter( 'request', 'stew_search_request_products_only' );
+
+/**
+ * B1: Blocksy switches WooCommerce's archive title off for every product
+ * archive, so the results page never said what was searched for. Show it on
+ * search results ("Suchergebnisse: «HLG»", woocommerce-de_CH) - the topbar H1
+ * slot in woocommerce/archive-product.php already exists for it.
+ */
+add_filter( 'woocommerce_show_page_title', function ( $show ) {
+    return $show || is_search();
+}, 11 );
+
+/* =====================================================================
+   22. C8 / A6: GETTEXT-SONDERFAELLE (msgctxt + wp.i18n-Script-Translations)
+   ===================================================================== */
+
+/**
+ * C8: Der Platzhalter des Blocksy-Suchfelds (404-Seite via get_search_form())
+ * ist esc_attr_x( 'Search', 'placeholder', 'blocksy' ) – mit Kontext, darum
+ * greift stew_consolidated_gettext() ('gettext'-Hook) dort nicht.
+ */
+function stew_gettext_with_context( $translation, $text, $context, $domain ) {
+    if ( 'blocksy' === $domain && 'placeholder' === $context && 'Search' === $text ) {
+        return 'Suche';
+    }
+    return $translation;
+}
+add_filter( 'gettext_with_context', 'stew_gettext_with_context', 10, 4 );
+
+/**
+ * A6: Die Validierungsmeldung der Block-Kasse ist ein wp.i18n-String (Handle
+ * wc-cart-checkout-base, Domain woocommerce, JSON-Sprachdatei unter
+ * wp-content/languages/plugins/). Die de_CH-Uebersetzung "Bitte geben Sie ein
+ * gültiges %s ein" kann nicht mit dem eingesetzten Feldnamen kongruieren
+ * ("ein gültiges Vorname") – genusneutral ersetzen.
+ */
+function stew_wc_blocks_validation_i18n( $translations, $file, $handle, $domain ) {
+    if ( 'woocommerce' !== $domain || false === strpos( $translations, '"Please enter a valid %s"' ) ) {
+        return $translations;
+    }
+    $data = json_decode( $translations, true );
+    if ( empty( $data['locale_data']['messages'] ) ) {
+        return $translations;
+    }
+    $data['locale_data']['messages']['Please enter a valid %s'] = array( 'Bitte füllen Sie das Feld «%s» korrekt aus.' );
+    return wp_json_encode( $data );
+}
+add_filter( 'load_script_translations', 'stew_wc_blocks_validation_i18n', 10, 4 );

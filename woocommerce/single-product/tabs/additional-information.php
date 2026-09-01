@@ -56,6 +56,17 @@ foreach ( $spec_fields as $field_key => $label ) {
 
 // Also include WooCommerce default attributes
 $attributes = $product->get_attributes();
+
+// D5: skip attributes that only repeat a row already shown: pa_hersteller (ACF
+// Hersteller), the pa_leistung bucket ("0-15 W") next to the exact ACF wattage,
+// and the pa_dimmgruppe facet group next to the exact pa_dimmung value.
+$skip_attributes = array( 'pa_hersteller' );
+if ( isset( $filled_specs[ $spec_fields['power_watts'] ] ) ) {
+    $skip_attributes[] = 'pa_leistung';
+}
+if ( isset( $attributes['pa_dimmung'] ) && $attributes['pa_dimmung']->get_visible() ) {
+    $skip_attributes[] = 'pa_dimmgruppe';
+}
 ?>
 
 <?php if ( ! empty( $filled_specs ) || ! empty( $attributes ) ) : ?>
@@ -73,9 +84,8 @@ $attributes = $product->get_attributes();
             <?php
             // WooCommerce product attributes
             foreach ( $attributes as $attribute ) :
-                if ( ! $attribute->get_visible() ) continue;
-                if ( 'pa_hersteller' === $attribute->get_name() ) {
-                    continue;
+                if ( ! $attribute->get_visible() || in_array( $attribute->get_name(), $skip_attributes, true ) ) {
+                    continue; // D5
                 }
             ?>
                 <tr>
@@ -92,7 +102,8 @@ $attributes = $product->get_attributes();
                         } else {
                             $values = $attribute->get_options();
                         }
-                        echo esc_html( implode( ', ', $values ) );
+                        // D5: pa_ausgangsstrom terms are bare numbers - add the unit like the ACF labels do ("Leistung (Watt)").
+                        echo esc_html( implode( ', ', $values ) . ( 'pa_ausgangsstrom' === $attribute->get_name() ? ' mA' : '' ) );
                         ?>
                     </td>
                 </tr>
