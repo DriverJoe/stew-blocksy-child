@@ -208,7 +208,7 @@ add_filter( 'woocommerce_add_to_cart_fragments', 'stew_cart_count_fragment' );
  * theme mod has ever been saved), and that default only carries the search
  * element on the desktop row - the mobile row is logo + hamburger and the
  * off-canvas drawer is just the menu, so on a phone there was no way to open
- * the search at all (Ronny, 1 Sep 2026). Same element, same modal; it goes
+ * the search at all (Joe spotted it, 1 Sep 2026). Same element, same modal; it goes
  * in the mobile middle row's end slot before the hamburger.
  *
  * Only applies while the header is on defaults: saving the header in the
