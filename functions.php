@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.2.10' );
+define( 'STEW_CHILD_VERSION', '2.2.11' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -1198,6 +1198,40 @@ function stew_filter_products_by_attributes( $query ) {
     }
 }
 add_action( 'pre_get_posts', 'stew_filter_products_by_attributes' );
+
+/**
+ * Let the site search find products by part number (SKU).
+ *
+ * WP core only matches post_title / post_content / post_excerpt, and the SKU
+ * lives in wc_product_meta_lookup, so "1105010201" found nothing (Ronny, 22 Aug).
+ * Widens the core clause to "... OR ID IN (products whose sku LIKE %term%)" on
+ * any front-end product search: the results page, Blocksy live results, FacetWP.
+ */
+function stew_search_products_by_sku( $search, $query ) {
+    global $wpdb;
+
+    $term = trim( (string) $query->get( 's' ) );
+    if ( is_admin() || '' === $search || '' === $term ) {
+        return $search;
+    }
+
+    $post_types = array_filter( (array) $query->get( 'post_type' ) );
+    if ( $post_types && ! array_intersect( array( 'product', 'any' ), $post_types ) ) {
+        return $search;
+    }
+
+    $sku_sql = $wpdb->prepare(
+        "{$wpdb->posts}.ID IN (SELECT product_id FROM {$wpdb->prefix}wc_product_meta_lookup WHERE sku LIKE %s)",
+        '%' . $wpdb->esc_like( $term ) . '%'
+    );
+
+    // Core returns " AND ((title LIKE) OR (excerpt LIKE) OR (content LIKE)) [AND (post_password = '')]".
+    // Slip the SKU match inside that first group so the password guard stays ANDed.
+    $widened = preg_replace( '/^\s*AND\s*\(/', " AND ( {$sku_sql} OR ", $search, 1, $done );
+
+    return $done ? $widened : $search;
+}
+add_filter( 'posts_search', 'stew_search_products_by_sku', 10, 2 );
 
 /**
  * Output shop filter scripts (collapsible groups + mobile sidebar toggle).
