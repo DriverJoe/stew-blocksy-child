@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.2.11' );
+define( 'STEW_CHILD_VERSION', '2.2.12' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -196,6 +196,40 @@ function stew_cart_count_fragment( $fragments ) {
     return $fragments;
 }
 add_filter( 'woocommerce_add_to_cart_fragments', 'stew_cart_count_fragment' );
+
+/* =====================================================================
+   1b-2. SEARCH ICON ON THE MOBILE HEADER
+   ===================================================================== */
+
+/**
+ * Put the search icon on the mobile header row as well.
+ *
+ * The header runs on Blocksy's built-in default layout (no header_placements
+ * theme mod has ever been saved), and that default only carries the search
+ * element on the desktop row - the mobile row is logo + hamburger and the
+ * off-canvas drawer is just the menu, so on a phone there was no way to open
+ * the search at all (Ronny, 1 Sep 2026). Same element, same modal; it goes
+ * in the mobile middle row's end slot before the hamburger.
+ *
+ * Only applies while the header is on defaults: saving the header in the
+ * Customizer stores a copy with this change already in it.
+ */
+function stew_mobile_header_search( $value ) {
+    foreach ( $value['sections'] as $s => $section ) {
+        foreach ( $section['mobile'] as $r => $row ) {
+            if ( 'middle-row' !== $row['id'] ) {
+                continue;
+            }
+            foreach ( $row['placements'] as $p => $placement ) {
+                if ( 'end' === $placement['id'] && ! in_array( 'search', $placement['items'], true ) ) {
+                    array_unshift( $value['sections'][ $s ]['mobile'][ $r ]['placements'][ $p ]['items'], 'search' );
+                }
+            }
+        }
+    }
+    return $value;
+}
+add_filter( 'blocksy:header:default_value', 'stew_mobile_header_search' );
 
 /* =====================================================================
    1c. ADD-TO-CART TOAST NOTIFICATION
