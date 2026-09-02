@@ -19,7 +19,11 @@ $title         = get_field( 'newsletter_title' );
 $text          = get_field( 'newsletter_text' );
 $cf7_shortcode = get_field( 'newsletter_cf7_shortcode' );
 
-if ( ! $title ) {
+// C5: Die Newsletter-Sektion stand ohne Eingabefeld auf der Startseite —
+// newsletter_cf7_shortcode ist leer, es gab also nur Ueberschrift und Text und
+// damit eine Sackgasse. Ohne Formular wird die Sektion gar nicht ausgegeben;
+// sobald in den Seitenfeldern ein CF7-Shortcode steht, erscheint sie wieder.
+if ( ! $title || ! $cf7_shortcode ) {
 	return;
 }
 ?>

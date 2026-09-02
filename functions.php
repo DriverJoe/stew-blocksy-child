@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'STEW_CHILD_VERSION', '2.2.13' );
+define( 'STEW_CHILD_VERSION', '2.2.14' );
 define( 'STEW_CHILD_DIR', get_stylesheet_directory() );
 define( 'STEW_CHILD_URI', get_stylesheet_directory_uri() );
 
@@ -311,17 +311,25 @@ function stew_cart_toast_scripts() {
         opacity: 1;
         pointer-events: auto;
     }
-    .stew-toast__icon {
-        color: #C9A96E;
+    /* A13: scoped through the toast's id on purpose. Two site-wide
+       !important rules in stew-blocksy-overrides.css outrank a single class
+       here and were painting both of these #1A1A1A on the toast's own #1A1A1A:
+       `[data-header]:not(.ct-panel) svg` (0,2,1 — data-header sits on <body>,
+       so it catches this SVG too) and
+       `.woocommerce-page a:not(.button):not(.add_to_cart_button):not(.added_to_cart)`
+       (0,4,1). #stew-cart-toast gives 1,1,0 / 1,0,1, which wins without
+       loosening either of those rules. #C9A96E on #1A1A1A = 7.8:1. */
+    #stew-cart-toast .stew-toast__icon {
+        color: #C9A96E !important;
         flex-shrink: 0;
     }
-    .stew-toast a {
+    #stew-cart-toast a {
         color: #C9A96E !important;
         text-decoration: none !important;
         margin-left: 8px;
         white-space: nowrap;
     }
-    .stew-toast a:hover {
+    #stew-cart-toast a:hover {
         text-decoration: underline !important;
     }
 
@@ -713,6 +721,18 @@ function stew_consolidated_gettext( $translation, $text, $domain ) {
         );
         if ( isset( $map[ $text ] ) ) return $map[ $text ];
     }
+    // D6: FacetWP übersetzt die fest verdrahteten Labels der Quelle
+    // woo/stock_status über __( 'In Stock', 'fwp-front' ) — translate_hardcoded_choices()
+    // in facetwp/includes/integrations/woocommerce/woocommerce.php; das Plugin bringt
+    // kein de_CH-Paket mit. Die Facette «Verfügbarkeit» hängt ab v2.2.13 an dieser
+    // Quelle statt am Import-Attribut pa_lagerstatus.
+    if ( 'fwp-front' === $domain ) {
+        $map = array(
+            'In Stock'     => 'An Lager',
+            'Out of Stock' => 'Nicht an Lager',
+        );
+        if ( isset( $map[ $text ] ) ) return $map[ $text ];
+    }
     // A5: Titel der Stripe-UPE-Kartenmethode kommt aus __() (class-wc-stripe-upe-payment-method-cc.php),
     // nicht aus der Titel-Einstellung des Gateways; das Plugin hat kein deutsches Sprachpaket.
     if ( 'woocommerce-gateway-stripe' === $domain && 'Credit / Debit Card' === $text ) {
@@ -1074,8 +1094,27 @@ add_action( 'woocommerce_single_product_summary', 'stew_display_datasheet_button
 /**
  * Show manufacturer/brand name below the product title.
  */
+/**
+ * D2: Das ACF-Feld manufacturer_brand stammt aus dem Business-Central-Import und
+ * trägt dort den Kreditor (Lieferant) — bei 45 Produkten steht darum ein Händler
+ * als «Hersteller» auf der Seite (LUX-IT, Farnell, reichelt, marbach, LEOMAY …),
+ * während das Attribut pa_hersteller den echten Hersteller kennt. Anzeige darum
+ * aus pa_hersteller, Rückfall auf das ACF-Feld nur, wenn kein Term gesetzt ist.
+ * Das bleibt auch nach einem erneuten Business-Central-Import richtig.
+ * html_entity_decode wie im facetwp_facet_display_value-Filter weiter unten:
+ * WordPress speichert «&» in Term-Namen als «&amp;» (L&L Luce&Light).
+ */
+function stew_manufacturer_name( $product_id = 0 ) {
+    $product_id = $product_id ? $product_id : get_the_ID();
+    $terms      = get_the_terms( $product_id, 'pa_hersteller' );
+    if ( $terms && ! is_wp_error( $terms ) ) {
+        return html_entity_decode( implode( ', ', wp_list_pluck( $terms, 'name' ) ), ENT_QUOTES, 'UTF-8' );
+    }
+    return (string) get_post_meta( $product_id, 'manufacturer_brand', true );
+}
+
 function stew_product_manufacturer() {
-    $manufacturer = get_post_meta( get_the_ID(), 'manufacturer_brand', true );
+    $manufacturer = stew_manufacturer_name(); // D2
     if ( $manufacturer ) {
         echo '<p style="color:#737373;font-size:0.875rem;margin:-0.5rem 0 1rem;">' . esc_html( $manufacturer ) . '</p>';
     }
@@ -1559,3 +1598,224 @@ function stew_wc_blocks_validation_i18n( $translations, $file, $handle, $domain 
     return wp_json_encode( $data );
 }
 add_filter( 'load_script_translations', 'stew_wc_blocks_validation_i18n', 10, 4 );
+
+/* =====================================================================
+   23. SEO & HARDENING (Audit 01.09.2026 — E1–E5)
+   ===================================================================== */
+
+/**
+ * E1: /author/joe/ liefert 200 und nennt den WordPress-Anmeldenamen,
+ * /?author=1 leitet per redirect_canonical() dorthin um. Der Shop hat keine
+ * Autorenseiten, darum 404 statt Weiterleitung — eine 301 bestaetigt dem
+ * Crawler die URL und haelt sie im Index. Prioritaet 0, damit wir vor
+ * redirect_canonical() (Prio 10) laufen; sonst steht der Anmeldename im
+ * Location-Header der ?author=N-Sonde.
+ */
+function stew_disable_author_archives() {
+    if ( ! is_author() ) {
+        return;
+    }
+    global $wp_query;
+    $wp_query->set_404();
+    status_header( 404 );
+    nocache_headers();
+}
+add_action( 'template_redirect', 'stew_disable_author_archives', 0 );
+
+/**
+ * E1: Jedes Suchergebnis traegt rel="author" mit dem Anmeldenamen im href.
+ * Der 404 oben nimmt die Seite weg, nicht den Namen aus dem Quelltext — darum
+ * zusaetzlich jeden erzeugten Autorenlink auf die Startseite legen.
+ */
+function stew_author_link_home() {
+    return home_url( '/' );
+}
+add_filter( 'author_link', 'stew_author_link_home' );
+
+/**
+ * E2: Der Anmeldename ist ueber /wp-json/wp/v2/users auslesbar. Angemeldete
+ * Zugriffe (wp-admin, Block-Editor) bleiben unveraendert, /wp/v2/users/me auch.
+ */
+function stew_hide_rest_users( $endpoints ) {
+    if ( is_user_logged_in() ) {
+        return $endpoints;
+    }
+    unset( $endpoints['/wp/v2/users'], $endpoints['/wp/v2/users/(?P<id>[\d]+)'] );
+    return $endpoints;
+}
+add_filter( 'rest_endpoints', 'stew_hide_rest_users' );
+
+// E2: wp-sitemap-users-1.xml gar nicht erst erzeugen.
+function stew_remove_users_sitemap( $provider, $name ) {
+    return ( 'users' === $name ) ? false : $provider;
+}
+add_filter( 'wp_sitemaps_add_provider', 'stew_remove_users_sitemap', 10, 2 );
+
+/**
+ * E2: Die Anmeldung verraet, ob ein Konto existiert ("Unbekannter
+ * Benutzername" vs. "Das Passwort ist nicht korrekt") — damit lassen sich
+ * Kundenkonten aufzaehlen. Der Filter login_errors greift nur auf
+ * wp-login.php; die im Audit gefundene Meldung stammt von /my-account/, wo
+ * WooCommerce den WP_Error aus wp_signon() unveraendert ausgibt. Darum an der
+ * gemeinsamen Wurzel: authenticate, Prio 30 (nach den Kernpruefungen auf 20,
+ * vor wp_authenticate_spam_check auf 99). Die Fehlercodes bleiben erhalten,
+ * nur der Text wird vereinheitlicht.
+ */
+function stew_generic_login_error( $user ) {
+    if ( ! is_wp_error( $user ) ) {
+        return $user;
+    }
+    foreach ( array( 'invalid_username', 'invalid_email', 'incorrect_password' ) as $code ) {
+        if ( in_array( $code, $user->get_error_codes(), true ) ) {
+            $user->remove( $code );
+            $user->add( $code, __( 'Benutzername oder Passwort ist falsch.', 'stew-blocksy-child' ) );
+        }
+    }
+    return $user;
+}
+add_filter( 'authenticate', 'stew_generic_login_error', 30 );
+
+// E2: WordPress-Version nicht ausliefern — <meta name="generator"> im Head und
+// <generator> in den Feeds. readme.html und license.txt sind ein Server-Schritt
+// (siehe Uebergabe), xmlrpc.php antwortet bereits mit 403.
+remove_action( 'wp_head', 'wp_generator' );
+add_filter( 'the_generator', '__return_empty_string' );
+
+/**
+ * E3: Es ist kein SEO-Plugin installiert (ACF, CF7, FacetWP, WooCommerce,
+ * Stripe, WP Super Cache), deshalb setzt das Theme Description, Open Graph und
+ * Canonical selbst. Kommt spaeter Yoast/RankMath/SEOPress/AIOSEO dazu, halten
+ * wir uns komplett heraus, sonst steht alles doppelt im Head.
+ */
+function stew_seo_plugin_active() {
+    return defined( 'WPSEO_VERSION' ) || defined( 'RANK_MATH_VERSION' ) || defined( 'SEOPRESS_VERSION' ) || defined( 'AIOSEO_VERSION' );
+}
+
+/**
+ * E3: 0 von 274 Seiten hatten eine Meta-Description oder og:-Tags, und weder
+ * "/" noch /shop/ noch die 103 Archiv-URLs ein Canonical — "/" und /shop/
+ * zeigen dasselbe Raster (page_on_front = WooCommerce-Shopseite = 7).
+ * rel=canonical setzt der Core nur bei is_singular(); dort lassen wir ihm den
+ * Vortritt (sonst stuende es zweimal im Head) und ergaenzen nur die Archive.
+ * Bewusst kein 301 von /shop/ auf "/": /shop/ ist zugleich die
+ * Paginierungsbasis von WooCommerce (/shop/page/2/ liefert heute 200).
+ * Gefilterte Ansichten (?_bauform=…) zeigen auf das ungefilterte Archiv.
+ */
+function stew_seo_head() {
+    if ( stew_seo_plugin_active() || is_404() || is_search() ) {
+        return;
+    }
+
+    $raw = '';
+    $url = '';
+
+    if ( is_singular() ) {
+        $post = get_queried_object();
+        if ( $post instanceof WP_Post ) {
+            $raw = $post->post_excerpt ? $post->post_excerpt : $post->post_content;
+            // Produkte: Die Kurzbeschreibung ist im Shop meist nur die
+            // Abmessung ("L: 62mm B: 39mm"), darum der Produktname davor.
+            if ( 'product' === $post->post_type ) {
+                $raw = $post->post_title . ' – ' . $raw;
+            }
+        }
+    } elseif ( function_exists( 'is_shop' ) && is_shop() ) {
+        $url  = wc_get_page_permalink( 'shop' );
+        $shop = get_post( wc_get_page_id( 'shop' ) );
+        $raw  = $shop ? $shop->post_excerpt : '';
+    } elseif ( is_tax() || is_category() || is_tag() ) {
+        $term = get_queried_object();
+        if ( $term instanceof WP_Term ) {
+            $link = get_term_link( $term );
+            $url  = is_wp_error( $link ) ? '' : $link;
+            $raw  = $term->description;
+        }
+    }
+
+    // Seite 2 ff. zeigt auf sich selbst, nicht auf Seite 1.
+    $paged = max( (int) get_query_var( 'paged' ), (int) get_query_var( 'page' ) );
+    if ( $url && $paged > 1 ) {
+        $url = trailingslashit( $url ) . 'page/' . $paged . '/';
+    }
+
+    if ( $url ) {
+        echo '<link rel="canonical" href="' . esc_url( $url ) . '" />' . "\n";
+    }
+
+    // wp_html_excerpt() macht strip_tags + Kuerzen auf 155 Zeichen in einem
+    // Zug und haengt das Auslassungszeichen nur an, wenn wirklich gekuerzt wurde.
+    $raw         = $raw ? $raw : stew_site_setting( 'footer_description' );
+    $description = wp_html_excerpt( strip_shortcodes( $raw ), 155, '…' );
+    if ( ! $description ) {
+        return;
+    }
+
+    $og_url   = is_singular() ? get_permalink() : $url;
+    $og_image = is_singular() ? get_the_post_thumbnail_url( get_queried_object_id(), 'large' ) : '';
+
+    echo '<meta name="description" content="' . esc_attr( $description ) . '" />' . "\n";
+    echo '<meta property="og:title" content="' . esc_attr( wp_get_document_title() ) . '" />' . "\n";
+    echo '<meta property="og:description" content="' . esc_attr( $description ) . '" />' . "\n";
+    if ( $og_url ) {
+        echo '<meta property="og:url" content="' . esc_url( $og_url ) . '" />' . "\n";
+    }
+    if ( $og_image ) {
+        echo '<meta property="og:image" content="' . esc_url( $og_image ) . '" />' . "\n";
+    }
+}
+add_action( 'wp_head', 'stew_seo_head', 1 );
+
+/**
+ * E3: Shop und Produktkategorien hatten gar kein H1 — Blocksy schaltet den
+ * WooCommerce-Archivtitel global ab (inc/components/woocommerce/archive/index.php:
+ * woocommerce_show_page_title -> __return_false). Der H1-Platz in
+ * woocommerce/archive-product.php ist vorhanden und gestaltet
+ * (.stew-shop-topbar__title), er bekam nur nie Inhalt — also den Titel wieder
+ * einschalten statt ein verstecktes H1 nachzuruesten. Prio 12: nach Blocksy
+ * (10) und nach dem Suchergebnis-Filter aus B1 (11). pa_*-Archive bleiben
+ * aussen vor, deren Termname ("2100") gibt keine Ueberschrift her und sie sind
+ * ab E4 ohnehin noindex.
+ */
+function stew_show_shop_page_title( $show ) {
+    return $show || is_shop() || is_product_category();
+}
+add_filter( 'woocommerce_show_page_title', 'stew_show_shop_page_title', 12 );
+
+/**
+ * E4: 99 Attribut-Archive (/hersteller/…, /ausgangsstrom/…) sind duenne
+ * Duplikate des Shop-Rasters und stehen in der Sitemap. noindex,follow und
+ * raus aus der Sitemap. Die Sichtbarkeit der Attribute bleibt unveraendert,
+ * FacetWP filtert weiter darueber.
+ */
+function stew_noindex_attribute_archives( $robots ) {
+    if ( ! is_tax() ) {
+        return $robots;
+    }
+    $term = get_queried_object();
+    if ( $term instanceof WP_Term && 0 === strpos( $term->taxonomy, 'pa_' ) ) {
+        return wp_robots_no_robots( $robots );
+    }
+    return $robots;
+}
+add_filter( 'wp_robots', 'stew_noindex_attribute_archives' );
+
+// E4: Attribut-Taxonomien aus wp-sitemap.xml nehmen.
+function stew_remove_attributes_from_sitemap( $taxonomies ) {
+    foreach ( array_keys( $taxonomies ) as $taxonomy ) {
+        if ( 0 === strpos( $taxonomy, 'pa_' ) ) {
+            unset( $taxonomies[ $taxonomy ] );
+        }
+    }
+    return $taxonomies;
+}
+add_filter( 'wp_sitemaps_taxonomies', 'stew_remove_attributes_from_sitemap' );
+
+/**
+ * E5: Blocksys Footer-Copyright steht mit seinem Standardtext im Quelltext
+ * jeder Seite: "Copyright © 2026 - WordPress Theme by Joe Driver", verlinkt auf
+ * www.stew.ch (kein DNS-Eintrag). Sichtbar ist es nicht — footer.ct-footer wird
+ * ausgeblendet (siehe stew_hide_blocksy_footer) — im HTML steht es trotzdem
+ * 274-mal. An der Quelle leeren statt per CSS verstecken; der sichtbare
+ * Copyright-Text kommt aus template-parts/footer-custom.php.
+ */
+add_filter( 'blocksy:footer:copyright:value', '__return_empty_string' );

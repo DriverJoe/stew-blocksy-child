@@ -60,7 +60,19 @@ $attributes = $product->get_attributes();
 // D5: skip attributes that only repeat a row already shown: pa_hersteller (ACF
 // Hersteller), the pa_leistung bucket ("0-15 W") next to the exact ACF wattage,
 // and the pa_dimmgruppe facet group next to the exact pa_dimmung value.
-$skip_attributes = array( 'pa_hersteller' );
+// D6: pa_lagerstatus ist ein Import-Schnappschuss (fehlt bei 23 lagernden
+// Produkten) — den echten Lagerstand zeigt WooCommerce ohnehin als «N vorrätig»
+// über der Tabelle, und die Facette hängt ab v2.2.13 an woo/stock_status.
+$skip_attributes = array( 'pa_hersteller', 'pa_lagerstatus' );
+
+// D2: Hersteller-Zeile aus dem Attribut pa_hersteller statt aus dem ACF-Feld
+// manufacturer_brand — dort steht bei 45 Produkten der Lieferant.
+if ( function_exists( 'stew_manufacturer_name' ) ) {
+    $stew_manufacturer = stew_manufacturer_name( get_the_ID() );
+    if ( $stew_manufacturer ) {
+        $filled_specs[ $spec_fields['manufacturer_brand'] ] = $stew_manufacturer;
+    }
+}
 if ( isset( $filled_specs[ $spec_fields['power_watts'] ] ) ) {
     $skip_attributes[] = 'pa_leistung';
 }
@@ -103,7 +115,9 @@ if ( isset( $attributes['pa_dimmung'] ) && $attributes['pa_dimmung']->get_visibl
                             $values = $attribute->get_options();
                         }
                         // D5: pa_ausgangsstrom terms are bare numbers - add the unit like the ACF labels do ("Leistung (Watt)").
-                        echo esc_html( implode( ', ', $values ) . ( 'pa_ausgangsstrom' === $attribute->get_name() ? ' mA' : '' ) );
+                        // Skip the unit if a term already carries it (the unused range buckets "0-350 mA" etc. would read "mA mA").
+                        $joined = implode( ', ', $values );
+                        echo esc_html( $joined . ( 'pa_ausgangsstrom' === $attribute->get_name() && false === stripos( $joined, 'mA' ) ? ' mA' : '' ) );
                         ?>
                     </td>
                 </tr>

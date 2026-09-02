@@ -55,11 +55,15 @@ $address_lines = array_filter( array( $address_line_1, $address_line_2, $address
             <div class="stew-footer__col">
                 <h4 class="stew-footer__heading">Navigation</h4>
                 <ul class="stew-footer__links">
-                    <li><a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Shop</a></li>
+                    <?php
+                    // C4: led-leuchten, led-module und steuerungssysteme haben 0 Produkte
+                    // (Stand 01.09.2026) und liefen auf "Diese Kategorie ist derzeit leer".
+                    // Sie kommen zurueck, sobald sie Bestand haben. "Shop" zeigt jetzt auf
+                    // "/" statt auf die Zweit-URL /shop/ — dieselbe Seite, und die
+                    // Kopfnavigation verlinkt bereits "/".
+                    ?>
+                    <li><a href="<?php echo esc_url( home_url( '/' ) ); ?>">Shop</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/product-category/led-treiber/' ) ); ?>">LED Treiber</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/product-category/led-leuchten/' ) ); ?>">LED Leuchten</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/product-category/led-module/' ) ); ?>">LED Module</a></li>
-                    <li><a href="<?php echo esc_url( home_url( '/product-category/steuerungssysteme/' ) ); ?>">Steuerungssysteme</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/ueber-uns/' ) ); ?>">&Uuml;ber uns</a></li>
                     <li><a href="<?php echo esc_url( home_url( '/kontakt/' ) ); ?>">Kontakt</a></li>
                 </ul>

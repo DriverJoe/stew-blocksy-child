@@ -1953,11 +1953,18 @@ section.stew-homepage-newsletter p {
     line-height: 1 !important;
 }
 
-/* Same for combobox / select dropdowns (Land/Region, Kanton) — Land has a
-   permanently-rendered selected value so its label must always be shrunk. */
-.wp-block-woocommerce-checkout .wc-block-components-combobox > label,
-.wp-block-woocommerce-checkout .wc-block-components-country-input > label,
-.wp-block-woocommerce-checkout .wc-block-components-state-input > label {
+/* A7: same for the select dropdowns (Land/Region, Kanton).
+   The three selectors that used to sit here never matched anything, so the
+   full-size label stayed drawn on top of "Schweiz" / the canton value:
+   .wc-block-components-combobox is not rendered on this checkout at all, and
+   on .wc-block-components-country-input / -state-input the label is a
+   GRANDchild, not a child — WooCommerce nests it as
+   .wc-blocks-components-select > label.wc-blocks-components-select__label,
+   so the "> label" child combinator matched zero elements.
+   A select always has a rendered value, so its label is always shrunk — no
+   is-active / :has() state needed. */
+.wp-block-woocommerce-checkout .wc-blocks-components-select__label,
+.wp-block-woocommerce-cart .wc-blocks-components-select__label {
     top: 0 !important;
     transform: translate(0, -50%) scale(0.78) !important;
     transform-origin: top left !important;
@@ -2046,4 +2053,216 @@ section.stew-homepage-newsletter p {
    (meta_1) above the title stays. */
 .entry-card.type-product .entry-meta[data-id="meta_2"] {
     display: none;
+}
+
+/* ==========================================================================
+   Mobile fixes (2026-09-02) — A12, F1, F2, F3, F4, F7
+   Appended here rather than to stew-custom.css because this sheet is enqueued
+   last (stew-custom.css -> stew-blocksy-overrides.css), so these rules win on
+   source order at equal specificity.
+   ========================================================================== */
+
+/* F7: FacetWP's own stylesheet ships `.facetwp-facet { margin-bottom: 40px }`.
+   That margin — not the theme — is the dead band under every group in the
+   filter drawer and in the desktop sidebar: .stew-filter-group already has its
+   own padding-bottom + margin-bottom, so the facet margin is spacing stacked
+   on spacing. Same reset .stew-shop-sidebar__header already does for its own
+   facet. Measured drawer group heights 116/264/353 -> 80/228/313. */
+.stew-filter-body .facetwp-facet {
+    margin-bottom: 0;
+}
+
+/* F4: .stew-specs-table's own `width: 100%` and `margin: 2rem 0`
+   (stew-custom.css) beat the width and the auto margins that Blocksy's
+   constrained layout gives every other child of the tab panel — which is why
+   the table ran edge to edge while the "Technische Daten" heading kept the
+   page gutter. Put both back. --theme-container-width resolves to
+   min(100%, 88vw) on a phone (343px at 390) and to 90vw on desktop, where the
+   layout's own max-width: 1290px still clamps it — measured x=75 w=1290
+   before and after at 1440, i.e. desktop geometry unchanged. */
+.stew-specs-table {
+    width: var(--theme-container-width, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* A12: block-cart quantity value was clipped ("2(" for 20). WooCommerce ships
+   a 45px input; the child theme's own blanket rule in stew-custom.css
+   (`body.stew-theme input[type="number"] { padding: .75rem 1rem !important }`)
+   then eats 32px of it, leaving 11px of content box — scrollWidth 48 >
+   clientWidth 43. Deliberately NOT in a media query: the value is clipped at
+   every width, and dropping the side padding on its own changes no geometry
+   (input stays 45x40 and text-align stays center on desktop; measured
+   identical at 1440 apart from the value now fitting).
+   !important is unavoidable here — the declaration being corrected is itself
+   !important at (0,2,2); this selector is (0,3,2). */
+body.stew-theme .wc-block-components-quantity-selector input.wc-block-components-quantity-selector__input {
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
+
+@media (max-width: 999px) {
+
+    /* F4: same cause on the tab strip above the table — `margin: 0 0 2rem` in
+       stew-custom.css cancels the auto inline margins the constrained layout
+       gives it, so the tabs sat flush at x=0 while the panel content kept the
+       gutter. Mobile only: the desktop tab strip has the same misalignment but
+       changing it is a desktop layout change this release did not sign off. */
+    .stew-theme .woocommerce-tabs ul.tabs {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* F1: the header controls were the bare icon box with zero padding —
+       search 15x15, hamburger 18x18, cart 24x24. Grow the hit area to 44x44
+       without touching the icons; they are flex items, so the header row
+       re-spaces them on its own (measured: no two targets overlap, header
+       height unchanged at 71px). */
+    .ct-header:not(.ct-panel) .ct-toggle,
+    .ct-header:not(.ct-panel) .stew-header-cart {
+        min-width: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* F1: the count badge is anchored to the cart link, which just grew from
+       24x24 to 44x44 — pull it back onto the icon (measured: badge sits at the
+       same offset from the SVG as before, 13px/-7px). */
+    .ct-header:not(.ct-panel) .stew-header-cart__count {
+        top: 3px;
+        right: 3px;
+    }
+
+    /* F1: offcanvas rows (33px), submenu chevron (25x25) and close (32x32). */
+    .ct-panel .ct-menu-link {
+        min-height: 44px;
+    }
+
+    .ct-panel .ct-toggle-close,
+    .ct-panel .ct-toggle-dropdown-mobile {
+        min-width: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* F1: footer link rows were 16px tall inline boxes. inline-flex keeps the
+       hover underline on the text only, while min-width guarantees the short
+       ones ("Shop" was 32px wide) still clear 44px. */
+    .stew-footer__links li {
+        margin-bottom: 0;
+    }
+
+    .stew-footer__links a,
+    footer#stew-footer .stew-footer__links a {
+        display: inline-flex;
+        align-items: center;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* F3: iOS Safari zooms the whole page when a focused control is under
+       16px. Kontakt (CF7) was 15px, the product quantity 14.4px, the basket
+       quantity 13px. Every other control on the site is already 16px. */
+    .stew-contact__form-wrap input[type="text"],
+    .stew-contact__form-wrap input[type="email"],
+    .stew-contact__form-wrap input[type="tel"],
+    .stew-contact__form-wrap select,
+    .stew-contact__form-wrap textarea {
+        font-size: 1rem;
+    }
+
+    /* F1 + F3: product quantity — 22x22 steppers inside a 100x40 box, value at
+       14.4px. The steppers are absolutely positioned against .quantity, so the
+       wrapper has to grow in both axes or they overflow it and collide with the
+       "In den Warenkorb" button. 140x48 fits two 44px targets with a 2px inset
+       plus ~52px for the number; the button is a flex sibling and follows. */
+    .woocommerce div.product form.cart .quantity {
+        width: 140px;
+        height: 48px;
+    }
+
+    .woocommerce div.product form.cart .quantity input.qty {
+        width: 100%;
+        height: 100%;
+        font-size: 1rem;
+    }
+
+    .woocommerce div.product form.cart .quantity .ct-decrease,
+    .woocommerce div.product form.cart .quantity .ct-increase {
+        width: 44px;
+        height: 44px;
+        top: 2px;
+    }
+
+    .woocommerce div.product form.cart .quantity .ct-decrease {
+        left: 0;
+        right: auto;
+    }
+
+    .woocommerce div.product form.cart .quantity .ct-increase {
+        right: 0;
+        left: auto;
+    }
+
+    /* F1 + F3: block-cart quantity — WooCommerce ships a 107px box with two
+       30px buttons and a 13px value (13px also trips the iOS zoom).
+       140px = two 44px targets + a 52px value field. The button selector must
+       carry the parent class: WooCommerce's own
+       `.wc-block-components-quantity-selector .…__button { min-width: 30px }`
+       outranks a single-class rule no matter which sheet loads last.
+       (The clipping itself is fixed unconditionally further up — A12.) */
+    .wc-block-components-quantity-selector {
+        width: 140px;
+    }
+
+    .wc-block-components-quantity-selector .wc-block-components-quantity-selector__button {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    body.stew-theme .wc-block-components-quantity-selector input.wc-block-components-quantity-selector__input {
+        font-size: 1rem;
+        min-height: 44px;
+    }
+
+    /* F1: basket remove control was a 24x24 icon. */
+    .wc-block-cart-item__remove-link {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* F1: the stepper and the remove button share one nowrap flex row inside a
+       CSS-grid table row, so their combined width sets the minimum of the whole
+       product column. At 44px each that pushed the cart table from 343px out to
+       365px on a 390px screen — past the page gutter the rest of the page keeps.
+       Letting the row wrap keeps the table inside the container; the remove
+       button drops under the stepper only on the narrow viewports where the two
+       no longer fit side by side. */
+    .wc-block-cart-item__quantity {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 1023px) {
+
+    /* F2: the Filter pill is fixed 24px above the viewport bottom and the page
+       ends flush with the document, so it permanently covered the (c) line —
+       nothing could be scrolled out from under it. Give the last footer row
+       room to clear it. :has() keeps the padding on the shop archives that
+       actually render the pill. 1023px, not 999px, because that is the
+       breakpoint at which stew-custom.css shows the pill. */
+    body:has(.stew-shop-filter-toggle) .stew-footer__bottom {
+        padding-bottom: 94px;
+    }
+
+    /* F2: a category with no products has nothing to filter — don't float a
+       filter control over the "Diese Kategorie ist derzeit leer" notice. The
+       "no products match your filters" state (.stew-shop-empty) deliberately
+       keeps the pill, because there the shopper does need to change the
+       filters to get back to a non-empty result. */
+    .stew-shop-main:has(.stew-empty-category-notice) .stew-shop-filter-toggle {
+        display: none;
+    }
 }
